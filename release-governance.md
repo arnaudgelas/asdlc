@@ -186,6 +186,67 @@ human review tractable on complex bundles: the control state record concentrates
 attention on what requires a decision, not on what has already been
 machine-verified.
 
+**Governance-relocation evidence (for systems with relocated governance).** For
+systems whose action classes have undergone governance relocation under the
+Agentic Enterprise Manifesto (AEnt-M) — where a synchronous control point has
+been replaced by a structurally equivalent asynchronous control objective — the
+evidence bundle must include machine-readable artefacts proving control
+equivalence for each relocated action class. The required artefacts are:
+
+- `relocation_decision_record` — the structured record of the relocation,
+  including: `action_class` (the bounded class of agent action covered);
+  `control_point_before` (the synchronous control point that was relocated);
+  `control_point_after` (the asynchronous control objective and mechanism that
+  replaced it); `control_objective_unchanged: true` (an explicit attestation
+  that the control objective itself is unchanged — only its placement); the
+  named `approval_authority` (the AEnt-M escalation authority that approved
+  the relocation); and the `approval_date`.
+- `decision_quality_baseline` — the empirical comparison establishing that
+  relocated control performance is at least equivalent to the synchronous
+  baseline. Must include: `sample_period`, `sample_size`, `baseline_score`
+  (decision quality under the synchronous control), `post_relocation_score`
+  (decision quality under the relocated control), and `p_value` for the
+  equivalence or non-inferiority test applied.
+- `error_detection_comparison` — the structured comparison of error detection
+  rates between the synchronous and relocated control configurations, by
+  error class, with sample sizes and detection latencies.
+- `audit_reconstructability_validation` — evidence that, for the relocated
+  control, an external auditor can reconstruct from retained artefacts the
+  same audit trail that the synchronous control would have produced. Includes
+  the validation method, the validator, and the date.
+- `degradation_response_test` — a dated test record demonstrating that, when
+  the relocated control's monitoring detects degradation against its
+  pre-defined thresholds, the system reverts to synchronous control checking
+  for the affected action class within the latency bound specified in the
+  relocation decision record.
+
+These five artefacts collectively constitute the relocation evidence schema.
+The canonical schema definition lives in `governance/evidence-bundle-schema.md`
+(planned under A1). A bundle for a system with relocated governance that is
+missing any of the five artefacts is incomplete and fails Condition 1. The
+relocation evidence is itself subject to staleness triggers — see the Evidence
+Freshness section.
+
+**Projected-stale claim status (for systems depending on intelligence).** For
+systems whose actions are informed by claims governed under the Intelligence
+Governance Manifesto (IGM), the evidence bundle must include, for each claim
+the system depends on at deployment time, the claim identifier, its epistemic
+tier, its decay window, its next scheduled revalidation date, and its current
+staleness status. A claim whose decay deadline falls within 30 calendar days
+of the planned deployment time must be marked `projected-stale` in the
+evidence bundle. A bundle containing one or more `projected-stale` claims
+does not automatically fail Condition 1 — but it requires explicit steward
+acceptance recorded as part of the gate sign-off, naming each
+`projected-stale` claim and confirming that the steward has assessed the
+operational risk of deploying with claims approaching decay. If the actual
+claim state at deployment time differs from the projected state recorded in
+the bundle — for example, a claim projected as fresh has decayed, or a
+contradiction has been raised — the steward must be notified within 4 hours
+of the discrepancy being detected and may trigger a rollback under the
+standard rollback procedure. A `projected-stale` classification that is
+neither resolved (by re-verification before deployment) nor explicitly
+accepted (by steward sign-off) is a bundle completeness failure.
+
 **Epistemic tier labelling.** Every artefact in the evidence bundle must carry
 an epistemic tier label declaring how it was produced: `human-authored`,
 `tool-generated`, `agent-proposed-with-human-review`, or `agent-generated`. The
@@ -338,6 +399,77 @@ When a rubber-stamping pattern is detected, the correct response is to raise the
 evidence presentation requirements (requiring the accountable human to attest to
 specific artefacts reviewed) or to reduce the autonomy tier of the system until
 oversight signal quality is restored.
+
+**Substantive-review standard for the P12 anchor.** The accountability
+diffusion failure mode this condition prevents is not a missing signature;
+it is a present signature that does not reflect a substantive review. The
+substantive-review standard makes the review's content auditable, not only
+its existence. To satisfy Condition 4, the P12 anchor's review must
+include all three of the following:
+
+- *Spot-check of evaluation results.* The P12 anchor must access at least
+  one primary evaluation report — not a summary — for the release and
+  must attest to the specific evaluation result they examined (the
+  evaluation case identifier, the recorded outcome, and any noted
+  deviation). The attestation is recorded as a structured field on the
+  sign-off, not a free-text confirmation.
+- *Spot-check of evidence bundle components.* The P12 anchor must access
+  at least one non-evaluation primary artefact in the evidence bundle —
+  the static analysis report, the SBOM, the SLSA provenance attestation,
+  or the rollback test record — and attest to its contents in the same
+  structured form.
+- *Attestation that the control state record is accurate.* The P12 anchor
+  must attest that, for every control marked `pass` in the control state
+  record they reviewed, the underlying artefact supports the verdict.
+  This attestation is required at minimum for the controls the anchor
+  spot-checked; for the remaining controls, the attestation is that the
+  anchor reviewed the control state record as a whole and saw no
+  inconsistencies.
+
+A sign-off that does not include the three structured attestations does
+not satisfy Condition 4 — regardless of the time elapsed in review.
+
+**Sampling plan for high-volume Tier 3 systems.** For Tier 3 systems with
+release volume exceeding 20 deployments per quarter, applying the full
+substantive-review standard to every release is operationally infeasible
+and itself a rubber-stamping risk: the P12 anchor cannot meaningfully
+attest to spot-checks at that volume. A documented sampling plan is
+required for such systems, with a minimum sampling rate of 20% of
+releases per quarter (rounded up). Sampling must be stratified across
+release classes — feature releases, security patches, dependency
+updates, and emergency changes are each represented in proportion to
+their occurrence — and the sampled releases are subject to the full
+substantive-review standard, with the structured attestations recorded
+on the sign-off. Releases not in the sampled set still require the P12
+anchor's sign-off, but the attestation requirements are reduced to the
+control state record review and a confirmation that the bundle's
+machine-verifiable checks passed. The sampling plan, including the
+sampling rate and the stratification rule, is a versioned artefact
+filed with the system's governance specification.
+
+**Rubber-stamp detection and escalation.** Two empirical patterns trigger
+escalation under the substantive-review standard, in addition to those
+named above:
+
+- *Sub-30-minute reviews on complex bundles.* A P12 anchor whose median
+  review time per release falls below 30 minutes for releases with
+  bundle size above a defined complexity threshold (computed from
+  artefact count and control state record entry count) is producing
+  signatures whose substantive content is implausible. The release
+  manager escalates to the governance portfolio steward.
+- *Zero-findings histories.* A P12 anchor whose sign-off history across
+  20 or more releases contains no documented findings, no requested
+  remediations, and no escalations is producing reviews that have
+  detected nothing — which, against the empirical base rate of release
+  defects, is itself a finding. Zero findings ever is not a quality
+  signal; it is a detection-failure signal. The release manager
+  escalates.
+
+Escalation triggers a review of the anchor's review-time distribution
+and bundle complexity history, and either an evidence-presentation
+remediation (raising the structural requirements on what artefacts the
+anchor must attest to) or a reduction in the autonomy tier of the
+system until the anchor's review signal quality is restored.
 
 What goes wrong if bypassed: production deployments proceed without any named
 human who owns the outcome. Incident response lacks a clear accountability

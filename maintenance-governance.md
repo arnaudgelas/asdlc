@@ -81,6 +81,44 @@ know the system's maintenance cost, its value realisation trend, and its
 technical health. The business demand sponsor who validated the original need
 must concur on the deprecation decision, but the steward initiates it.
 
+**Substrate diversity audit (for systems depending on intelligence).** For
+systems whose actions are informed by claims in the domain graph governed
+under the Intelligence Governance Manifesto (IGM), the steward conducts a
+quarterly substrate diversity audit alongside the architectural health review.
+The audit examines three dimensions of the intelligence the system depends on:
+
+- *Source diversity in load-bearing claims.* The percentage of the system's
+  load-bearing claims — the claims that, if wrong, would cause the system's
+  most consequential actions to be wrong — that derive from different
+  organisations, vendors, or jurisdictions. A substrate that is corroborated
+  predominantly by sources from a single origin is not corroborated; it is
+  one source restated.
+- *Contradiction preservation rate.* The proportion of claims in domains with
+  known divergences (regulatory interpretation differences, vendor-specific
+  practice, cross-jurisdictional conflict) that retain at least one recorded
+  contradiction in the domain graph. A domain known to be contested whose
+  graph contains no contradictions is a substrate that has been flattened —
+  by ingest filtering, by silent overwrite, or by adversarial pruning.
+- *Expert-network health.* The currency, breadth, and peer-consultation rate
+  of the named experts who serve as assertion authorities for the claims the
+  system depends on. An expert network whose consultation rate has declined
+  is a network whose judgments are increasingly being inherited rather than
+  refreshed.
+
+Warning signals from the audit: more than 80% of load-bearing claims sourced
+from a single organisation, vendor, or jurisdiction; less than 2%
+contradiction density in a domain with known divergences; or a sustained
+decline in expert peer consultation against the deployment baseline. Any
+warning signal triggers a documented remediation plan with a defined window:
+expand the IGM Harvest or Capture acquisition modes to broaden the source
+base; activate cross-domain linking to surface analogous contradictions from
+adjacent domains; or escalate to the IGM revision, assertion, or semantic
+governance authority responsible for the affected claim class. A substrate
+diversity audit that surfaces a warning signal without producing a
+remediation plan within 20 business days is itself a steward governance
+failure, equivalent to leaving an architectural health degradation
+unaddressed.
+
 ### Ownership Transfer Protocol
 
 When a steward changes — personnel moves, team reorganisation, role change — the
@@ -137,6 +175,32 @@ are not hard limits — they are signals. A steward approaching these limits
 without additional support, tooling assistance, or workload reduction is at
 elevated risk of the gradual degradation described above. The portfolio limit is
 a conversation trigger, not an enforcement threshold.
+
+**Portfolio limits for intelligence-bearing systems.** The limits above
+assume systems whose maintenance burden is bounded by the system's own
+operational and architectural surface. For systems that depend on
+intelligence governed under the Intelligence Governance Manifesto (IGM) —
+where the steward must additionally track claim epistemic tier, decay
+windows, contradiction state, and feedback-loop closure to the IGM
+revision/assertion/semantic authorities — the steward's effective load per
+system is materially higher. The reason is the concurrent lifecycles a
+steward must hold in mind: the system's operational lifecycle, the system's
+specification lifecycle, and the lifecycles of every load-bearing claim the
+system depends on. Composite-state tracking — knowing at any moment which
+claims are fresh, which are projected-stale, which carry unresolved
+contradictions, and which have outstanding re-verification work — cannot be
+handled at the same density as routine operational stewardship.
+
+For intelligence-bearing systems, the portfolio limit is reduced to no more
+than three systems per steward, regardless of autonomy tier. This reduction
+is not a refinement of the tier-calibrated limits — it supersedes them for
+the intelligence-bearing class. A steward accountable for three Tier 3
+intelligence-bearing systems is at the limit; a steward accountable for one
+Tier 3 intelligence-bearing system and four Tier 1 non-intelligent systems
+is also approaching limit, because the intelligence-bearing system imposes
+the IGM-coordination overhead regardless of its tier. The portfolio steward
+function (see below) tracks intelligence-bearing system count separately
+from total system count for each steward.
 
 **Tooling-assisted stewardship.** Several of the operational DoD conditions that
 the steward must verify quarterly lend themselves to automated monitoring:

@@ -183,6 +183,46 @@ includes governance evaluation cases. The product owner validates coverage at
 the gate assessment. A specification that describes acceptance criteria for the
 product but has no governance evaluation cases in the portfolio is not complete.
 
+**Intelligence governance evaluation cases.** For any specification whose
+implementation will depend on intelligence governed under the Intelligence
+Governance Manifesto (IGM) — claims in the domain graph, provenance-tracked
+assertions, or other governed knowledge substrate — the evaluation portfolio
+must additionally include a defined set of intelligence governance
+evaluation cases. These are tests of the IGM-side governance, distinct from
+both product evaluation and ASDLC governance evaluation. Required
+intelligence governance evaluation cases are:
+
+- *Confidence-threshold enforcement.* The agent does not act on a claim
+  whose epistemic tier is below the threshold defined for the action class
+  in the policy envelope. A test in which a claim is degraded to below
+  threshold must produce an action refusal or escalation, not a degraded
+  action.
+- *Contradiction detection.* When the domain graph contains a contradiction
+  on a claim the agent depends on, the agent surfaces the contradiction
+  rather than silently selecting one side. The evaluation case must cover
+  each contradiction type the system's domain is known to produce
+  (jurisdictional divergence, logical contradiction, temporal supersession,
+  scope variation, extraction error).
+- *Decay-window compliance.* The agent does not act on a claim whose decay
+  window has expired without a current re-validation event. A test in which
+  a claim's decay window is advanced past expiry must produce a refusal or
+  escalation; an action taken on a decayed claim is a governance failure
+  even if the action would have been correct.
+- *Feedback-loop closure.* For systems where the L4 → Intelligence
+  Lifecycle feedback path applies (see `asdlc.md` Feedback Paths and IGM
+  Principle 10), the evaluation portfolio includes a case in which a
+  simulated production incident produces a structured intelligence-feedback
+  artefact identifying the implicated claims and the appropriate IGM
+  authorities. A system that handles incidents without producing this
+  artefact has an open feedback loop and fails this case.
+
+Intelligence governance evaluation cases are required for any system
+depending on intelligence — they are not waived by autonomy tier. The
+specification analyst, in consultation with the IGM authority responsible
+for the relevant claim class, ensures coverage. A specification that
+declares dependency on the domain graph but does not include intelligence
+governance evaluation cases is incomplete for Condition 3.
+
 ---
 
 ### Condition 4: Constraints Identified

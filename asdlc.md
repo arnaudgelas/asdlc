@@ -44,6 +44,7 @@ flowchart TB
 
     L4 -.->|"Value data"| L1
     L4 -.->|"Maintenance signals"| L2
+    L4 -.->|"Intelligence feedback (IGM)"| IGM["Intelligence Lifecycle (IGM)"]
     L3 -.->|"Release failures"| L2
     L2 -.->|"Validation failures"| L1
 ```
@@ -138,6 +139,40 @@ envelope definition before Tier 4 operation begins. This gate pass is the formal
 record that the organisation has accepted the envelope as sufficient governance
 for the system's blast radius.
 
+**Tier 4 relocation mechanics.** A Tier 4 policy envelope may contain
+multiple action classes that are at different governance-relocation
+maturity stages under the Agentic Enterprise Manifesto (AEnt-M). One action
+class within the envelope may be operating under fully relocated control
+(synchronous gate replaced by an asynchronous control objective with
+demonstrated equivalence); another within the same envelope may still be
+governed by a synchronous check pending its own relocation evidence. Each
+action class is independently monitored against the AEnt-M Principle 7
+metrics — decision quality, error detection rate, audit reconstructability,
+and degradation response latency — at the granularity of the action class,
+not the envelope as a whole. Aggregated envelope-level metrics are a
+useful operational view but they are not the unit of relocation
+accountability.
+
+When the AEnt-M P7 metrics for a single action class degrade past the
+thresholds defined in that class's `relocation_decision_record` (see
+`release-governance.md` Condition 1), that action class reverts to
+synchronous checking automatically. The reversion does not affect the
+relocation status of other action classes within the same envelope; an
+envelope can simultaneously contain action classes operating under
+relocated control, action classes that have just reverted to synchronous
+control, and action classes that have never been relocated. The steward
+signs the per-class status record as part of the envelope's continuous
+monitoring telemetry; an envelope-level signature that does not record
+per-class status conceals the relocation state of the action classes it
+covers. Re-relocation of a reverted class — restoring it to asynchronous
+control — requires a new evidence bundle satisfying the
+governance-relocation evidence schema, including a fresh
+`decision_quality_baseline` measured under current operating conditions
+and a fresh `degradation_response_test`. The reversion-to-synchronous
+event itself is an audit-relevant transition; the AEnt-M escalation
+authority that originally approved the relocation must be notified, and
+re-relocation requires that authority's approval on the new evidence.
+
 ### Layer 4: Operations & Maintenance
 
 Layer 4 begins at production deployment and runs for the rest of the system's
@@ -170,6 +205,54 @@ restrictively. An incident that traces to an action outside the approved
 envelope is a control failure — the machine enforcement layer failed, and the
 post-incident review must assess the enforcement mechanism's adequacy, not just
 the incident itself.
+
+#### Tier 4 Appendix A — Policy-Envelope Intelligence Constraints
+
+For Tier 4 systems whose actions are informed by intelligence governed under
+the Intelligence Governance Manifesto (IGM), the policy envelope must
+explicitly specify how the intelligence layer constrains agent action within
+the envelope. Without these elements, the envelope authorises autonomous
+operation against an unspecified epistemic substrate — a configuration in
+which the substrate's adequacy is assumed rather than governed. The
+following elements are required components of any Tier 4 policy envelope
+for an intelligence-bearing system:
+
+- *Epistemic-tier-to-action mapping.* For each action class the envelope
+  authorises, the minimum epistemic tier (Provisional, Candidate,
+  Confirmed, High Confidence, Authoritative) of the claims that must
+  inform that action. An envelope that authorises an action class without
+  specifying the required epistemic tier permits the action against any
+  claim, including Provisional ones — which is not a Tier 4 envelope, it
+  is unconstrained autonomy.
+- *Contradiction-handling rules per type.* For each contradiction type the
+  system's domain is known to produce (jurisdictional divergence, logical
+  contradiction, temporal supersession, scope variation, extraction
+  error), the rule the agent applies when it encounters the
+  contradiction: refuse, escalate, select-by-jurisdiction-policy, or
+  similar typed responses. Untyped contradiction handling — a single
+  fallback regardless of contradiction class — does not satisfy this
+  element.
+- *Decay boundaries per claim class.* For each claim class the system
+  depends on, the decay boundary beyond which the agent must refuse to
+  act on the claim within the envelope, and the latency within which the
+  agent must observe a re-verification event before resuming action. A
+  decay boundary stated only as a calendar window is insufficient; the
+  boundary must reference the claim class's own decay model.
+- *Feedback-loop closure rules.* The structured feedback the agent must
+  emit when it observes evidence that a claim it acted on was wrong,
+  stale, or contradicted in production. The feedback rules must specify
+  the artefact format, the destination IGM authority, and the latency
+  bound for emission. An envelope without feedback-loop closure rules
+  permits autonomous action that produces no return signal to the
+  substrate — which is incompatible with IGM Principle 10.
+
+These elements are governed by the composition rule defined in
+`governance/composition-rule.md` (planned), which specifies how individual
+constraints compose into a coherent policy envelope and how the
+envelope's effective constraint set is computed. A Tier 4 envelope for an
+intelligence-bearing system that omits any of the four elements above is
+not a complete envelope and cannot pass the Release Gate as the envelope
+specification under Layer 3.
 
 ---
 
@@ -345,6 +428,28 @@ actual need) must produce a demand layer retrospective initiated within 5
 business days and a documented process change within 20 business days. A
 validation failure at a customer-facing system triggers the 5-business-day SLO
 regardless of the rolling pattern.
+
+**L4 → Intelligence Lifecycle: Production incidents and maintenance signals.**
+For systems whose actions are informed by intelligence — domain-graph claims,
+provenance-tracked assertions, or other governed knowledge substrate covered by
+the Intelligence Governance Manifesto (IGM) — production incidents and steward
+review findings feed back not only to the engineering execution layer but to
+the intelligence lifecycle itself. When an L4 incident or steward review
+identifies that a production failure was informed by intelligence, the
+investigation must explicitly include: (i) which claims informed the failed
+action, identified by claim identifier and epistemic tier at the time of
+action; (ii) whether those claims were stale, contradicted, misapplied, or
+correctly reflecting reality but invoked outside their applicable scope; (iii)
+structured feedback to the IGM revision, assertion, and semantic authorities
+responsible for the affected claims and their relationships; and (iv) a
+timeline for claim re-verification not exceeding 30 calendar days from
+incident closure. A steward who closes an incident without producing the
+intelligence-feedback record has not closed the incident — the closure is
+provisional pending the IGM-side feedback artefact. This feedback path is the
+operational expression of IGM Principle 10 (*Every engagement feeds the domain
+graph*) at the L4 boundary: production is itself an engagement on the
+substrate, and incidents are the highest-signal observations that engagement
+produces.
 
 The SLOs documented for each feedback path above govern human-driven feedback
 processes. Where governance agents are configured to continuously monitor

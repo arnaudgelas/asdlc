@@ -27,6 +27,20 @@ governance layer for a new execution reality.
 
 ---
 
+## Where to Start (Across the Stack)
+
+The Agentic Engineering Manifesto, ASDLC, and APLC are a layered set, but each is independently adoptable. Pick the one that matches the pain you are feeling now — you do not need to adopt all three at once, and you do not need to read them in order.
+
+| If your pain is… | Start with… |
+| --- | --- |
+| **An AI agent already in market or about to be**, and you cannot describe its behavior, prove its drift, or govern foundation-model updates that change it without warning | **[APLC](https://github.com/arnaudgelas/aplc)** — the Agentic Product Lifecycle. Governs the agent product itself: behavioral specification, evaluation, drift, foundation-model update governance, regulated retirement. |
+| **Software delivery by teams using AI agents to write code**, where the inner loop runs faster than your demand validation, release governance, or operational readiness can keep up | **[ASDLC](https://github.com/arnaudgelas/asdlc)** — the Agentic Software Delivery Lifecycle. Governs the four-layer delivery lifecycle around agent-built software: demand, execution, release, operations. |
+| **Engineering practice itself** — how humans steer intent, how agents execute within governed boundaries, what verified outcomes look like inside the inner loop | **[Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto)** — the Agentic Engineering Manifesto. Defines the inner engineering loop that both APLC Stage 3 and ASDLC Layer 2 reference. |
+
+Each framework is independently useful. Together they form a complete governance stack for organisations dealing with both agent-built software and agent products in market.
+
+---
+
 ## Why This Exists
 
 Agentic software delivery changes the shape of risk.
@@ -136,6 +150,22 @@ monitoring are configured, on-call is assigned and briefed, a system steward is
 named, security and license checks are clean, and trace retention is configured.
 
 Start here: [operations/dod.md](operations/dod.md)
+
+---
+
+## Entry Points
+
+The ASDLC is a toolkit, not a sequential adoption mandate. Adopt it where your pain is most acute and expand from there. Four common entry points:
+
+**Agents are producing plausible work, but you cannot verify it satisfies the specification** → **Release Gate**. Make evidence-bundle completeness, tested rollback, accountable human sign-off, and required validation blocking conditions before any production deployment. This is the largest single safety lever in the lifecycle. See [release-governance.md](release-governance.md).
+
+**Specifications keep producing the wrong thing built correctly** → **Specification Readiness Gate**. Block specifications from entering the engineering loop unless they have validated need, measurable value, drafted acceptance criteria, identified constraints, a named accountable human, an assessed blast radius, and explicit out-of-scope work. See [specification-readiness.md](specification-readiness.md).
+
+**Deployed systems have no owner, no current runbook, and no traceable specification** → **Operational Readiness Gate**. Require runbook complete, SLOs configured, on-call assigned and briefed, system steward named, security and license checks clean, and trace retention configured before production cutover. See [operations/dod.md](operations/dod.md).
+
+**Demand keeps producing well-built but useless work** → **Layer 1 (Demand & Value)**. Build the demand backlog, validation tiers, prioritisation model, capacity model, and demand-to-specification bridge. The faster the inner loop runs, the more expensive it becomes to feed it poorly validated intent. See [demand/value.md](demand/value.md).
+
+The ASDLC is not all-or-nothing. Each gate and layer has a minimum bar that can be implemented independently, before the others are mature.
 
 ---
 
