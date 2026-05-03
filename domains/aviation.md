@@ -4,7 +4,25 @@ _Aviation-specific regulatory requirements for ASDLC Layers 1, 3, and 4._
 
 See [Aviation Manifesto Alignment](../../domains/aviation.md) for manifesto
 principle mappings (DO-178C, DO-330, DO-333, ARP 4754A, DO-326A). See the
-[ASDLC Overview](../asdlc.md) for the full lifecycle framework.
+[ASDLC Overview](../asdlc.md) for the full lifecycle framework. See
+[governance/gate-registry.md](../governance/gate-registry.md) for the
+canonical gate condition enumeration referenced throughout this file.
+
+> **Conformance profile expectation.** Organisations operating in this
+> regulated context typically claim the ASDLC-Regulated conformance profile
+> (see [conformance-profiles.md](../conformance-profiles.md)).
+>
+> **Scope of regulatory claims.** This file maps ASDLC controls to aviation
+> regulatory obligations. Throughout, "supports compliance with",
+> "operationalises", "structurally consistent with", and "produces evidence
+> aligned with" are used in preference to "is" or "satisfies" because ASDLC
+> alone does not directly produce all DO-178C / DO-330 / DO-333 lifecycle
+> artefacts. ASDLC's evidence bundle is structurally consistent with the
+> DO-178C lifecycle data set but does not by itself produce the SAS, the
+> SCI, the PSAC, the SVD, the qualified-tool documentation, or the
+> Designated Engineering Representative (DER) credential required for
+> certain DAL-A and DAL-B objectives. Specific gaps — including the DER
+> credential gap — are flagged in each section.
 
 ---
 
@@ -15,39 +33,43 @@ what enters the engineering execution loop. In aviation development contexts,
 demand governance must integrate with the system-level processes established by
 ARP 4754A before any software development activity starts.
 
-**DO-178C / DO-330 — Requirements traceability at the demand boundary.** DO-178C
-requires that all software requirements are traceable to system requirements,
-and that no software requirement exists without a parent system requirement. The
-demand-to-specification bridge's translation step — from validated business need
-to machine-readable acceptance criteria — is the control that establishes this
-traceability. The "acceptance criteria expressible" gate condition must
-demonstrate that the derived software requirement traces to an identifiable
-system-level requirement or allocated function before the specification enters
-the loop. A specification that cannot demonstrate this traceability at the
-demand gate will fail DO-178C § 5.1 traceability requirements when the software
-development record is assembled for certification.
+**DO-178C / DO-330 — Requirements traceability at the demand boundary.**
+DO-178C requires that all software requirements are traceable to system
+requirements, and that no software requirement exists without a parent
+system requirement. The demand-to-specification bridge's translation step —
+from validated business need to machine-readable acceptance criteria —
+supports compliance with this expectation. The Specification Readiness
+Gate condition SR-3 (Acceptance Criteria Expressible) must demonstrate
+that the derived software requirement traces to an identifiable system-
+level requirement or allocated function before the specification enters
+the loop. A specification that cannot demonstrate this traceability at
+the demand gate will not produce evidence aligned with DO-178C § 5.1
+traceability expectations when the software development record is
+assembled for certification.
 
-**ARP 4754A — System requirements validation preceding software development.**
-ARP 4754A § 5 (System Requirements) requires that system requirements are
-validated before software development starts: that they are complete, correct,
-and consistent, and that they satisfy the intent of the higher-level
-requirements from which they were derived. The specification readiness gate's
-"business need validated" condition maps to ARP 4754A's system requirements
-validation process at the software entry point. An engineering team that begins
-software development before the system requirements have been through ARP 4754A
-validation is not compliant with the development process that generates the DAL
-assignment on which the team is relying.
+**ARP 4754A — System requirements validation preceding software
+development.** ARP 4754A § 5 (System Requirements) requires that system
+requirements are validated before software development starts: that they
+are complete, correct, and consistent, and that they satisfy the intent
+of the higher-level requirements from which they were derived. The
+Specification Readiness Gate condition SR-1 (Business Need Validated)
+supports compliance with the ARP 4754A system-requirements validation
+expectation at the software entry point. An engineering team that begins
+software development before the system requirements have been through
+ARP 4754A validation does not produce evidence aligned with the
+development process that generates the DAL assignment on which the team
+is relying.
 
 **DO-178C Design Assurance Level (DAL) determination.** The DAL must be
-determined at the start of the software development activity, before the loop
-begins, not during or after development. The specification readiness gate's
-"blast radius assessed" and "constraints identified" conditions are the
-engineering controls for DAL determination: they require that the safety
-significance of the function is established and that the applicable DO-178C
-objectives (including the independence requirements for higher DAL levels) are
-identified as constraints on the loop. A specification that enters the loop
-without a confirmed DAL assignment lacks its most fundamental governance
-constraint.
+determined at the start of the software development activity, before the
+loop begins, not during or after development. The Specification Readiness
+Gate conditions SR-6 (Blast Radius Assessed) and SR-4 (Constraints
+Identified) support compliance with the DAL-determination expectation:
+they require that the safety significance of the function is established
+and that the applicable DO-178C objectives (including the independence
+requirements for higher DAL levels) are identified as constraints on the
+loop. A specification that enters the loop without a confirmed DAL
+assignment lacks its most fundamental governance constraint.
 
 **FAA Order 8110.49 — Intended function documentation.** Software approval under
 FAA Order 8110.49 requires documentation of the software's intended function,
@@ -74,63 +96,91 @@ demand gate record and the PSAC should be aligned documents from the start.
 
 ## ASDLC Layer 3 — Release & Deployment Regulatory Requirements (Aviation)
 
-The release layer ([release-governance.md](../release-governance.md)) governs
-the transition from loop-complete to production-deployed. For aviation software
-in DO-178C scope, the five release gate conditions address the engineering
-quality dimension of this transition, but the certification dimension imposes
-additional requirements that must be met before a release is considered
-airworthiness-ready.
+The release layer ([release-governance.md](../release-governance.md))
+governs the transition from loop-complete to production-deployed. For
+aviation software in DO-178C scope, the Release Gate has eight conditions
+(canonical enumeration in
+[governance/gate-registry.md](../governance/gate-registry.md)); these
+conditions address the engineering quality dimension of this transition,
+but the certification dimension imposes additional expectations that must
+be met before a release is considered airworthiness-ready. ASDLC's
+evidence bundle is structurally consistent with the DO-178C lifecycle data
+set but does not by itself produce all DO-178C / DO-330 / DO-333 lifecycle
+artefacts (in particular: the Software Accomplishment Summary (SAS), the
+Software Configuration Index (SCI), the Plan for Software Aspects of
+Certification (PSAC), and qualified-tool documentation under DO-330 are
+artefacts the certification programme must produce alongside ASDLC).
 
 **DO-178C § 7 — Software Configuration Management at release.** DO-178C § 7
-requires complete configuration control of software at release: the software
-must be identified by a unique configuration identifier, all lifecycle data
-associated with the release must be baselined, and the software configuration
-index must document the exact versions of all software components, tools, and
-associated data. The deployment governance's configuration state hash is the
-engineering control, and the SBOM generated at release maps to the DO-178C
-software configuration index. For certified airborne software, the configuration
-state hash and SBOM together must satisfy the § 7 configuration identification
-requirements; the release artefact must include or reference these documents
-before the release gate closes.
+requires complete configuration control of software at release: the
+software must be identified by a unique configuration identifier, all
+lifecycle data associated with the release must be baselined, and the
+software configuration index must document the exact versions of all
+software components, tools, and associated data. The deployment
+governance's configuration state hash supports compliance with the
+configuration-identification expectation, and the SBOM generated at
+release is structurally consistent with the DO-178C Software
+Configuration Index. For certified airborne software, the configuration
+state hash and SBOM together produce evidence aligned with § 7
+configuration identification expectations; the release artefact must
+include or reference these documents before the Release Gate closes.
+ASDLC supports the artefact pipeline; DO-178C § 7 compliance is
+established with the certification authority on the basis of the
+artefacts produced.
 
-**DO-178C Software Lifecycle Data.** DO-178C requires that specific lifecycle
-data artefacts exist at release, including the Software Accomplishment Summary
-(SAS), the Software Configuration Index (SCI), and the problem report status for
-the released software. The evidence bundle from the engineering loop —
-evaluation reports, trace IDs, policy check outputs, dependency manifest — must
-include or reference all required DO-178C lifecycle data artefacts. The SAS is
-the primary document through which the applicant demonstrates to the
-certification authority that the software development process satisfied all
-applicable DO-178C objectives. Producing an SAS that is consistent with the
-engineering loop's evidence bundle, rather than prepared independently, ensures
-that the SAS reflects the actual development record. For higher DAL programs,
-the SAS must be reviewed by the DER or ODA unit member before the release gate
-closes.
+**DO-178C Software Lifecycle Data.** DO-178C requires that specific
+lifecycle data artefacts exist at release, including the Software
+Accomplishment Summary (SAS), the Software Configuration Index (SCI), and
+the problem report status for the released software. The evidence bundle
+from the engineering loop — evaluation reports, trace IDs, policy check
+outputs, dependency manifest — must include or reference all required
+DO-178C lifecycle data artefacts. ASDLC alone does not produce the SAS or
+the SCI; these are certification-programme artefacts that consume ASDLC
+evidence. The SAS is the primary document through which the applicant
+demonstrates to the certification authority that the software development
+process satisfied all applicable DO-178C objectives. Producing an SAS that
+is consistent with the engineering loop's evidence bundle, rather than
+prepared independently, helps ensure that the SAS reflects the actual
+development record. For higher DAL programs, the SAS must be reviewed by
+the DER or ODA unit member before the Release Gate closes — the DER /
+ODA credential is a specific certification credential that ASDLC's RG-2
+"independent validator" condition does not by itself confer; the
+organisation must engage a credentialed DER or ODA unit member separately.
 
-**DO-178C § 6.4 — Independent verification for higher DAL systems.** For DAL A
-and B software, DO-178C requires that verification activities are performed with
-independence from the development team: the people who developed the software
-are not the same people who perform the verification. The release gate's
-"independent validation passed" condition is the DO-178C § 6.4 independence
-requirement at the release boundary. For DAL B and above programs, the
-independent validator must be identifiable in the release artefact as a named
-individual who is organisationally separate from the development team, and the
-scope of the independent review must be documented. A release that proceeds to
-the certification authority without demonstrable verification independence is
-not DO-178C compliant at DAL A or B.
+**DO-178C § 6.4 — Independent verification for higher DAL systems.** For
+DAL A and B software, DO-178C requires that verification activities are
+performed with independence from the development team: the people who
+developed the software are not the same people who perform the
+verification. The Release Gate condition RG-2 (Independent Validation
+Passed) supports compliance with the DO-178C § 6.4 independence
+expectation at the release boundary, and the four falsifiable
+"organisationally separate" criteria in
+[release-governance.md](../release-governance.md) Condition 2 are the
+mechanism. For DAL B and above programs, the independent validator must
+be identifiable in the release artefact as a named individual who is
+organisationally separate from the development team, and the scope of
+the independent review must be documented. RG-2 does not by itself
+confer the DER credential or the ODA-unit-member status that DO-178C and
+FAA Order 8110.49 require for the verifier in higher-DAL programs where
+applicable; the credential requirement is a specific certification
+credential that must be confirmed separately by the organisation. A release that
+proceeds to the certification authority without demonstrable
+verification independence — and, where required, without DER or ODA
+credentialing — does not produce evidence aligned with DO-178C DAL A or
+DAL B expectations.
 
-**EASA CS-25 / FAA Part 25 — Change impact analysis.** For software changes to
-certified aircraft systems, EASA CS-25 (or FAA Part 25 for transport aircraft)
-requires that change impact analysis is performed before the release is
-approved: the applicant must demonstrate that the change does not adversely
-affect the certification basis of the type or supplemental type certificate. The
-release gate's "compliance documentation complete" condition must include the
-change impact analysis for any change to software on a certified aircraft.
-Change impact analysis is not a post-release activity; it is a precondition for
-the release authorisation. For minor changes under DO-178C's delta approach (§
-12.1), the change impact analysis determines which objectives require new
-evidence and which are inherited — this determination must be documented in the
-release artefact.
+**EASA CS-25 / FAA Part 25 — Change impact analysis.** For software changes
+to certified aircraft systems, EASA CS-25 (or FAA Part 25 for transport
+aircraft) requires that change impact analysis is performed before the
+release is approved: the applicant must demonstrate that the change does
+not adversely affect the certification basis of the type or supplemental
+type certificate. RG-5 (Compliance Documentation Complete) must reference
+the change impact analysis for any change to software on a certified
+aircraft. Change impact analysis is not a post-release activity; it is a
+precondition for the release authorisation. For minor changes under DO-178C's
+delta approach (§ 12.1), the change impact analysis determines which
+objectives require new evidence and which are inherited — this
+determination must be documented in the release artefact.
 
 **Certification authority notification.** For programs where the certification
 authority has an open PSAC or is actively reviewing software development,
@@ -154,32 +204,35 @@ ground-based CNS/ATM systems, this layer carries continued airworthiness
 obligations that persist for the operational life of the aircraft or system —
 potentially decades.
 
-**DO-178C § 7.3 — Configuration management through the operational lifecycle.**
-DO-178C § 7.3 requires that configuration management extends through the
-operational lifecycle of the airborne software: changes to software in service
-must be configuration-controlled, problem reports must be tracked and resolved,
-and the software configuration identity must be maintained. The ASDLC
-stewardship model ([maintenance-governance.md](../maintenance-governance.md))
-and the maintenance governance configuration controls map directly to this
-requirement. The named system steward, the SBOM maintenance process, and the
-change record requirement are the operational instruments for § 7.3 compliance.
-A system without a named steward responsible for configuration currency is not
-compliant with § 7.3 for software in DO-178C scope.
+**DO-178C § 7.3 — Configuration management through the operational
+lifecycle.** DO-178C § 7.3 requires that configuration management extends
+through the operational lifecycle of the airborne software: changes to
+software in service must be configuration-controlled, problem reports
+must be tracked and resolved, and the software configuration identity
+must be maintained. The ASDLC stewardship model
+([maintenance-governance.md](../maintenance-governance.md)) and the
+maintenance governance configuration controls support compliance with this
+expectation. The named system steward, the SBOM maintenance process, and
+the change record requirement operationalise § 7.3 expectations at the
+engineering layer. A system without a named steward responsible for
+configuration currency does not produce evidence aligned with § 7.3 for
+software in DO-178C scope.
 
-**FAA Problem Reporting and Change Control — Field problem management.** FAA
-requirements and DO-178C § 7.2 require a documented process for identifying,
-tracking, and resolving software problems discovered in the field after
-certification. This includes problem classification (whether the problem
-constitutes a safety-relevant defect or a non-safety defect), traceability of
-the problem to the relevant lifecycle data, and tracking through resolution. The
-incident management process in operations governance — including the quality
-incident classification and the requirement that quality incidents produce a
-specification or evaluation update — maps to the FAA problem reporting
-requirement. For certified systems, quality incidents that affect the software's
-certified functions must be reported through the problem reporting system, and
-the resolution must be managed as a DO-178C change (with appropriate CM controls
-and, for safety-relevant problems, coordination with the certification
-authority).
+**FAA Problem Reporting and Change Control — Field problem management.**
+FAA expectations and DO-178C § 7.2 require a documented process for
+identifying, tracking, and resolving software problems discovered in the
+field after certification. This includes problem classification (whether
+the problem constitutes a safety-relevant defect or a non-safety defect),
+traceability of the problem to the relevant lifecycle data, and tracking
+through resolution. The incident management process in operations
+governance — including the quality incident classification and the
+requirement that quality incidents produce a specification or evaluation
+update — supports compliance with the FAA problem reporting expectation.
+For certified systems, quality incidents that affect the software's
+certified functions must be reported through the problem reporting
+system, and the resolution must be managed as a DO-178C change (with
+appropriate CM controls and, for safety-relevant problems, coordination
+with the certification authority).
 
 **DO-178C Software Lifecycle Data retention.** Software lifecycle data must be
 retained for the operational life of the aircraft. For commercial transport

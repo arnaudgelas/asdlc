@@ -7,7 +7,25 @@ See
 [Financial Services Manifesto Alignment](../../domains/financial-services.md)
 for manifesto principle mappings (SR 11-7, DORA, EU AI Act, SOX, Three Lines of
 Defense). See the [ASDLC Overview](../asdlc.md) for the full lifecycle
-framework.
+framework. See [governance/gate-registry.md](../governance/gate-registry.md)
+for the canonical gate condition enumeration referenced throughout this file.
+See [eu-ai-act-mapping.md](../eu-ai-act-mapping.md) for the cross-cutting EU AI
+Act risk-tier mapping that this domain file's EU AI Act references should be
+read alongside.
+
+> **Conformance profile expectation.** Organisations operating in this
+> regulated context typically claim the ASDLC-Regulated conformance profile
+> (see [conformance-profiles.md](../conformance-profiles.md)).
+>
+> **Scope of regulatory claims.** This file maps ASDLC controls to financial-
+> services regulatory obligations. Throughout, "supports compliance with",
+> "operationalises", and "produces evidence aligned with" are used in
+> preference to "is" or "satisfies" because ASDLC alone is rarely sufficient
+> to discharge a regulatory requirement; ASDLC artefacts contribute to a
+> compliance posture that the organisation must complete with regulatory
+> counsel, supervisory engagement, and additional artefacts (model
+> inventories, audited model documentation, ORSA filings, ATO records, and
+> the like). Specific limits are flagged in each section.
 
 ---
 
@@ -30,14 +48,26 @@ post-build documentation obligation — it is a pre-build governance requirement
 A team that begins engineering execution without documenting conceptual
 soundness has inverted the SR 11-7 governance sequence.
 
-The demand layer's specification readiness gate condition "business need
-validated" maps directly to SR 11-7's conceptual soundness requirement. Before
-the gate can be passed, the business demand sponsor must have documented why
-this approach is appropriate for the problem — the evidence that makes "business
-need validated" true is the same evidence that makes "conceptually sound"
-defensible under SR 11-7. The gate condition "acceptance criteria expressible"
-confirms that the model's intended function is specified precisely enough to be
-verified — a prerequisite for SR 11-7's validation planning.
+The Specification Readiness Gate condition SR-1 (Business Need Validated; see
+[governance/gate-registry.md](../governance/gate-registry.md)) supports
+compliance with SR 11-7's conceptual soundness requirement. Before the gate can
+be passed, the business demand sponsor must have documented why this approach
+is appropriate for the problem — the evidence that makes "business need
+validated" true is the same evidence that contributes to a "conceptually sound"
+defence under SR 11-7. The gate condition SR-3 (Acceptance Criteria
+Expressible) confirms that the model's intended function is specified
+precisely enough to be verified — a prerequisite for SR 11-7's validation
+planning.
+
+SR 11-7 additionally requires audited model documentation, ongoing model
+monitoring with thresholds, and an explicit model inventory. These obligations
+are partially supported by ASDLC artefacts (the release evidence bundle, the
+governance graph, and the Layer 4 SLOs), but they require regulatory-counsel-
+confirmed mapping in the organisation's specific context: ASDLC conditions
+contribute to the documentation pipeline, but the model inventory entry, the
+audited model documentation in the format the supervisory authority expects,
+and the model monitoring thresholds calibrated to model materiality are
+artefacts the organisation must produce alongside ASDLC.
 
 SR 11-7's "fit-for-purpose" validation begins at the demand stage. If a model's
 purpose is not clearly defined at Layer 1, the Layer 2 engineering loop will
@@ -52,15 +82,19 @@ the lifecycle" begins at conception — before the engineering loop starts. A ri
 management system that is initiated at the start of engineering execution is
 already late.
 
-The specification readiness gate conditions "blast radius assessed" and
-"constraints identified" (defined in [demand/value.md](../demand/value.md) under
-the demand-to-specification bridge) are the Layer 1 controls that satisfy
-Article 9's requirement to identify and manage known and reasonably foreseeable
-risks before the engineering loop begins. The blast radius assessment
-establishes the scope of potential harm if the system fails or behaves
-unexpectedly; the constraint identification step surfaces the regulatory,
-technical, and operational boundaries within which the system must operate. Both
-are demand-layer activities; both are Article 9 requirements.
+The Specification Readiness Gate conditions SR-6 (Blast Radius Assessed) and
+SR-4 (Constraints Identified) — see
+[governance/gate-registry.md](../governance/gate-registry.md), and the
+demand-to-specification bridge in [demand/value.md](../demand/value.md) — are
+the Layer 1 controls that support compliance with Article 9's requirement to
+identify and manage known and reasonably foreseeable risks before the
+engineering loop begins. The blast radius assessment establishes the scope of
+potential harm if the system fails or behaves unexpectedly; the constraint
+identification step surfaces the regulatory, technical, and operational
+boundaries within which the system must operate. Both are demand-layer
+activities; both produce evidence aligned with Article 9 expectations. See
+[eu-ai-act-mapping.md](../eu-ai-act-mapping.md) for the cross-cutting risk-
+tier mapping that determines whether Article 9 attaches and at what depth.
 
 The risk management system established at Layer 1 is not a static document.
 Article 9 requires it to be a continuous iterative process. The demand layer's
@@ -81,11 +115,12 @@ timing requirement.
 
 The demand layer's validation of business need — including the validation tier
 calibrated to blast radius — and the assessment of constraints and blast radius
-at the specification readiness gate are the governance controls that implement
-DORA Article 5 risk identification and classification at the point where it is
-required: before the change begins. The classification determines which
-validation evidence is required, which approval path applies, and what change
-management procedures govern the subsequent layers.
+at the Specification Readiness Gate (conditions SR-4 and SR-6) support
+compliance with DORA Article 5's risk identification and classification
+expectation at the point where it applies: before the change begins. The
+classification determines which validation evidence is required, which approval
+path applies, and what change management procedures govern the subsequent
+layers.
 
 ### MiFID II / Solvency II — Algorithm and Model Documentation before Execution
 
@@ -128,64 +163,109 @@ Services)
 
 Layer 3 — release and deployment governance as defined in
 [release-governance.md](../release-governance.md) — is the primary compliance
-boundary for financial services change management regulation. The five release
-gate conditions are not general good practice layered on top of regulatory
-requirements; for several financial services regulations, they are the direct
-implementation of specific legal obligations. This section maps those
-obligations to the release gate and release Definition of Done in detail.
+boundary at which financial services change management regulation attaches.
+The Release Gate has eight conditions (the canonical enumeration is in
+[governance/gate-registry.md](../governance/gate-registry.md)). For several
+financial services regulations, these conditions support compliance with
+specific legal obligations and produce auditable evidence; this section maps
+those obligations to the Release Gate and release Definition of Done in
+detail. ASDLC alone does not satisfy these regulations: regulatory counsel,
+supervisory engagement, and additional artefacts (model inventories, audited
+model documentation, ATO records, ORSA filings, and the like) remain the
+organisation's responsibility.
 
 ### DORA Article 14 — ICT Change Management
 
 DORA Article 14 requires that financial entities implement a documented ICT
-change management process that includes: pre-implementation testing of changes,
-documented rollback procedures, and post-implementation review. For changes to
-systems supporting critical or important functions, independent testing before
-production deployment is required.
+change management process that includes pre-implementation testing of changes
+(broader than rollback testing alone), documented rollback procedures, and
+post-implementation review. For changes to systems supporting critical or
+important functions, independent testing before production deployment is
+required. DORA Article 14(2) further expects that testing is performed prior
+to implementation across the change's relevant dimensions — functional,
+non-functional, integration, and (where applicable) cybersecurity — and is
+not satisfied by rollback testing alone.
 
-The ASDLC release gate directly satisfies Article 14's requirements. The mapping
-is specific:
+The ASDLC Release Gate supports compliance with Article 14's expectations and
+produces evidence aligned with several specific paragraphs:
 
-- DORA Art. 14(2)(a) — changes are tested before implementation: satisfied by
-  release gate Condition 1 (evidence bundle complete, including evaluation
-  reports from the engineering loop) and Condition 2 (independent validation
-  passed for high-stakes systems).
-- DORA Art. 14(2)(b) — documented rollback procedures: satisfied by release gate
-  Condition 3 (rollback procedure tested, with a tested time-to-rollback on
-  record).
-- DORA Art. 14(2)(c) — post-implementation review: satisfied by the release
-  Definition of Done condition requiring smoke tests in production, plus the
-  operational readiness gate initiation that hands off to Layer 4 monitoring.
-- DORA Art. 14 critical/important functions — independent testing: satisfied by
-  release gate Condition 2 (independent validation passed), which is mandatory
-  for high-stakes regulated systems regardless of phase.
+- DORA Art. 14(2)(a) — changes are tested before implementation: ASDLC's
+  RG-1 (Evidence Bundle Complete, including evaluation reports from the
+  engineering loop) and RG-2 (Independent Validation Passed, for high-stakes
+  systems) produce evidence aligned with this expectation. The breadth of
+  testing required by Article 14(2) extends across functional, non-functional,
+  integration, and cybersecurity dimensions; ASDLC's evaluation suite design
+  must cover the relevant dimensions for a given system in DORA scope, which
+  is a Layer 2 concern that extends beyond the gate condition itself.
+- DORA Art. 14(2)(b) — documented rollback procedures: RG-3 (Rollback
+  Procedure Tested, with a tested time-to-rollback on record) operationalises
+  this requirement. ASDLC's tested-rollback condition is part of, not the
+  entirety of, DORA Art. 14 satisfaction; the regulation requires that
+  testing precede implementation more broadly than rollback testing alone.
+- DORA Art. 14(2)(c) — post-implementation review: the release Definition of
+  Done condition requiring smoke tests in production, plus the Operational
+  Readiness Gate initiation that hands off to Layer 4 monitoring, supports
+  compliance with this expectation.
+- DORA Art. 14 critical/important functions — independent testing: RG-2
+  (Independent Validation Passed) operationalises this expectation. ASDLC's
+  stricter "organisationally separate" definition for the validator (the
+  four falsifiable criteria in [release-governance.md](../release-governance.md)
+  Condition 2) underpins the Article 14 "independent" claim and the
+  parallel SR 11-7 effective-challenge claim discussed below.
 
-For systems in DORA scope, the release gate is not optional — it is the Article
-14 change management process. An organisation that has implemented the release
-gate and maintains the evidence it produces has an auditable Article 14
-compliance record. The evidence bundle ID referenced in the change record is the
-DORA Article 14 test documentation.
+For systems in DORA scope, an organisation that has implemented the Release
+Gate and maintains the evidence it produces has substantive Article 14
+compliance records — but the records remain inputs to a regulatory compliance
+posture that the organisation must complete with policy documentation,
+RTS-aligned retention, and supervisory engagement.
+
+### DORA Article 25 — Threat-Led Penetration Testing
+
+DORA Article 25 (TLPT — threat-led penetration testing for critical functions)
+imposes a periodic, threat-intelligence-driven testing obligation on entities
+identified by competent authorities. ASDLC's RG-6 (Dynamic Security Testing
+Passed) condition supports a routine dynamic-testing posture for external-
+facing changes, but it does not satisfy TLPT: TLPT is an entity-level testing
+regime conducted on production systems by qualified red-team providers under
+a competent-authority-supervised process, not a per-release gate condition.
+The organisation's TLPT programme is a separate engagement; ASDLC's RG-6
+contributes routine dynamic-testing evidence that TLPT scoping consumes as
+context but does not replace.
 
 ### SR 11-7 — Model Change Documentation at the Release Boundary
 
-SR 11-7 requires that model changes are documented, including the nature of the
-change, the testing performed, and the validation results. At the release
-boundary, the evidence bundle produced by the engineering execution loop is the
-primary SR 11-7 model change document. The release gate's Condition 1 (evidence
-bundle complete) is the SR 11-7 compliance control.
+SR 11-7 requires that model changes are documented, including the nature of
+the change, the testing performed, and the validation results. At the release
+boundary, the evidence bundle produced by the engineering execution loop is a
+substantive input to the organisation's SR 11-7 model change documentation.
+RG-1 (Evidence Bundle Complete) supports compliance with the documentation
+expectation; RG-2 (Independent Validation Passed) supports compliance with
+SR 11-7's effective-challenge expectation. The "organisationally separate"
+definition operating under RG-2 (the four falsifiable criteria in
+[release-governance.md](../release-governance.md) Condition 2) is the
+stricter interpretation of independence that underpins the effective-challenge
+claim; a weaker reading of "independent" would not.
 
-Specifically, SR 11-7 model change documentation must include:
+ASDLC artefacts contribute to, but do not by themselves satisfy, SR 11-7. The
+specific contributions:
 
-- The nature of the change: satisfied by the diff in the evidence bundle and the
-  specification reference in the change record.
-- Testing performed: satisfied by the evaluation reports in the evidence bundle,
-  including the test suite, pass/fail results, and evaluation metrics.
-- Validation results: for material changes to high-risk models, satisfied by
-  Condition 2 (independent validation passed), which records the named
-  independent validator, date, scope, and finding.
+- The nature of the change: ASDLC supplies the diff in the evidence bundle
+  and the specification reference in the change record.
+- Testing performed: ASDLC supplies the evaluation reports in the evidence
+  bundle, including the test suite, pass/fail results, and evaluation metrics.
+- Validation results: for material changes to high-risk models, RG-2 supplies
+  the named independent validator, date, scope, and finding.
 
-The release gate's "compliance documentation complete" condition (Condition 5)
-is the SR 11-7 model change record — it must reference the evidence bundle and
-confirm that the change is filed in the model inventory before release proceeds.
+SR 11-7 additionally requires audited model documentation in the format the
+supervisory authority expects, ongoing model monitoring with thresholds
+calibrated to model materiality, and an explicit model inventory that
+references each material change. These obligations are partially supported by
+ASDLC artefacts but require regulatory-counsel-confirmed mapping in the
+organisation's specific context. The Release Gate's RG-5 (Compliance
+Documentation Complete) operationalises the documentation pipeline; it must
+reference the evidence bundle and confirm that the change is filed in the
+model inventory before release proceeds. The model inventory itself is not an
+ASDLC artefact.
 
 ### FCA PS21/3 and PRA PS6/21 — Operational Resilience at the Release Boundary
 
@@ -195,20 +275,20 @@ maintained within impact tolerances during severe but plausible disruptions. At
 the release boundary, this imposes specific requirements on how changes are
 deployed and how their reversibility is established.
 
-The release gate's Condition 3 (rollback procedure tested) directly satisfies
-the operational resilience requirement for demonstrable recovery capability. The
+RG-3 (Rollback Procedure Tested) supports compliance with the operational
+resilience expectation of demonstrable recovery capability. The
 "time-to-rollback" measurement from the tested rollback procedure must fall
-within the pre-agreed recovery time window — and that window must be calibrated
-to the system's impact tolerance for the important business service it supports.
-A rollback that takes longer than the impact tolerance permits is not a
-compliant rollback procedure under PS21/3/PS6/21, regardless of whether it
-eventually succeeds.
+within the pre-agreed recovery time window — and that window must be
+calibrated to the system's impact tolerance for the important business
+service it supports. A rollback that takes longer than the impact tolerance
+permits does not produce evidence aligned with PS21/3/PS6/21 expectations,
+regardless of whether it eventually succeeds.
 
 The release Definition of Done condition requiring monitoring and alerting
-configuration before deployment completes maps to PS21/3's requirement that
-firms can detect disruptions to important business services in time to remain
-within impact tolerances. A system deployed without production monitoring does
-not satisfy this requirement.
+configuration before deployment supports compliance with PS21/3's expectation
+that firms can detect disruptions to important business services in time to
+remain within impact tolerances. A system deployed without production
+monitoring does not produce evidence of this capability.
 
 ### EU AI Act Article 15 — Accuracy, Robustness, and Cybersecurity of High-Risk
 
@@ -220,31 +300,36 @@ and that they remain accurate and robust after deployment. At the release
 boundary, this imposes requirements on both pre-release validation and
 post-deployment monitoring readiness.
 
-Release gate Condition 2 (independent validation passed) satisfies Article 15's
-pre-release accuracy and robustness requirements: the independent validation
+RG-2 (Independent Validation Passed) supports compliance with Article 15's
+pre-release accuracy and robustness expectation: the independent validation
 confirms that the system meets its specified acceptance criteria, including
-performance criteria that are calibrated to the system's intended purpose. The
-post-deployment smoke tests in the release Definition of Done confirm that
-accuracy and robustness are maintained in the production environment against
-production configuration — not just in the pre-deployment validation
+performance criteria that are calibrated to the system's intended purpose.
+The post-deployment smoke tests in the release Definition of Done confirm
+that accuracy and robustness are maintained in the production environment
+against production configuration — not just in the pre-deployment validation
 environment.
 
 The release Definition of Done condition requiring monitoring and alerting
-configuration maps to Article 15's requirement for ongoing accuracy. A high-risk
-AI system deployed without output quality monitoring and alerting has no
-mechanism to detect accuracy degradation — which means the organisation cannot
-satisfy Article 15's ongoing obligations from the moment of deployment.
+configuration produces evidence aligned with Article 15's expectation for
+ongoing accuracy. A high-risk AI system deployed without output quality
+monitoring and alerting has no mechanism to detect accuracy degradation,
+which leaves the organisation unable to demonstrate Article 15 ongoing
+compliance from the moment of deployment. See
+[eu-ai-act-mapping.md](../eu-ai-act-mapping.md) for the cross-cutting EU AI
+Act risk-tier mapping that determines whether Article 15 attaches and at
+what depth.
 
 ### Layer 3 Regulatory Control Mapping
 
 | Regulation              | Article/Section            | Release Requirement                                                                                 | ASDLC Control                                                                                                                          | Gap                                                                                                                                                                                                                                                                                            |
 | ----------------------- | -------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DORA                    | Art. 14(2)(a)              | Pre-implementation testing documented                                                               | Evidence bundle complete (Condition 1): evaluation reports with pass/fail results                                                      | DORA requires specific retention of test documentation. Evidence bundle ID in change record provides the reference; retention period and format must be confirmed against DORA RTS on ICT change management when published.                                                                    |
-| DORA                    | Art. 14(2)(b)              | Rollback procedures documented and verified                                                         | Rollback procedure tested (Condition 3): tested within 48 hours of deployment, time-to-rollback on record                              | DORA's "documented rollback procedures" requirement is met; DORA does not specify that rollback must be tested, only documented. The ASDLC's tested rollback condition exceeds the regulatory minimum.                                                                                         |
-| DORA                    | Art. 14 critical functions | Independent testing before production for critical/important functions                              | Independent validation passed (Condition 2): named independent validator, scope, pass/fail                                             | Organisational separation requirement for independent testing must be confirmed against DORA RTS definitions of "independent." The manifesto's independence requirement (no reporting relationship to development lead) is consistent with reasonable interpretations.                         |
-| SR 11-7                 | Model change governance    | Nature of change, testing performed, validation results documented before deployment                | Evidence bundle complete (Condition 1): diff, evaluation reports, trace IDs; independent validation (Condition 2) for material changes | SR 11-7 requires model inventory update to reflect the change. The change record's compliance documentation condition (Condition 5) should include model inventory update confirmation; this linkage is not explicit in the current release gate design.                                       |
-| FCA PS21/3 / PRA PS6/21 | Operational resilience     | Recovery within impact tolerances for important business services; rollback capability demonstrated | Rollback procedure tested (Condition 3) with time-to-rollback within impact tolerance window; monitoring configured (release DoD)      | Impact tolerances are firm-specific and must be pre-defined. The release gate's rollback test does not automatically check whether the time-to-rollback satisfies the firm's impact tolerance for the specific important business service. This calibration step must be performed explicitly. |
-| EU AI Act               | Art. 15                    | High-risk AI systems meet accuracy and robustness requirements at and after deployment              | Independent validation (Condition 2); post-deployment smoke tests (release DoD); monitoring and alerting configured (release DoD)      | Art. 15's cybersecurity requirements extend beyond functional testing. The release gate does not include a pre-release cybersecurity assessment specific to AI attack vectors (adversarial inputs, model inversion). This must be addressed in the evaluation suite design at Layer 2.         |
+| DORA                    | Art. 14(2)(a)              | Pre-implementation testing documented                                                               | RG-1 (Evidence Bundle Complete): evaluation reports with pass/fail results                                                      | DORA requires specific retention of test documentation. Evidence bundle ID in change record provides the reference; retention period and format must be confirmed against DORA RTS on ICT change management when published. ASDLC supports compliance; supervisory engagement and counsel-confirmed retention complete the posture.                                                                    |
+| DORA                    | Art. 14(2)(b)              | Rollback procedures documented and verified                                                         | RG-3 (Rollback Procedure Tested): tested within 48 hours of deployment, time-to-rollback on record                              | DORA's "documented rollback procedures" expectation is supported; DORA does not specify that rollback must be tested, only documented. The ASDLC's tested rollback condition exceeds the regulatory minimum but does not by itself satisfy the broader Art. 14(2) testing-before-implementation expectation, which extends across functional, non-functional, integration, and (where applicable) cybersecurity dimensions. |
+| DORA                    | Art. 14 critical functions | Independent testing before production for critical/important functions                              | RG-2 (Independent Validation Passed): named independent validator, scope, pass/fail                                             | Organisational separation must align with DORA RTS definitions of "independent". ASDLC's stricter four-criterion definition in [release-governance.md](../release-governance.md) Condition 2 is consistent with reasonable interpretations and supports the Art. 14 independent-testing claim.                         |
+| DORA                    | Art. 25 (TLPT)             | Threat-led penetration testing of critical functions on a periodic basis                            | RG-6 (Dynamic Security Testing Passed) for external-facing changes                                                                   | TLPT is an entity-level, competent-authority-supervised regime, not a per-release gate condition. ASDLC's RG-6 supports a routine dynamic-testing posture that TLPT scoping consumes as context but does not replace; a separate TLPT engagement is required. |
+| SR 11-7                 | Model change governance    | Nature of change, testing performed, validation results documented before deployment                | RG-1 (Evidence Bundle Complete): diff, evaluation reports, trace IDs; RG-2 (Independent Validation Passed) for material changes | SR 11-7 requires audited model documentation, ongoing monitoring with thresholds, and a model inventory entry per material change. ASDLC supports compliance with the documentation pipeline; the model inventory is not an ASDLC artefact. RG-5 (Compliance Documentation Complete) should reference the model inventory entry; this linkage is operationalised at the organisation level, not at the gate.                                       |
+| FCA PS21/3 / PRA PS6/21 | Operational resilience     | Recovery within impact tolerances for important business services; rollback capability demonstrated | RG-3 (Rollback Procedure Tested) with time-to-rollback within impact tolerance window; monitoring configured (release DoD)      | Impact tolerances are firm-specific and must be pre-defined. The Release Gate's rollback test does not automatically check whether the time-to-rollback satisfies the firm's impact tolerance for the specific important business service. This calibration step must be performed explicitly. |
+| EU AI Act               | Art. 15                    | High-risk AI systems meet accuracy and robustness expectations at and after deployment              | RG-2 (Independent Validation Passed); post-deployment smoke tests (release DoD); monitoring and alerting configured (release DoD)      | Art. 15's cybersecurity expectations extend beyond functional testing. The Release Gate does not include a pre-release cybersecurity assessment specific to AI attack vectors (adversarial inputs, model inversion). This must be addressed in the evaluation suite design at Layer 2. See [eu-ai-act-mapping.md](../eu-ai-act-mapping.md).         |
 
 ---
 
@@ -266,20 +351,22 @@ Continuity
 
 **DORA Article 9** requires that financial entities' ICT risk management
 processes include identification and management of ICT risks on an ongoing
-basis, including vulnerability management. This maps to the ASDLC maintenance
-governance's security patch management process, which applies CVSS-tiered SLOs:
-CVSS ≥ 9.0 vulnerabilities patched within 24 hours, CVSS 7.0–8.9 within 72
-hours, CVSS 4.0–6.9 within 30 days. The patch management SLOs are the Article 9
-vulnerability management controls. They must be documented as such and measured
-in production — a patch management SLO that is defined but not measured does not
-satisfy Article 9's ongoing risk management requirement.
+basis, including vulnerability management. The ASDLC maintenance governance's
+security patch management process — which applies CVSS-tiered SLOs (CVSS
+≥ 9.0 vulnerabilities patched within 24 hours, CVSS 7.0–8.9 within 72 hours,
+CVSS 4.0–6.9 within 30 days) — supports compliance with Article 9 by
+operationalising the vulnerability management dimension. The SLOs must be
+documented as such and measured in production: a patch management SLO that is
+defined but not measured does not produce evidence of Article 9 ongoing risk
+management.
 
 **DORA Article 10** requires that financial entities detect ICT-related
 incidents, classify them by their impact, and manage them through a defined
-incident management process. The ASDLC's incident classification framework from
-[operations/governance.md](../operations/governance.md) — which adds quality
-incidents as a third classification category alongside infrastructure and
-application incidents — maps directly to Article 10. Specifically:
+incident management process. The ASDLC's incident classification framework
+from [operations/governance.md](../operations/governance.md) — which adds
+quality incidents as a third classification category alongside infrastructure
+and application incidents — supports compliance with Article 10 expectations.
+Specifically:
 
 - Quality incidents (system available and responding but outputs failing the
   output quality SLO) are an ASDLC-specific classification with no DORA
@@ -291,35 +378,42 @@ application incidents — maps directly to Article 10. Specifically:
   the Article 10 escalation path. It must be documented and exercised.
 
 **DORA Article 11** requires that financial entities implement and regularly
-test ICT business continuity plans. The ASDLC's operational DoD condition for DR
-testing of Tier 3 systems — which requires that disaster recovery procedures are
-tested, not merely documented — is the Article 11 business continuity control
-for agent systems. DR testing frequency must satisfy DORA's requirements for the
-system's criticality tier; the ASDLC's Tier 3 designation maps to DORA's
-critical or important function classification for DR testing frequency purposes.
+test ICT business continuity plans. The Operational DoD condition DoD-8
+(DR/Failover Tested), which is blocking for systems at blast-radius tier 3
+and which requires that disaster recovery procedures are tested rather than
+merely documented, supports compliance with Article 11 for agent systems. DR
+testing frequency must align with DORA's expectations for the system's
+criticality tier; the ASDLC's BlastRadiusTier BR3 designation maps to DORA's
+critical-or-important-function classification for DR testing frequency
+purposes, with the specific frequency to be confirmed against DORA RTS in
+the organisation's specific context.
 
 ### SR 11-7 — Ongoing Monitoring
 
-SR 11-7 requires ongoing monitoring of model performance throughout the model's
-operational life. This is not a periodic review obligation — it is a continuous
-production monitoring obligation. The ASDLC's output quality rate SLO and
-reasoning trace completeness SLO, defined in
-[operations/governance.md](../operations/governance.md), are the SR 11-7 ongoing
-monitoring controls.
+SR 11-7 requires ongoing monitoring of model performance throughout the
+model's operational life. This is not a periodic review obligation — it is a
+continuous production monitoring obligation. The ASDLC's output quality rate
+SLO and reasoning trace completeness SLO, defined in
+[operations/governance.md](../operations/governance.md), support compliance
+with the SR 11-7 ongoing monitoring expectation.
 
 Specifically:
 
-- The output quality rate SLO — the minimum acceptable percentage of production
-  outputs meeting acceptance criteria when sampled — is the primary SR 11-7
-  monitoring control. SR 11-7's backtesting, benchmarking, and outcomes analysis
-  requirements are satisfied when this SLO is combined with a sampling
-  methodology that covers the real production input distribution, not just the
-  pre-deployment evaluation suite inputs.
-- The reasoning trace completeness SLO — the minimum percentage of production
-  decisions with complete, inspectable traces — enables the SR 11-7 requirement
-  for documentation of model decisions. For model systems operating in financial
-  decisions, a trace completeness SLO below 100% for material decisions is a
-  potential SR 11-7 deficiency.
+- The output quality rate SLO — the minimum acceptable percentage of
+  production outputs meeting acceptance criteria when sampled — supports
+  compliance with the primary SR 11-7 monitoring expectation. SR 11-7's
+  backtesting, benchmarking, and outcomes analysis expectations are
+  partially supported when this SLO is combined with a sampling methodology
+  that covers the real production input distribution, not just the
+  pre-deployment evaluation suite inputs. SR 11-7's outcomes analysis
+  expectation requires comparison against realised outcomes; the SLO
+  measures process quality and is necessary but not sufficient for the
+  outcomes-analysis expectation.
+- The reasoning trace completeness SLO — the minimum percentage of
+  production decisions with complete, inspectable traces — supports SR 11-7's
+  expectation for documentation of model decisions. For model systems
+  operating on financial decisions, a trace completeness SLO below 100% for
+  material decisions is a potential SR 11-7 deficiency.
 - The quarterly architectural health review in maintenance governance provides
   the periodic model review cadence that SR 11-7 expects. The review must
   explicitly assess whether the model's performance against the ongoing
@@ -328,21 +422,24 @@ Specifically:
 
 ### EU AI Act Article 17 — Quality Management System
 
-EU AI Act Article 17 requires that providers of high-risk AI systems implement a
-quality management system that includes, among other requirements, post-market
-monitoring of the system's performance in production. The ASDLC's operational
-observability framework — specifically the output quality rate SLO and its
-associated sampling methodology, the reasoning trace completeness SLO, and the
-cost anomaly detection — constitutes the monitoring component of the Article 17
-quality management system.
+EU AI Act Article 17 requires that providers of high-risk AI systems implement
+a quality management system that includes, among other requirements, post-
+market monitoring of the system's performance in production. The ASDLC's
+operational observability framework — specifically the output quality rate SLO
+and its associated sampling methodology, the reasoning trace completeness SLO,
+and the cost anomaly detection — supports compliance with the monitoring
+component of the Article 17 quality management system. See
+[eu-ai-act-mapping.md](../eu-ai-act-mapping.md) for the cross-cutting EU AI
+Act risk-tier mapping.
 
 Article 17 further requires that the quality management system assigns
 responsibilities for monitoring to specific personnel. The ASDLC's stewardship
 model — in which a named system steward holds ongoing responsibility for
-monitoring value realisation and performance — satisfies this requirement. The
-steward is the Article 17 responsible individual for post-market monitoring. The
-steward's accountability for ongoing performance monitoring must be documented
-in the system's technical file as the QMS monitoring responsibility assignment.
+monitoring value realisation and performance — supports compliance with this
+expectation. The steward is the named Article 17 responsible individual for
+post-market monitoring; the steward's accountability for ongoing performance
+monitoring must be documented in the system's technical file as the QMS
+monitoring responsibility assignment.
 
 ### GDPR Article 17 and Retention — Decommission Protocol Conflict Resolution
 
@@ -374,8 +471,15 @@ the retention period. The decommission protocol must explicitly verify that
 production data is in scope for GDPR retention and that erasure has been
 completed.
 
-This conflict was identified in the maintenance governance layer; the resolution
-approach here operationalises it for the decommission execution.
+This conflict was identified in the maintenance governance layer; the
+resolution approach here operationalises it for the decommission execution.
+The Retirement Gate's Condition 3 (Trace and Reasoning-Record Archival) — see
+[retirement-gate.md](../retirement-gate.md) — formalises this resolution at
+the gate boundary: where data-subject-rights regimes appear to conflict with
+retention mandates such as SR 11-7, the conflict must be resolved with a
+documented decision that names the rights-holder claim, the retention
+obligation, and the controlling rule under the organisation's legal counsel's
+analysis.
 
 ### Layer 4 Regulatory Control Mapping
 
@@ -383,7 +487,7 @@ approach here operationalises it for the decommission execution.
 | ---------- | ------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DORA       | Art. 9             | ICT vulnerability management on an ongoing basis                                                    | CVSS-tiered patch management SLOs in maintenance governance (CVSS ≥ 9.0: 24h; 7.0–8.9: 72h; 4.0–6.9: 30 days)                                               | DORA's RTS on TLPT and vulnerability management may impose specific reporting obligations for vulnerabilities above certain severity thresholds. The patch management SLOs address remediation timing; regulatory reporting of critical vulnerabilities requires a separate notification workflow.                                                                                                         |
 | DORA       | Art. 10            | ICT incident detection, classification, and management process                                      | ASDLC incident classification (infrastructure, application, quality incidents); output quality rate SLO with alerting; escalation path to accountable human | Quality incident classification must be explicitly mapped to DORA's incident severity taxonomy (Art. 18 classification criteria). This mapping must be documented before the system goes to production to ensure DORA reporting timelines are met for material incidents.                                                                                                                                  |
-| DORA       | Art. 11            | ICT business continuity plans tested regularly                                                      | DR testing for Tier 3 systems as part of operational DoD; rollback success rate SLO                                                                         | DORA specifies testing frequency for critical/important functions. DR testing schedule must be calibrated to DORA's required frequency for the system's classification; the ASDLC's operational DoD requires testing but does not prescribe a frequency that may satisfy DORA's requirements for all system tiers.                                                                                         |
+| DORA       | Art. 11            | ICT business continuity plans tested regularly                                                      | DR testing for blast-radius tier 3 (BR3) systems as part of operational DoD (DoD-8); rollback success rate SLO                                                                         | DORA specifies testing frequency for critical/important functions. DR testing schedule must align with DORA's required frequency for the system's classification; ASDLC's Operational DoD requires testing but does not prescribe a frequency that aligns with DORA's expectations for every system tier.                                                                                         |
 | SR 11-7    | Ongoing monitoring | Continuous production monitoring of model performance; backtesting, benchmarking, outcomes analysis | Output quality rate SLO; reasoning trace completeness SLO; quarterly architectural health review                                                            | SR 11-7 backtesting and outcomes analysis require comparison against realised outcomes over time, not just sampling against acceptance criteria. The output quality SLO measures process quality; outcomes analysis measures whether agent decisions produced correct real-world results. This requires a separate outcomes tracking capability not explicitly defined in the operations governance layer. |
 | EU AI Act  | Art. 17            | Quality management system including post-market monitoring; assigned monitoring responsibilities    | Output quality rate SLO; reasoning trace completeness SLO; stewardship model with named steward responsible for ongoing monitoring                          | Art. 17's QMS requirements extend to documentation, data governance, and feedback from monitoring into the risk management system (Art. 9). The operations layer's feedback from quality incidents and value misses into the demand layer (Layer 1) is the mechanism; its explicit connection to Art. 17 QMS documentation must be established.                                                            |
 | GDPR       | Art. 17            | Right to erasure; personal data deleted when retention purpose expires                              | Decommission protocol distinguishing specification artefacts (SR 11-7 retention) from production data artefacts (GDPR retention)                            | The protocol requires explicit verification that production data is identified, scoped to GDPR, and erased at decommission. No automated tool in the ASDLC currently identifies personal data in production traces and applies retention schedules; this requires integration with the organisation's data governance tooling.                                                                             |
