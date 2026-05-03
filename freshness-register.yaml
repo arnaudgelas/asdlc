@@ -1,0 +1,791 @@
+---
+# ASDLC External-Authority Freshness Register — machine-readable source of truth.
+#
+# Tracks every external authority (regulation, standard, framework, guidance)
+# that ASDLC cites. Each entry records publication metadata, the date the
+# citation was last verified against the authoritative source, and the date
+# by which it must be re-verified or escalated.
+#
+# Why: governance authorities themselves drift. ISO standards revise, OWASP
+# top-tens re-rank, regulations gain delegated acts, and guidance documents
+# get superseded. ASDLC's currency depends on its citations' currency. This
+# register is itself a governance artefact and falls under Governance of
+# Governance recursion (asdlc.md, governance/agents.md).
+#
+# Companion human-readable view: freshness-register.md.
+#
+# Cadence policy:
+#   - Default: 6 months between verifications.
+#   - Security-fast-moving (OWASP top-tens, adversarial-ML taxonomies): 3 months.
+#   - Slow-moving foundational (mature ISO standards, decade-stable
+#     directives): 12 months.
+# An entry whose `next_review_due` has passed without re-verification is
+# stale and MUST be either re-verified or escalated to the ASDLC Steward.
+
+schema_version: "1.0"
+asdlc_version: "0.1.0"
+last_updated: "2026-05-07"
+register_owner: "ASDLC Steward"
+
+# Cadence enum — the allowed review cadences. The `next_review_due` of every
+# entry is computed from `last_verified` plus the entry's cadence.
+cadence_enum:
+  - 3_months
+  - 6_months
+  - 12_months
+
+authorities:
+
+  # -----------------------------------------------------------------
+  # NIST family
+  # -----------------------------------------------------------------
+
+  - id: NIST_AI_RMF_100_1
+    name: NIST AI Risk Management Framework
+    document: "NIST AI 100-1"
+    version: "1.0"
+    publication_date: "2023-01-26"
+    authoritative_url: "https://doi.org/10.6028/NIST.AI.100-1"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc.md
+      - governance/agents.md
+      - operations/governance.md
+    applicability: "Cross-cutting AI risk management framework; mapped to ASDLC layers and gates."
+
+  - id: NIST_AI_600_1
+    name: NIST AI Risk Management Framework — Generative AI Profile
+    document: "NIST AI 600-1"
+    version: "1.0"
+    publication_date: "2024-07-26"
+    authoritative_url: "https://doi.org/10.6028/NIST.AI.600-1"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc.md
+    applicability: "Generative-AI-specific risk profile layered on AI RMF 1.0; informs ASDLC controls for foundation-model use."
+
+  - id: NIST_SP_800_218A
+    name: Secure Software Development Practices for Generative AI and Dual-Use Foundation Models
+    document: "NIST SP 800-218A"
+    version: "Initial Public Release"
+    publication_date: "2024-07-26"
+    authoritative_url: "https://doi.org/10.6028/NIST.SP.800-218A"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - asdlc.md
+      - devsecops-controls.md
+      - security-governance.md
+      - governance/agents.md
+      - README.md
+    applicability: "Augments SSDF with generative-AI-specific secure-development practices; cited by Layer 2 engineering controls."
+
+  - id: NIST_SP_800_53_R5
+    name: Security and Privacy Controls for Information Systems and Organizations
+    document: "NIST SP 800-53"
+    version: "Revision 5"
+    publication_date: "2020-09-23"
+    authoritative_url: "https://doi.org/10.6028/NIST.SP.800-53r5"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - README.md
+      - maintenance-governance.md
+      - security-governance.md
+      - operations/dod.md
+      - domains/defense-government.md
+    applicability: "Baseline security/privacy control catalogue for federal and adjacent regulated systems."
+
+  - id: NIST_SP_800_37_R2
+    name: Risk Management Framework for Information Systems and Organizations
+    document: "NIST SP 800-37"
+    version: "Revision 2"
+    publication_date: "2018-12-20"
+    authoritative_url: "https://doi.org/10.6028/NIST.SP.800-37r2"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - domains/defense-government.md
+    applicability: "Federal RMF lifecycle; aligned with ASDLC layers for defense and government tier."
+
+  - id: NIST_AI_100_2E2025
+    name: Adversarial Machine Learning — A Taxonomy and Terminology of Attacks and Mitigations
+    document: "NIST AI 100-2e2025"
+    version: "2025 edition"
+    publication_date: "unknown"
+    publication_date_note: "Edition designator '2025' implies 2025 release; exact OJ date to be verified at next review."
+    authoritative_url: "https://csrc.nist.gov/pubs/ai/100/2/e2025/final"
+    last_verified: "2026-05-07"
+    cadence: 3_months
+    next_review_due: "2026-08-07"
+    owner: "Security Engineering Lead"
+    referenced_in: []
+    applicability: "Adversarial-ML taxonomy informing prompt-injection, evasion, and data-poisoning controls in security-governance.md and devsecops-controls.md."
+
+  # -----------------------------------------------------------------
+  # ISO/IEC family
+  # -----------------------------------------------------------------
+
+  - id: ISO_IEC_42001_2023
+    name: Information technology — Artificial intelligence — Management system
+    document: "ISO/IEC 42001:2023"
+    version: "First edition"
+    publication_date: "2023-12-18"
+    authoritative_url: "https://www.iso.org/standard/81230.html"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc.md
+      - README.md
+      - governance/agents.md
+    applicability: "AI Management System standard; informs ASDLC governance scaffolding and conformance profiles."
+
+  - id: ISO_IEC_5338_2023
+    name: Information technology — Artificial intelligence — AI system life cycle processes
+    document: "ISO/IEC 5338:2023"
+    version: "First edition"
+    publication_date: "2023-08-29"
+    authoritative_url: "https://www.iso.org/standard/81118.html"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc.md
+      - README.md
+      - governance/agents.md
+    applicability: "AI system lifecycle processes; ASDLC layers map to 5338 process groups."
+
+  - id: ISO_IEC_23894_2023
+    name: Information technology — Artificial intelligence — Guidance on risk management
+    document: "ISO/IEC 23894:2023"
+    version: "First edition"
+    publication_date: "2023-02-06"
+    authoritative_url: "https://www.iso.org/standard/77304.html"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc.md
+      - README.md
+      - governance/agents.md
+    applicability: "AI risk-management guidance; complements 42001 and AI RMF in ASDLC's risk-control mapping."
+
+  - id: ISO_26262_PART_1_2018
+    name: Road vehicles — Functional safety — Part 1 — Vocabulary
+    document: "ISO 26262-1:2018"
+    version: "Second edition"
+    publication_date: "2018-12-12"
+    publication_date_note: "Multi-part standard; Part 1 referenced for the latest revision date. Other parts revised on the same 2018 cycle."
+    authoritative_url: "https://www.iso.org/standard/68383.html"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Automotive)"
+    referenced_in:
+      - maintenance-governance.md
+      - README.md
+      - security-governance.md
+      - operations/dod.md
+      - domains/automotive.md
+    applicability: "Automotive functional-safety standard; ASDLC automotive profile aligns with ASIL determination and item-definition processes."
+
+  - id: IEC_62304_2006_AMD1_2015
+    name: Medical device software — Software life cycle processes
+    document: "IEC 62304"
+    version: "Edition 1.1 (consolidates 2006 + Amendment 1:2015)"
+    publication_date: "2015-06-25"
+    authoritative_url: "https://webstore.iec.ch/publication/22794"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Medical)"
+    referenced_in:
+      - asdlc.md
+      - asdlc-guide.md
+      - conformance-profiles.md
+      - deployment-governance.md
+      - maintenance-governance.md
+      - README.md
+      - release-governance.md
+      - security-governance.md
+      - operations/dod.md
+    applicability: "Medical-device software lifecycle standard; required for IEC-62304-class systems and pharma adjacencies."
+
+  - id: DO_178C
+    name: Software Considerations in Airborne Systems and Equipment Certification
+    document: "DO-178C / ED-12C"
+    version: "C"
+    publication_date: "2011-12-13"
+    authoritative_url: "https://www.rtca.org/products/do-178c/"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Aviation)"
+    referenced_in:
+      - conformance-profiles.md
+      - asdlc.md
+      - asdlc-guide.md
+      - maintenance-governance.md
+      - release-governance.md
+      - security-governance.md
+      - README.md
+      - operations/dod.md
+      - domains/automotive.md
+      - domains/aviation.md
+    applicability: "Aviation airborne software certification; ASDLC aviation profile maps DAL A-E objectives to gate evidence."
+
+  - id: ARP_4754A
+    name: Guidelines for Development of Civil Aircraft and Systems
+    document: "SAE ARP 4754A"
+    version: "Revision A"
+    publication_date: "2010-12-21"
+    publication_date_note: "Revision B published 2023; ASDLC currently cites Revision A. Verify whether to migrate to ARP 4754B at next review."
+    authoritative_url: "https://www.sae.org/standards/content/arp4754a/"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Aviation)"
+    referenced_in:
+      - README.md
+      - domains/aviation.md
+    applicability: "Aviation system-development guidelines; complements DO-178C at the system level."
+
+  - id: GAMP_5_2ND
+    name: Good Automated Manufacturing Practice — A Risk-Based Approach to Compliant GxP Computerized Systems
+    document: "GAMP 5"
+    version: "Second Edition"
+    publication_date: "2022-07-01"
+    authoritative_url: "https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Pharma)"
+    referenced_in:
+      - conformance-profiles.md
+      - asdlc.md
+      - deployment-governance.md
+      - asdlc-guide.md
+      - release-governance.md
+      - README.md
+      - domains/pharma.md
+    applicability: "Pharma GxP computerized systems; ASDLC pharma profile aligns categories 1-5 with conformance tiers."
+
+  - id: CFR_21_PART_11
+    name: Electronic Records; Electronic Signatures
+    document: "21 CFR Part 11"
+    version: "current as codified"
+    publication_date: "1997-03-20"
+    publication_date_note: "Original effective date; FDA periodically issues guidance. Verify current FDA enforcement guidance at each review."
+    authoritative_url: "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Pharma)"
+    referenced_in:
+      - README.md
+      - maintenance-governance.md
+      - operations/dod.md
+      - security-governance.md
+      - domains/pharma.md
+    applicability: "FDA rule on electronic records and signatures for GxP-regulated systems."
+
+  # -----------------------------------------------------------------
+  # EU regulations
+  # -----------------------------------------------------------------
+
+  - id: EU_AI_ACT_2024_1689
+    name: Regulation laying down harmonised rules on artificial intelligence (AI Act)
+    document: "Regulation (EU) 2024/1689"
+    version: "as adopted"
+    publication_date: "2024-07-12"
+    publication_date_note: "Date of OJ publication. Phased entry into application; verify applicable dates per article at each review."
+    authoritative_url: "https://eur-lex.europa.eu/eli/reg/2024/1689/oj"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - eu-ai-act-mapping.md
+      - README.md
+      - maintenance-governance.md
+      - governance/agents.md
+      - security-governance.md
+      - operations/dod.md
+      - domains/insurance.md
+      - domains/financial-services.md
+    applicability: "EU horizontal AI regulation; high-risk obligations map to ASDLC SR/RG/DoD evidence."
+
+  - id: EU_DORA_2022_2554
+    name: Digital Operational Resilience Act
+    document: "Regulation (EU) 2022/2554"
+    version: "as adopted"
+    publication_date: "2022-12-14"
+    authoritative_url: "https://eur-lex.europa.eu/eli/reg/2022/2554/oj"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Financial Services)"
+    referenced_in:
+      - annex-adoption-cost.md
+      - conformance-profiles.md
+      - asdlc.md
+      - asdlc-guide.md
+      - deployment-governance.md
+      - maintenance-governance.md
+      - release-governance.md
+      - README.md
+      - security-governance.md
+      - operations/dod.md
+      - operations/governance.md
+      - domains/financial-services.md
+      - domains/insurance.md
+    applicability: "EU financial-sector ICT operational-resilience regulation; ASDLC financial-services profile maps testing, incident-reporting, third-party-risk obligations."
+
+  - id: EU_SOLVENCY_II_2009_138
+    name: Solvency II Directive on the taking-up and pursuit of the business of Insurance and Reinsurance
+    document: "Directive 2009/138/EC"
+    version: "as amended (consolidated)"
+    publication_date: "2009-11-25"
+    publication_date_note: "Original adoption; consolidated text amended multiple times. Solvency II review (2025) amendments expected to enter into force; verify at next review."
+    authoritative_url: "https://eur-lex.europa.eu/eli/dir/2009/138/oj"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Insurance)"
+    referenced_in:
+      - README.md
+      - domains/financial-services.md
+      - domains/insurance.md
+    applicability: "Insurance prudential regulation in the EU; ASDLC insurance profile maps governance and model-risk obligations."
+
+  - id: EU_IDD_2016_97
+    name: Insurance Distribution Directive
+    document: "Directive (EU) 2016/97"
+    version: "as adopted"
+    publication_date: "2016-01-20"
+    authoritative_url: "https://eur-lex.europa.eu/eli/dir/2016/97/oj"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Insurance)"
+    referenced_in: []
+    applicability: "Insurance distribution conduct rules; relevant to insurance-tier ASDLC adoption where agents touch distribution flows."
+
+  - id: EU_MIFID_II_2014_65
+    name: Markets in Financial Instruments Directive II
+    document: "Directive 2014/65/EU"
+    version: "as adopted (consolidated)"
+    publication_date: "2014-05-15"
+    authoritative_url: "https://eur-lex.europa.eu/eli/dir/2014/65/oj"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Financial Services)"
+    referenced_in:
+      - maintenance-governance.md
+      - security-governance.md
+      - operations/dod.md
+      - domains/financial-services.md
+    applicability: "EU markets-in-financial-instruments directive; relevant to algorithmic-trading and best-execution agent use cases."
+
+  - id: EU_GDPR_2016_679
+    name: General Data Protection Regulation
+    document: "Regulation (EU) 2016/679"
+    version: "as adopted"
+    publication_date: "2016-04-27"
+    authoritative_url: "https://eur-lex.europa.eu/eli/reg/2016/679/oj"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - agent-control-plane.md
+      - maintenance-governance.md
+      - specification-readiness.md
+      - retirement-gate.md
+      - operations/governance.md
+      - demand/value.md
+      - domains/financial-services.md
+      - domains/pharma.md
+      - domains/ccpa.md
+      - domains/insurance.md
+    applicability: "EU data-protection regulation; informs ASDLC personal-data handling, retention, retirement-gate erasure obligations."
+
+  # -----------------------------------------------------------------
+  # US financial / sectoral
+  # -----------------------------------------------------------------
+
+  - id: FED_SR_11_7
+    name: Supervisory Letter — Guidance on Model Risk Management
+    document: "SR 11-7"
+    version: "as issued"
+    publication_date: "2011-04-04"
+    authoritative_url: "https://www.federalreserve.gov/supervisionreg/srletters/sr1107.htm"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Financial Services)"
+    referenced_in:
+      - conformance-profiles.md
+      - asdlc-guide.md
+      - deployment-governance.md
+      - retirement-gate.md
+      - README.md
+      - maintenance-governance.md
+      - security-governance.md
+      - operations/dod.md
+      - asdlc.md
+      - operations/governance.md
+      - domains/financial-services.md
+      - release-governance.md
+    applicability: "US Federal Reserve supervisory guidance on model risk management; ASDLC validation independence and model-inventory practices align with SR 11-7 effective challenge."
+
+  - id: US_SOX
+    name: Sarbanes-Oxley Act of 2002
+    document: "Pub. L. 107-204; 15 U.S.C. § 7201 et seq."
+    version: "as amended"
+    publication_date: "2002-07-30"
+    authoritative_url: "https://www.govinfo.gov/app/details/PLAW-107publ204"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Financial Services)"
+    referenced_in:
+      - conformance-profiles.md
+      - README.md
+      - domains/financial-services.md
+      - domains/sox.md
+    applicability: "US public-company financial-reporting controls; ASDLC SOX domain profile addresses ICFR scoping for agent-built systems."
+
+  - id: US_HIPAA
+    name: Health Insurance Portability and Accountability Act — Privacy, Security, Breach Notification Rules
+    document: "45 CFR Parts 160, 162, 164"
+    version: "as codified"
+    publication_date: "2003-04-14"
+    publication_date_note: "Privacy Rule compliance date 2003-04-14; Security Rule 2005-04-20; periodic HHS rulemaking. Verify current 45 CFR text at each review."
+    authoritative_url: "https://www.hhs.gov/hipaa/for-professionals/index.html"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Healthcare)"
+    referenced_in:
+      - conformance-profiles.md
+      - eu-ai-act-mapping.md
+      - domains/ccpa.md
+      - domains/hipaa.md
+    applicability: "US health-data privacy and security; ASDLC healthcare profile maps to HIPAA Privacy, Security, and Breach Notification rules."
+
+  - id: US_CCPA_CPRA
+    name: California Consumer Privacy Act / California Privacy Rights Act
+    document: "Cal. Civ. Code § 1798.100 et seq."
+    version: "CCPA as amended by CPRA"
+    publication_date: "2018-06-28"
+    publication_date_note: "CCPA enacted 2018-06-28; CPRA passed 2020-11-03 and largely operative 2023-01-01. Verify CPPA regulations at each review."
+    authoritative_url: "https://cppa.ca.gov/regulations/"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Privacy)"
+    referenced_in:
+      - conformance-profiles.md
+      - eu-ai-act-mapping.md
+      - retirement-gate.md
+      - domains/ccpa.md
+    applicability: "California consumer privacy regime; ASDLC privacy profile addresses CCPA/CPRA disclosure, deletion, and opt-out obligations."
+
+  # -----------------------------------------------------------------
+  # OWASP / security community
+  # -----------------------------------------------------------------
+
+  - id: OWASP_LLM_TOP_10_2025
+    name: OWASP Top 10 for Large Language Model Applications
+    document: "OWASP LLM Top 10"
+    version: "2025"
+    publication_date: "2024-11-18"
+    publication_date_note: "Versioned 2025; OWASP publishes new editions roughly annually. Cadence intentionally short."
+    authoritative_url: "https://genai.owasp.org/llm-top-10/"
+    last_verified: "2026-05-07"
+    cadence: 3_months
+    next_review_due: "2026-08-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - agent-control-plane.md
+      - asdlc.md
+      - devsecops-controls.md
+      - eu-ai-act-mapping.md
+      - specification-readiness.md
+      - security-governance.md
+    applicability: "Top-10 risk classes for LLM applications; ASDLC L2 security controls map to LLM01..LLM10 mitigations."
+
+  - id: OWASP_AGENTIC_AI_2025
+    name: OWASP Agentic AI — Threats and Mitigations
+    document: "OWASP Agentic AI Threats and Mitigations"
+    version: "2025"
+    publication_date: "2025-02-17"
+    publication_date_note: "Living document; verify edition at each review."
+    authoritative_url: "https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/"
+    last_verified: "2026-05-07"
+    cadence: 3_months
+    next_review_due: "2026-08-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - agent-control-plane.md
+      - release-governance.md
+    applicability: "Threat catalogue specific to agentic systems (tool misuse, goal corruption, identity spoofing); ASDLC L2 controls and the Agent Control Plane derive controls from it."
+
+  # -----------------------------------------------------------------
+  # Delivery / engineering frameworks
+  # -----------------------------------------------------------------
+
+  - id: SAFE_6_0
+    name: Scaled Agile Framework
+    document: "SAFe"
+    version: "6.0"
+    publication_date: "2023-03-15"
+    publication_date_note: "Scaled Agile Inc. periodically issues minor updates; verify at each review."
+    authoritative_url: "https://scaledagileframework.com/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - annex-adoption-cost.md
+      - annex-safe.md
+      - asdlc-guide.md
+      - asdlc.md
+      - README.md
+    applicability: "Enterprise scaling framework; ASDLC integration documented in annex-safe.md."
+
+  - id: ITIL_4
+    name: Information Technology Infrastructure Library
+    document: "ITIL 4"
+    version: "4 (Foundation 2019; Managing Professional 2020+)"
+    publication_date: "2019-02-18"
+    publication_date_note: "ITIL 4 Foundation released 2019-02-18; PeopleCert/Axelos issues subsequent module updates."
+    authoritative_url: "https://www.peoplecert.org/itil"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - annex-adoption-cost.md
+      - asdlc.md
+      - asdlc-guide.md
+      - README.md
+      - release-governance.md
+    applicability: "Service-management framework; ASDLC Layer 4 operations align with ITIL change-enablement and incident-management practices."
+
+  - id: DORA_RESEARCH_ACCELERATE_2024
+    name: Accelerate State of DevOps Report
+    document: "Accelerate State of DevOps (DORA — research org)"
+    version: "2024 edition"
+    publication_date: "2024-10-22"
+    publication_date_note: "DORA the research organisation (now Google Cloud DORA), distinct from the EU DORA regulation."
+    authoritative_url: "https://cloud.google.com/devops/state-of-devops"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "ASDLC Steward"
+    referenced_in: []
+    applicability: "DevOps research metrics (deployment frequency, lead time, MTTR, change-fail rate, reliability); ASDLC engineering KPIs reference these four/five keys."
+
+  - id: SEI_AI_ENGINEERING_12_PRACTICES
+    name: AI Engineering — 12 Foundational Practices
+    document: "CMU SEI AI Engineering: 12 Foundational Practices"
+    version: "2026 edition"
+    publication_date: "unknown"
+    publication_date_note: "User-supplied 2026 attribution; verify exact SEI publication ID and date at next review."
+    authoritative_url: "https://www.sei.cmu.edu/our-work/artificial-intelligence-engineering/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - asdlc-guide.md
+      - README.md
+    applicability: "CMU SEI foundational practices for AI engineering; ASDLC engineering practices align with SEI's 12-practice frame."
+
+  # -----------------------------------------------------------------
+  # Supply-chain / provenance
+  # -----------------------------------------------------------------
+
+  - id: SLSA
+    name: Supply-chain Levels for Software Artifacts
+    document: "SLSA"
+    version: "1.0"
+    publication_date: "2023-04-19"
+    authoritative_url: "https://slsa.dev/spec/v1.0/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Security Engineering Lead"
+    referenced_in:
+      - agent-control-plane.md
+      - asdlc.md
+      - devsecops-controls.md
+      - deployment-governance.md
+      - governance/agents.md
+      - release-governance.md
+      - security-governance.md
+      - governance/graph.md
+      - governance/queries.md
+    applicability: "Supply-chain integrity levels; ASDLC release-gate evidence aligns with SLSA L2-L3 for build provenance."
+
+  - id: IN_TOTO
+    name: in-toto — A framework for software supply chain integrity
+    document: "in-toto specification"
+    version: "1.0"
+    publication_date: "2023-08-10"
+    publication_date_note: "in-toto v1.0 specification; verify CNCF graduation status and current version at next review."
+    authoritative_url: "https://in-toto.io/specs/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Security Engineering Lead"
+    referenced_in: []
+    applicability: "Provenance and attestation specification used to satisfy SLSA build-track evidence requirements."
+
+  # -----------------------------------------------------------------
+  # Defense / federal
+  # -----------------------------------------------------------------
+
+  - id: CMMC_2_0
+    name: Cybersecurity Maturity Model Certification
+    document: "CMMC 2.0"
+    version: "2.0 (final rule 32 CFR Part 170)"
+    publication_date: "2024-10-15"
+    publication_date_note: "DoD final rule published 2024-10-15; phased rollout. Verify acquisition-clause integration at each review."
+    authoritative_url: "https://dodcio.defense.gov/CMMC/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Defense)"
+    referenced_in:
+      - README.md
+      - maintenance-governance.md
+      - security-governance.md
+      - operations/dod.md
+      - domains/defense-government.md
+    applicability: "DoD contractor cybersecurity maturity certification; ASDLC defense profile aligns with CMMC L1/L2/L3 controls."
+
+  - id: FEDRAMP
+    name: Federal Risk and Authorization Management Program
+    document: "FedRAMP"
+    version: "Rev 5 baselines (aligned with NIST SP 800-53 Rev 5)"
+    publication_date: "2023-05-30"
+    publication_date_note: "FedRAMP Rev 5 baselines released 2023-05-30; periodic PMO updates. Verify current baseline at each review."
+    authoritative_url: "https://www.fedramp.gov/"
+    last_verified: "2026-05-07"
+    cadence: 6_months
+    next_review_due: "2026-11-07"
+    owner: "Domain SME (Defense)"
+    referenced_in:
+      - README.md
+      - domains/defense-government.md
+    applicability: "US federal cloud authorization; ASDLC defense profile maps Low/Moderate/High baselines to evidence-bundle expectations."
+
+  - id: DODI_8510_01
+    name: Risk Management Framework for DoD Information Technology
+    document: "DoDI 8510.01"
+    version: "Change 3 (2020-12-29)"
+    publication_date: "2020-12-29"
+    publication_date_note: "Verify DoDI revision and any superseding instruction at each review."
+    authoritative_url: "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/851001p.pdf"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Defense)"
+    referenced_in:
+      - domains/defense-government.md
+    applicability: "DoD-specific RMF instruction; defense-tier ASDLC profile aligns with DoDI 8510 categorize/select/implement/assess/authorize/monitor."
+
+  - id: MIL_STD_882E
+    name: Department of Defense Standard Practice — System Safety
+    document: "MIL-STD-882E"
+    version: "E"
+    publication_date: "2012-05-11"
+    authoritative_url: "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=36027"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Defense)"
+    referenced_in:
+      - domains/defense-government.md
+    applicability: "DoD system-safety standard; defense-tier ASDLC profile uses 882E hazard severity/probability matrix."
+
+  # -----------------------------------------------------------------
+  # Aviation regulator
+  # -----------------------------------------------------------------
+
+  - id: ICAO_ANNEXES
+    name: International Civil Aviation Organization — Annexes to the Chicago Convention
+    document: "ICAO Annexes (current revisions)"
+    version: "current revisions"
+    publication_date: "unknown"
+    publication_date_note: "ICAO maintains 19 Annexes with independent revision cycles; ASDLC defers to current revisions. Steward verifies relevant Annex (notably Annex 8, Annex 19) edition at each review."
+    authoritative_url: "https://www.icao.int/safety/safetymanagement/Pages/SARPs.aspx"
+    last_verified: "2026-05-07"
+    cadence: 12_months
+    next_review_due: "2027-05-07"
+    owner: "Domain SME (Aviation)"
+    referenced_in:
+      - README.md
+    applicability: "International civil aviation Standards and Recommended Practices; ASDLC aviation profile cross-references ICAO safety-management Annexes."
+
+  # -----------------------------------------------------------------
+  # ASDLC review system (internal governance artefact)
+  # -----------------------------------------------------------------
+
+  - id: ASDLC_REVIEW_SYSTEM
+    name: ASDLC Review System
+    document: "review/prompt.md + review/prompts/* + review/fixtures/* + review/test_harness/*"
+    version: "Phase 3"
+    publication_date: "2026-05-07"
+    authoritative_url: "internal: review/prompt.md"
+    last_verified: "2026-05-07"
+    next_review_due: "2026-08-07"
+    owner: "ASDLC Steward"
+    referenced_in:
+      - review/prompt.md
+      - asdlc.md
+    applicability: >-
+      The ASDLC review system itself is a governance artefact and must be
+      re-verified on a quarterly cadence to track ASDLC evolution. Misalignment
+      between the review system and the ASDLC source is itself a governance
+      finding. The lint suite at scripts/lint.py is the mechanical check;
+      this entry tracks the editorial / structural review.
+
+# -----------------------------------------------------------------
+# Review-run tracking
+# -----------------------------------------------------------------
+#
+# review_runs entries track invocations of the review system against external
+# frameworks. Each entry SHOULD have:
+#   - run_id: stable identifier
+#   - framework: the framework reviewed
+#   - framework_version: as declared at run time
+#   - asdlc_hash: the ASDLC commit hash used to score
+#   - last_run: ISO 8601 date
+#   - next_review_due: ISO 8601 date (recommended cadence: 6 months for
+#     framework versions believed stable; 3 months for fast-moving frameworks)
+#   - owner: role responsible for re-running
+#   - merged_review_path: path to the canonical merged review file
+#
+# Initial state: empty list. Populated as reviews are run.
+review_runs: []
