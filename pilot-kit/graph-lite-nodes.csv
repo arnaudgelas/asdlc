@@ -1,0 +1,8 @@
+node_id,node_type,properties_json,owner,created_at,content_hash
+spec-001,Specification,"{""title"":""Pilot demand item"",""tier"":2}",Product Manager,2026-05-07T09:00:00Z,sha256:0000000000000000000000000000000000000000000000000000000000000000
+human-001,Human,"{""role"":""Accountable Human"",""name"":""TODO""}",ASDLC Steward,2026-05-07T09:00:00Z,
+release-001,Release,"{""artefact_digest"":""sha256:TODO"",""adoption_phase"":""phase_2""}",Release Manager,2026-05-07T09:00:00Z,sha256:0000000000000000000000000000000000000000000000000000000000000000
+bundle-001,EvidenceBundle,"{""bundle_path"":""evidence/bundle-001""}",Engineering Lead,2026-05-07T09:00:00Z,sha256:0000000000000000000000000000000000000000000000000000000000000000
+runbook-001,Runbook,"{""path"":""runbooks/system.md""}",System Steward,2026-05-07T09:00:00Z,sha256:0000000000000000000000000000000000000000000000000000000000000000
+auth-eu-ai-act,Authority,"{""freshness_register_id"":""EU_AI_ACT_2024_1689""}",ASDLC Steward,2026-05-07T09:00:00Z,
+waiver-001,Waiver,"{""gate"":""RG-6"",""expiry_date"":""2026-08-07""}",Security Engineering Lead,2026-05-07T09:00:00Z,

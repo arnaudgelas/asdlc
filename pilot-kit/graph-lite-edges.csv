@@ -1,0 +1,7 @@
+edge_id,edge_type,source_node_id,target_node_id,created_at
+edge-001,signed_off_by,spec-001,human-001,2026-05-07T09:00:00Z
+edge-002,derives_from,release-001,spec-001,2026-05-07T09:00:00Z
+edge-003,evidences,bundle-001,release-001,2026-05-07T09:00:00Z
+edge-004,cites_authority,release-001,auth-eu-ai-act,2026-05-07T09:00:00Z
+edge-005,governed_by,runbook-001,release-001,2026-05-07T09:00:00Z
+edge-006,waives,waiver-001,release-001,2026-05-07T09:00:00Z
