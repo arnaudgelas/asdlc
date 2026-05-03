@@ -74,7 +74,7 @@ around it can keep intent, evidence, accountability, and operation in sync.
 
 ## The Model at a Glance
 
-The ASDLC has four layers and three gates.
+The ASDLC has four layers and four gates.
 
 ```mermaid
 flowchart TB
@@ -85,8 +85,10 @@ flowchart TB
     L3["Layer 3: Release & Deployment\nReview evidence, approve release, deploy with rollback and accountability"]
     G3{{"Operational\nReadiness Gate"}}
     L4["Layer 4: Operations & Maintenance\nOperate, monitor, maintain, transfer stewardship, retire safely"]
+    G4{{"Retirement Gate"}}
+    EOL["End of life\nObligations discharged or transferred"]
 
-    L1 --> G1 --> L2 --> G2 --> L3 --> G3 --> L4
+    L1 --> G1 --> L2 --> G2 --> L3 --> G3 --> L4 --> G4 --> EOL
     L4 -.->|"value data"| L1
     L4 -.->|"maintenance signals"| L2
     L3 -.->|"release failures"| L2
@@ -108,11 +110,15 @@ systems that no one truly owns.
 
 ---
 
-## The Three Gates
+## The Four Gates
 
 The gates are the hard boundaries of the lifecycle. They are not ceremonial
 approvals and they are not meetings. A gate is a structured assessment of
-specific conditions. If any required condition is missing, the gate fails.
+specific conditions. If any required condition is missing, the gate fails. The
+canonical condition lists, counts, and identifiers for every gate are recorded
+in [governance/gate-registry.md](governance/gate-registry.md); this README
+names the gates and points to the authoritative documents for their
+substantive prose.
 
 ### 1. Specification Readiness Gate
 
@@ -120,10 +126,10 @@ specific conditions. If any required condition is missing, the gate fails.
 **Purpose:** Prevent unvalidated or underspecified work from entering the
 engineering loop.
 
-A specification is ready for the loop only when the business need is validated,
-the value is measurable, acceptance criteria can be expressed, constraints are
-known, an accountable human is named, blast radius is assessed, and out-of-scope
-work is explicit.
+A specification is ready for the loop only when each Specification Readiness
+Gate condition is satisfied; see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count.
 
 Start here: [specification-readiness.md](specification-readiness.md)
 
@@ -133,9 +139,10 @@ Start here: [specification-readiness.md](specification-readiness.md)
 becoming production output before the evidence, approval, rollback, and
 compliance conditions are satisfied.
 
-A release is ready only when the evidence bundle is complete, independent
-validation has passed where required, rollback has been tested, accountable
-human sign-off is recorded, and compliance documentation is filed.
+A release is ready only when each Release Gate condition is satisfied for the
+applicable autonomy tier and blast-radius tier; see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count.
 
 Start here: [release-governance.md](release-governance.md)
 
@@ -145,11 +152,29 @@ Start here: [release-governance.md](release-governance.md)
 entering production operation without ownership, observability, runbooks,
 stewardship, and traceability.
 
-A system is operationally ready only when its runbook is complete, SLOs and
-monitoring are configured, on-call is assigned and briefed, a system steward is
-named, security and license checks are clean, and trace retention is configured.
+A system is operationally ready only when each condition of the Operational
+Definition of Done is satisfied at the L3 -> L4 boundary; see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count, and [operations/dod.md](operations/dod.md) for the
+authoritative prose.
 
 Start here: [operations/dod.md](operations/dod.md)
+
+### 4. Retirement Gate
+
+**Boundary:** Layer 4 -> end-of-life **Purpose:** Govern the controlled,
+documented removal of a system from production so that its persistent
+obligations are discharged or transferred rather than abandoned.
+
+A system is ready to retire only when each Retirement Gate condition is
+satisfied — covering stewardship handoff or termination, runbook archival,
+trace and reasoning-record archival, model and prompt deprecation propagation,
+IGM claim retraction (where IGM is in use), dependency-consumer notification,
+FinOps zero-out, and final accountability sign-off; see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count.
+
+Start here: [retirement-gate.md](retirement-gate.md)
 
 ---
 
@@ -165,7 +190,9 @@ The ASDLC is a toolkit, not a sequential adoption mandate. Adopt it where your p
 
 **Demand keeps producing well-built but useless work** → **Layer 1 (Demand & Value)**. Build the demand backlog, validation tiers, prioritisation model, capacity model, and demand-to-specification bridge. The faster the inner loop runs, the more expensive it becomes to feed it poorly validated intent. See [demand/value.md](demand/value.md).
 
-The ASDLC is not all-or-nothing. Each gate and layer has a minimum bar that can be implemented independently, before the others are mature.
+The ASDLC is not all-or-nothing. Each gate and layer has a minimum bar that can be implemented independently of the others.
+
+Organisations claiming ASDLC conformance must claim a profile (ASDLC-Minimum, ASDLC-Regulated, or ASDLC-Tier4). A bare "ASDLC-conformant" claim without a named profile is not a meaningful claim — conformance is profile-specific. See [conformance-profiles.md](conformance-profiles.md) for the three normative profiles, the documents and conditions each requires, and the attestation template.
 
 ---
 
@@ -212,8 +239,10 @@ regulatory requirement mappings, see the [domains/](domains/) directory.
 - [demand/value.md](demand/value.md): How to validate business needs, define
   measurable value, govern the demand backlog, prioritise work, and translate
   demand into loop-ready specifications.
-- [specification-readiness.md](specification-readiness.md): The nine-condition
-  gate that determines whether a specification can enter the engineering loop.
+- [specification-readiness.md](specification-readiness.md): The
+  Specification Readiness Gate that determines whether a specification can
+  enter the engineering loop. The canonical condition list and count live in
+  [governance/gate-registry.md](governance/gate-registry.md).
 - [demand/intelligence.md](demand/intelligence.md): Layer 0 pre-demand
   intelligence — governed agentic mechanisms for surfacing candidate demand from
   environmental signals before Layer 1 validation.
@@ -250,13 +279,22 @@ than duplicated here. ASDLC surrounds it; the manifesto defines it.
   readiness conditions.
 - [maintenance-governance.md](maintenance-governance.md): Stewardship transfer,
   security patching, technical debt lifecycle, license compliance, deprecation,
-  and decommissioning.
+  and the operational lifecycle leading into retirement.
+- [retirement-gate.md](retirement-gate.md): The fourth gate — the boundary
+  from Layer 4 to end-of-life. Governs stewardship handoff or termination,
+  runbook archival, trace and reasoning-record archival, model and prompt
+  deprecation propagation, IGM claim retraction, dependency-consumer
+  notification, FinOps zero-out, and final accountability sign-off.
 
 ### Cross-Cutting
 
 - [governance/graph.md](governance/graph.md): Semantic governance graph — node
   types, edge types, GateState model, and continuous governance state
   inspection.
+- [governance/gate-registry.md](governance/gate-registry.md): The single
+  normative source of truth for every ASDLC gate's condition list, count, and
+  identifiers. Other documents that enumerate gate conditions defer to this
+  registry.
 - [governance/agents.md](governance/agents.md): Governance agent framework,
   autonomy tier definitions, and epistemic tier labelling requirements.
 - [agent-control-plane.md](agent-control-plane.md): Named governance agents,
@@ -265,12 +303,32 @@ than duplicated here. ASDLC surrounds it; the manifesto defines it.
   requirements, debt tracking, and portfolio-level waiver oversight.
 - [governance/queries.md](governance/queries.md): Canonical governance questions
   and their authoritative data sources.
+- [conformance-profiles.md](conformance-profiles.md): The three normative
+  profiles (ASDLC-Minimum, ASDLC-Regulated, ASDLC-Tier4) under which an
+  organisation claims ASDLC conformance, and the attestation template.
+- [eu-ai-act-mapping.md](eu-ai-act-mapping.md): Article-by-article mapping
+  from the EU AI Act to ASDLC gates, conditions, and lifecycle layers.
 - [finops-governance.md](finops-governance.md): FinOps and inference cost
   governance, aligned to the FinOps Foundation maturity model.
 - [security-governance.md](security-governance.md): Security lifecycle
   governance and NIST SSDF mapping.
 - [devsecops-controls.md](devsecops-controls.md): DevSecOps pipeline control
   matrix by autonomy tier.
+
+### Annexes
+
+- [annex-safe.md](annex-safe.md): Full SAFe artefact mapping, role ownership,
+  ceremony cadence, LPM guardrails, architectural runway, and Solution Train
+  coordination.
+- [annex-adoption-cost.md](annex-adoption-cost.md): Tier-by-tier reviewer-hour
+  ranges, steward portfolio bounds, FTE uplift estimates, and worked
+  500-engineer adoption-cost example.
+- [annex-aentm.md](annex-aentm.md): Agentic Entropy Manifesto integration —
+  Tier 4 relocation mechanics, control-equivalence demonstration, and
+  reversion conditions.
+- [annex-igm.md](annex-igm.md): Intelligence Governance Manifesto integration
+  — claim epistemic tiers, decay windows, contradiction handling, and
+  feedback-loop closure into the IGM authorities.
 
 ### Domain Guidance
 
@@ -304,9 +362,9 @@ usually creates process theatre: documents exist, but teams cannot operate them.
 
 The recommended path is:
 
-1. **Establish inner-loop governance.** Operate the manifesto loop at Phase 3
-   minimum in at least one domain, with evidence bundles and named human
-   accountability.
+1. **Establish inner-loop governance.** Operate the manifesto loop at adoption
+   phase 3 minimum in at least one domain, with evidence bundles and named
+   human accountability.
 2. **Add the Specification Readiness Gate.** Block specifications that do not
    have validated need, measurable value, explicit constraints, and a named
    accountable human.
@@ -318,9 +376,12 @@ The recommended path is:
 5. **Add the Operational Readiness Gate and runbooks.** Ensure production
    systems have SLOs, on-call briefing, stewardship, trace retention, security
    checks, and operational documentation.
-6. **Add full maintenance governance.** Govern ownership transfer, dependency
-   updates, security patching, license compliance, technical debt, deprecation,
-   and retirement.
+6. **Add full maintenance governance and the Retirement Gate.** Govern
+   ownership transfer, dependency updates, security patching, license
+   compliance, technical debt, and deprecation. Establish the Retirement
+   Gate — the fourth gate — so that decommissioning discharges or transfers
+   persistent obligations rather than abandoning them. See
+   [retirement-gate.md](retirement-gate.md).
 
 The key discipline is sequencing. The outer layers depend on the inner loop
 producing evidence. The release gate depends on an evidence bundle. The
@@ -367,19 +428,21 @@ are powerful enough to be useful and fallible enough to require governance.
 ## Values
 
 The ASDLC inherits the manifesto's engineering values for Layer 2. Across the
-full lifecycle, it adds three more:
+full lifecycle, it adds four more:
 
-| We value more                           | over | We also value                           |
-| --------------------------------------- | ---- | --------------------------------------- |
-| Validated demand before execution       | over | Starting the loop on unvalidated intent |
-| Governed release over shipped artefacts | over | Deployment without accountability       |
-| Operated outcomes over deployed systems | over | Declaring done at deployment            |
+| We value more                              | over | We also value                                 |
+| ------------------------------------------ | ---- | --------------------------------------------- |
+| Validated demand before execution          | over | Starting the loop on unvalidated intent       |
+| Governed release over shipped artefacts    | over | Deployment without accountability             |
+| Operated outcomes over deployed systems    | over | Declaring done at deployment                  |
+| Governed retirement over silent abandonment | over | Letting decommissioned systems fade unrecorded |
 
-These are not slogans. They map directly to the three gates:
+These are not slogans. They map directly to the four gates:
 
 - Validated demand becomes the Specification Readiness Gate.
 - Governed release becomes the Release Gate.
 - Operated outcomes become the Operational Readiness Gate.
+- Governed retirement becomes the Retirement Gate.
 
 ---
 
@@ -440,17 +503,11 @@ mappings.
 If you only do one thing first, implement the Specification Readiness Gate.
 
 It is the smallest intervention with the largest leverage. Before any agentic
-loop iteration starts, require a short record showing:
-
-- the need is validated with examinable evidence;
-- the value is measurable and time-bounded;
-- acceptance criteria can be drafted by a domain expert;
-- constraints are identified;
-- an accountable human is named;
-- blast radius is assessed;
-- out-of-scope work is explicit;
-- loop cost is justified against expected value;
-- the context thread is assembled and reviewed.
+loop iteration starts, require a short record showing that every Specification
+Readiness Gate condition is satisfied; see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count, and [specification-readiness.md](specification-readiness.md)
+for the prose authority on each condition.
 
 This immediately changes the quality of work entering the loop. It also teaches
 the organisation where its current demand process is weak, which makes the rest
@@ -522,7 +579,7 @@ maintenance behaviour. The UK DSIT *Portfolio of AI assurance techniques*
 evidence model.
 
 These sources do not prove that a four-layer ASDLC is the only correct
-lifecycle, that any current agent can be trusted for Tier 4 autonomy, or that
+lifecycle, that any current agent can be trusted for autonomy tier 4, or that
 a passing security scan is sufficient. They support layered controls,
 traceability, human accountability, and continuous monitoring — the postures
 the ASDLC encodes.

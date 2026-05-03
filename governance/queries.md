@@ -41,6 +41,13 @@ implementation choice. What cannot vary across implementations is the set of
 questions that must be answerable, the data required to answer them, and the
 cadence at which the answers must be current.
 
+For executable query examples in Cypher, SPARQL, and SQL — covering the
+canonical questions "Which Risks currently have no Control with a passing
+test record within the last 90 days?", "Which AcceptanceCriteria of the
+active Specification have GateState = missing right now?", and "Which active
+waivers expire in the next 14 days, and which conditions do they cover?" —
+see [Governance Graph § 2.4](graph.md#24-query-examples-concrete).
+
 ---
 
 ## Section 2: Gate Health Queries

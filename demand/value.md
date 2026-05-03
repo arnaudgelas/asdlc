@@ -4,7 +4,9 @@ _The governed demand layer of the Agentic Software Delivery Lifecycle._
 
 See the [Manifesto](../../manifesto.md) for the engineering execution layer (Layer
 2). See [Specification Readiness](../specification-readiness.md) for the Layer 1→2
-gate. See [Demand Metrics](metrics.md) for measurement.
+gate. See [Demand Metrics](metrics.md) for measurement. The epistemic-tier vocabulary
+used here is imported from the Intelligence Governance Manifesto (IGM); refer
+to IGM for the canonical tier definitions.
 
 ---
 
@@ -927,7 +929,7 @@ verification.
 
 For the organizational evolution perspective — how these roles emerge through
 the ASDLC maturity phases and what skills they require — see
-[Adoption Roles](../../adoption-roles.md).
+[Adoption Roles](../../adoption/roles.md).
 
 ---
 

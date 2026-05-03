@@ -169,8 +169,10 @@ accountability test, and maintenance obligations that slip past their scheduled
 cadence without detection.
 
 **Portfolio limits as governance signals.** As a practitioner calibration
-starting point, a single steward should not be accountable for more than five
-Tier 3 systems, ten Tier 2 systems, or twenty Tier 1 systems concurrently. These
+starting point, a single steward should not be accountable for more than
+five blast-radius tier 3 systems, ten blast-radius tier 2 systems, or twenty
+blast-radius tier 1 systems concurrently. (Tier references throughout this
+document denote blast-radius tier unless explicitly stated otherwise.) These
 are not hard limits — they are signals. A steward approaching these limits
 without additional support, tooling assistance, or workload reduction is at
 elevated risk of the gradual degradation described above. The portfolio limit is
@@ -585,6 +587,18 @@ availability, and the expected impact on the system if the model is deprecated
 without notice. Where a provider does not publish a formal deprecation policy,
 this absence is itself a risk that must be documented.
 
+For the runtime detection of foundation-model behavioural drift — the
+monitoring signals, alert thresholds, and triage workflow that surface drift
+in production — see the "Model and Data Drift Detection" section of
+[operations/governance.md](operations/governance.md). For the release-time
+re-evaluation requirement that applies when a foundation model's behaviour
+has drifted between releases, see Condition 1 (Evidence Bundle Complete) of
+[release-governance.md](release-governance.md), specifically the sub-clause
+governing foundation-model behavioural drift re-evaluation. The maintenance
+layer documents the dependency and the lifecycle risk; the operations layer
+detects the drift in production; the release layer governs whether a
+re-evaluation is required before the next release proceeds.
+
 **Dependency health monitoring.** External dependencies are monitored on a
 defined cadence — monthly is the minimum — for: deprecation notices published by
 the provider, API changelog announcements that could affect the system's
@@ -737,6 +751,17 @@ lapse into unmaintained operation until it fails. Define the deprecation and
 decommission lifecycle in five stages, and apply this structure to every system
 managed under the ASDLC.
 
+The five-stage operational lifecycle described in this section leads into the
+Retirement Gate — the fourth ASDLC gate, which governs the L4 → end-of-life
+boundary and is the authoritative specification for the conditions a system
+must satisfy to exit production. The gate is specified in
+[retirement-gate.md](retirement-gate.md); its canonical condition list is
+recorded in [governance/gate-registry.md](governance/gate-registry.md). The
+prose below describes the operational stages a system passes through; the
+Retirement Gate is the evidence assessment that determines whether those
+stages have been completed adequately. A decommission that does not pass the
+Retirement Gate is not a retirement — it is an abandonment.
+
 ### Stage 1: Deprecation Decision
 
 The deprecation decision is triggered when one or more of the following
@@ -808,7 +833,13 @@ the organisation.
 
 At the sunset date, the system is taken offline. The operational artefacts —
 runbook, on-call assignment, monitoring dashboards — are archived. The system's
-change record is closed.
+change record is closed. Decommission is not complete until the Retirement
+Gate has been assessed and passed; see
+[retirement-gate.md](retirement-gate.md) for the gate's conditions, including
+stewardship handoff or termination, runbook archival, trace and
+reasoning-record archival, model and prompt deprecation propagation, IGM
+claim retraction (where applicable), dependency-consumer notification,
+FinOps zero-out, and final accountability sign-off.
 
 Artefact retention at decommission must reconcile potentially conflicting
 obligations. SR 11-7 (US financial institutions) requires model documentation to

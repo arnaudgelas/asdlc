@@ -10,6 +10,12 @@ agent-assisted operational monitoring. See
 [Maintenance Governance](../maintenance-governance.md) for agent-assisted
 stewardship.
 
+The epistemic-tier model and the structured-feedback construct used in this
+document are imported from the Intelligence Governance Manifesto (IGM); see
+the IGM source framework for the canonical definitions of epistemic tier
+(Provisional, Candidate, Confirmed, High Confidence, Authoritative) and the
+structured-feedback artefact format.
+
 ---
 
 ## The Governance Agent Model

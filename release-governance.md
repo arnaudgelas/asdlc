@@ -147,6 +147,66 @@ with the same model version). Any discrepancy between the model version in the
 evidence bundle and the model version in the deployment configuration is a
 bundle completeness failure.
 
+**Foundation model behavioural-drift re-evaluation.** Pinning a provider model
+version is necessary but not sufficient. Provider-side silent updates to
+foundation models — behavioural changes within the same advertised version
+string, including but not limited to safety-tuning rollouts, system-prompt
+adjustments at the provider edge, retrieval substrate changes, and silent
+weight refreshes — are a documented operational reality. The OWASP Agentic AI
+guidance identifies provider-side behavioural drift as a primary failure mode
+for agents built on third-party foundation models, and the NIST AI 600-1
+Generative AI Profile (Manage and Measure functions) requires monitoring of
+GenAI system behaviour over time independent of provider version disclosure.
+
+Accordingly, for any foundation model accessed via a provider API, the agent's
+evaluation suite — or a defined behavioural-equivalence subset of it,
+specified and approved as part of the system's governance specification —
+must have been re-executed within a configurable freshness window measured
+backward from the gate-assessment instant. The default freshness window is
+7 calendar days for systems at AutonomyTier A2 or above, and 30 calendar days
+otherwise. The gate fails Condition 1 if the freshness window has elapsed
+without re-evaluation, regardless of whether the provider has issued a
+version-string change. A re-evaluation execution that produces results
+materially diverging from the prior evaluation baseline — divergence
+thresholds defined in the system's governance specification — is itself a
+release-blocking condition pending investigation, and the divergence is
+recorded in the evidence bundle.
+
+**Reproducibility surface.** The evidence bundle must record, at the moment
+the evidence was generated, the full reproducibility surface for every agent
+invocation that produced a gate-relevant artefact. The reproducibility surface
+comprises:
+
+- the model identifier and version;
+- the prompt content hash, referenced as a `Prompt` node in the governance
+  graph (see [governance/graph.md](governance/graph.md));
+- sampling parameters: temperature, top-p, max-tokens, frequency penalty,
+  presence penalty, and any provider-specific parameters in effect at
+  invocation time;
+- the tool versions invoked, each referenced via the
+  `ToolAuthorizationRecord` defined in
+  [agent-control-plane.md](agent-control-plane.md) and
+  [governance/graph.md](governance/graph.md);
+- the retrieval corpus snapshot identifier, where retrieval was used;
+- the random seed, where the model API supports seed pinning;
+- the inference timestamp.
+
+Where a provider does not expose a parameter — for example, closed-source
+seeds, or sampling parameters that the provider does not surface — the
+requirement is to record that fact explicitly in the reproducibility surface,
+naming the parameter and the provider's non-disclosure. The recorded gap is
+itself part of the surface and is subject to the same equality assertion as
+disclosed parameters.
+
+The deployment configuration must assert equality with the evaluated
+reproducibility surface for every gate-relevant agent invocation. Drift on any
+field — including changes to a previously recorded provider non-disclosure —
+produces a `contradicted` GateState for Condition 1 and blocks the gate. The
+release gate does not weigh which fields drifted; equality across the full
+surface is the standard. Restoration of equality, or an explicit waiver under
+Condition 8 against a specific drifted field, is required before the gate can
+proceed.
+
 The model provenance assessment — provider security posture, model API
 dependency risk — is a specification-level constraint that belongs in
 Specification Readiness Condition 4: the release gate verifies that the
@@ -161,13 +221,19 @@ the gate assessable programmatically.
 
 The control state record must be generated at loop completion, not assembled
 post-hoc. It must state, for every required control: the control identifier, the
-status (one of: pass, fail, waived, stale, requires-human-decision), the
-identifier of the evidence artefact supporting the status determination, and —
-where status is waived — the waiver owner, the waiver expiry date, and the
-compensating control in effect. A control state record that is missing entries
+status — drawn from the seven canonical GateState values defined in
+[governance/graph.md](governance/graph.md): `pass`, `fail`, `missing`, `stale`,
+`contradicted`, `waived`, or `requires-human-decision` — the identifier of the
+evidence artefact supporting the status determination, and — where status is
+`waived` — the waiver owner, the waiver expiry date, and the compensating control
+in effect. All seven values are admissible at loop completion, including
+`missing` (no evidence has been submitted for the control) and `contradicted`
+(two artefacts for the same control disagree); both can be detected by the
+Evidence Bundle Agent at loop completion and must be recorded faithfully rather
+than coerced into another status. A control state record that is missing entries
 for required controls is incomplete. A control state record where the stated
-status does not match the underlying artefact is contradicted and must not be
-accepted.
+status does not match the underlying artefact is itself a contradicted record
+and must not be accepted.
 
 The Evidence Bundle Agent is responsible for assembling the control state record
 from the loop outputs and machine-verifiable checks. The release manager reviews
@@ -285,10 +351,44 @@ consultation.
 Independent validation answers whether the verification and validation performed
 by the development team were themselves rigorous. It requires organisational
 separation: the team that independently validates must not be the team that
-built and verified the system. What "organisationally separate" means depends on
-the organisation's structure and the system's risk profile, but the minimum
-requirement is that the independent validator has no reporting relationship to
-the development lead and no stake in the deployment outcome.
+built and verified the system.
+
+**Definition of "organisationally separate".** "Organisationally separate" is
+defined by four falsifiable criteria, all of which the independent validator
+must satisfy:
+
+- (a) the validator does not report — directly or through any intermediate
+  manager — into the same first-line manager as any member of the engineering
+  team that produced the evidence;
+- (b) the validator does not share a compensation pool, a performance-review
+  pool, or a bonus pool with that engineering team;
+- (c) the validator does not accept tasking from the specification analyst for
+  the system under release;
+- (d) the validator does not bear an accountability obligation whose
+  satisfaction depends on the validation outcome being a pass — for example,
+  the validator is not a manager whose compensation, performance review, or
+  retained scope depends on the engineering team's release throughput.
+
+These criteria are stated in falsifiable form so that an auditor must be able
+to verify each one from organisational-chart documentation and
+compensation-pool documentation retained by the organisation. The release
+gate's Condition 2 evidence must include, or reference, the organisational-
+chart and compensation-pool records that demonstrate satisfaction of all four
+criteria for the named validator. A validator whose status against any one
+criterion cannot be verified from such documentation does not satisfy the
+independence requirement.
+
+If the organisation is small enough that no individual employee satisfies all
+four criteria simultaneously, an external validator — a contracted party
+outside the organisation's reporting and compensation structures — is
+required. An internal validator who satisfies three of four criteria does not
+satisfy the requirement; partial satisfaction is not satisfaction.
+
+This definition is the basis on which domain files claim SR 11-7 effective-
+challenge satisfaction by way of this gate condition; see
+[domains/financial-services.md](domains/financial-services.md) for the SR 11-7
+mapping. The prior, looser interpretation of "no reporting relationship and no
+stake in the outcome" was insufficient to support that claim.
 
 The evidence that independent validation was performed: a named independent
 validator, the date of validation, the scope of the review, and a clear
@@ -546,28 +646,42 @@ independently assessed condition. This condition makes the control state record
 a first-class gate object, not a component buried within the evidence bundle
 assessment.
 
-At gate time, every required control must have exactly one of the following
-statuses: `pass`, `waived-with-current-waiver`, or `deferred-to-gate`. No
-control may carry a `stale` status or a `requires-human-decision` status at the
-moment the gate is assessed. A control in `stale` status means its underlying
-evidence has lapsed and the verdict is no longer reliable — the evidence must be
-refreshed before the gate can proceed. A control in `requires-human-decision`
-status means a human judgment is outstanding — that judgment must be made and
-the status resolved before the gate can proceed. A control in `fail` status
-means the gate does not pass.
+At gate time, every required control must resolve to a value in the canonical
+seven-value GateState enum defined in [governance/graph.md](governance/graph.md):
+`pass`, `fail`, `missing`, `stale`, `contradicted`, `waived`, or
+`requires-human-decision`. The gate passes Condition 7 only when every required
+control resolves to either (a) `pass`, or (b) `waived` and the waiver record's
+expiry instant is strictly later than the gate-assessment instant. Any other
+value — `fail`, `missing`, `stale`, `contradicted`, or `requires-human-decision`
+— means the gate does not pass for that control.
 
-The statuses `stale` and `requires-human-decision` are not permissible open
-states at gate time. They are pre-gate states that must be resolved before gate
-assessment begins. Their presence in the control state record at the moment of
-gate assessment is itself a condition failure: it indicates that the loop was
-submitted to the release gate with unresolved governance work.
+Pre-gate workflow may carry a non-graph status of "deferred to gate review" for
+controls whose resolution genuinely requires the gate itself — for example, a
+final review that happens at the gate as part of Condition 4 (Accountable Human
+Sign-Off). This is a workflow-tracking status, not a GateState. At the moment of
+gate assessment, every such control must resolve to one of the seven canonical
+values. A control that remains in the workflow-deferred status at the
+gate-assessment instant — that is, no evidence has been submitted to satisfy it
+— is treated as `missing` for gate-pass purposes. The list of controls eligible
+to carry the workflow-deferred status before gate assessment must be defined in
+the system's governance specification and must be approved as part of the
+system's initial release gate configuration.
 
-The `deferred-to-gate` status is permitted only for controls whose resolution
-genuinely requires the gate itself — for example, a final review that happens at
-the gate as part of Condition 4 (Accountable Human Sign-Off). The list of
-controls eligible for `deferred-to-gate` status must be defined in the system's
-governance specification and must be approved as part of the system's initial
-release gate configuration.
+A control in `stale` status means its underlying evidence has lapsed and the
+verdict is no longer reliable — the evidence must be refreshed before the gate
+can proceed. A control in `contradicted` status means two artefacts for the
+same control disagree — the conflict must be resolved before the gate can
+proceed. A control in `requires-human-decision` status means a human judgment
+is outstanding — that judgment must be made and the status resolved before the
+gate can proceed. A control in `missing` status means no evidence has been
+submitted — evidence must be produced and submitted before the gate can
+proceed. A control in `fail` status means the evidence was assessed and found
+substantively deficient — the deficiency must be remediated before the gate can
+proceed. The statuses `fail`, `missing`, `stale`, `contradicted`, and
+`requires-human-decision` are not permissible open states at gate time. Their
+presence in the control state record at the moment of gate assessment is itself
+a Condition 7 failure: it indicates that the loop was submitted to the release
+gate with unresolved governance work.
 
 What goes wrong if bypassed: a control state record allowed to carry stale or
 unresolved statuses into the gate converts the gate from a verification

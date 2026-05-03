@@ -44,6 +44,20 @@ operationalises in the ASDLC's lifecycle structure.
 
 ## Incremental Adoption Path
 
+For tier-by-tier reviewer-hour ranges, steward portfolio bounds, FTE uplift
+estimates, and a worked 500-engineer example of the adoption capacity
+implications described in this guide, see
+[annex-adoption-cost.md](annex-adoption-cost.md). The annex calibrates the
+costs that this guide's sequence imposes; this guide describes the sequence
+itself.
+
+Organisations adopting ASDLC must claim a conformance profile — ASDLC-Minimum,
+ASDLC-Regulated, or ASDLC-Tier4 — to make their commitment auditable. The
+profile constrains which conditions, documents, and roles the organisation
+binds itself to and is the public artefact against which the adoption can be
+externally assessed. See [conformance-profiles.md](conformance-profiles.md)
+for the three normative profiles and the attestation template.
+
 Build ASDLC governance in this sequence. Each step has a prerequisite. The
 prerequisite is real — not a formality.
 
@@ -51,10 +65,10 @@ prerequisite is real — not a formality.
 
 ### Step 1: Establish inner-loop governance
 
-**What this means.** Operate the manifesto's agentic loop at Phase 3 minimum in
-at least one domain: governed agentic delivery with a functioning evaluation
-portfolio, a complete evidence bundle on each loop output, and named human
-accountability at the Govern phase. "Functioning" means the inner loop regularly
+**What this means.** Operate the manifesto's agentic loop at adoption phase 3
+minimum in at least one domain: governed agentic delivery with a functioning
+evaluation portfolio, a complete evidence bundle on each loop output, and
+named human accountability at the Govern phase. "Functioning" means the inner loop regularly
 produces loop outputs that pass the engineering Definition of Done — not
 occasionally, not in ideal conditions, but as a routine outcome. A loop that
 produces evidence bundles only when reminded, or passes the DoD on 40% of
@@ -87,9 +101,10 @@ goal at Phase 3; reliability is.
 
 **What this means.** Establish the L1→L2 boundary as an enforceable checkpoint.
 Before any specification enters the Specify phase, it is assessed against the
-nine gate conditions defined in
-[Specification Readiness](specification-readiness.md). A specification that
-fails any condition does not enter the loop. The gate may be informal at this
+conditions defined in [Specification Readiness](specification-readiness.md);
+the canonical list and count are recorded in
+[governance/gate-registry.md](governance/gate-registry.md). A specification
+that fails any condition does not enter the loop. The gate may be informal at this
 stage — a structured checklist reviewed by the product owner and specification
 analyst, with a gate decision record written into the specification document
 itself — but it must be enforced: failing the gate means the specification does
@@ -105,21 +120,23 @@ intervention that catches this class of failure without requiring the full Layer
 practice, because gate failures teach you exactly where specifications fall
 short. That learning is the foundation for the full demand layer in Step 4.
 
-**The two sub-gate structure.** The nine gate conditions naturally divide into
-two categories with different reviewer profiles, and structuring the assessment
-as two sub-gates reduces the single-session bottleneck without reducing rigour.
-The Product Readiness Sub-Gate covers Conditions 1, 2, 3, 5, 7, 8, and 9
-(business need, value, acceptance criteria, accountability, scope, loop cost
-justification, and context thread) and is assessed by the product owner and
-specification analyst. The Technical Readiness Sub-Gate covers Conditions 4 and
-6 (constraints including security and compliance, and blast radius) and requires
+**The two sub-gate structure.** The Specification Readiness Gate's conditions
+(see [governance/gate-registry.md](governance/gate-registry.md) for the
+canonical list and count) naturally divide into two categories with different
+reviewer profiles, and structuring the assessment as two sub-gates reduces the
+single-session bottleneck without reducing rigour. The Product Readiness
+Sub-Gate covers SR-1, SR-2, SR-3, SR-5, SR-7, SR-8, and SR-9 (business need,
+value, acceptance criteria, accountability, scope, loop cost justification,
+and context thread) and is assessed by the product owner and specification
+analyst. The Technical Readiness Sub-Gate covers SR-4 and SR-6 (constraints
+including security and compliance, and blast radius) and requires
 participation from security, architecture, and compliance functions. Both
-sub-gates must pass before the combined gate decision record records a pass. At
-Tier 2, both sub-gates can often be assessed in a single session; at Tier 3, the
-Technical Readiness Sub-Gate should be scheduled separately, after the Product
-Readiness Sub-Gate has passed, to avoid consuming security and compliance
-reviewers' time on specifications that have not yet established their business
-case.
+sub-gates must pass before the combined gate decision record records a pass.
+At blast-radius tier 2, both sub-gates can often be assessed in a single
+session; at blast-radius tier 3, the Technical Readiness Sub-Gate should be
+scheduled separately, after the Product Readiness Sub-Gate has passed, to
+avoid consuming security and compliance reviewers' time on specifications
+that have not yet established their business case.
 
 **The most common gate failures at this step.** Condition 2 (value measurable)
 and Condition 7 (out-of-scope explicitly stated) are the conditions that teams
@@ -144,12 +161,13 @@ because the gate revealed it was not well-enough understood.
 
 **What this means.** Establish the L2→L3 boundary as an enforceable checkpoint.
 A loop-complete output — one that has passed the engineering DoD — does not
-proceed to production deployment without passing all five release gate
-conditions: evidence bundle complete, rollback procedure tested, accountable
-human sign-off, independent validation where required, and compliance
-documentation filed. The release gate is run by the release manager, not the
-development team. The release manager is checking the evidence, not repeating
-the engineering work.
+proceed to production deployment without passing every Release Gate condition
+applicable to its tier (see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+condition list and count, and [release-governance.md](release-governance.md)
+for the prose authority). The release gate is run by the release manager,
+not the development team. The release manager is checking the evidence, not
+repeating the engineering work.
 
 **Why this comes before a full Layer 3.** The full release layer — deployment
 pipelines, change management integration, environment promotion mechanics — is
@@ -227,11 +245,11 @@ is within the calculated governance capacity.
 
 **What this means.** Establish the L3→L4 boundary as an enforceable checkpoint.
 Before a deployed system transitions to steady-state operations, it must pass
-all seven operational readiness gate conditions: runbook complete, SLOs defined
-and monitoring configured, on-call engineer assigned and briefed, system steward
-assigned, security scan clean, license compliance confirmed, and trace retention
-policy set and configured. The gate is assessed by the system steward, not the
-release manager.
+all conditions in the Operational Definition of Done (see
+[governance/gate-registry.md](governance/gate-registry.md) for the canonical
+list and counts, and [operations/dod.md](operations/dod.md) for the prose
+authority). The gate is assessed by the system steward, not the release
+manager.
 
 **The runbook is the most labour-intensive condition.** A runbook that satisfies
 the operational DoD is not a one-page overview. It contains an architecture
@@ -257,12 +275,12 @@ title, not an accountability.
 **Steward portfolio limits.** A steward accountable for too many systems
 simultaneously cannot maintain the knowledge depth and review cadence that
 meaningful stewardship requires. As a practitioner guideline — calibrate to
-local system complexity — no single steward should be accountable for more than
-five Tier 3 systems, ten Tier 2 systems, or twenty Tier 1 systems concurrently.
-A steward approaching these limits without additional support or tooling
-assistance is at risk of operational DoD review gaps, knowledge degradation
-between systems, and inability to pass the P12 accountability test for their
-full portfolio.
+local system complexity — no single steward should be accountable for more
+than five blast-radius tier 3 systems, ten blast-radius tier 2 systems, or
+twenty blast-radius tier 1 systems concurrently. A steward approaching these
+limits without additional support or tooling assistance is at risk of
+operational DoD review gaps, knowledge degradation between systems, and
+inability to pass the P12 accountability test for their full portfolio.
 
 Where stewardship portfolio limits are being approached, the response is either
 to distribute stewardship across additional qualified stewards or to invest in
@@ -466,13 +484,19 @@ to prevent.
 
 ### SAFe
 
+For full SAFe artefact mapping, role ownership, ceremony cadence, LPM
+guardrails, architectural runway, and Solution Train coordination, see
+[annex-safe.md](annex-safe.md). The summary below establishes the structural
+alignment; the annex provides the implementation detail.
+
 If your organisation operates SAFe, the ASDLC maps to the SAFe planning
 hierarchy at each level with specific integration points.
 
 **Layer 1 ↔ Portfolio and Program.** The demand backlog corresponds to the
 Program Backlog managed by the Product Manager. ASDLC demand validation aligns
-with SAFe's Lean Business Case: the validation evidence required at Tier 2 and
-Tier 3 is the evidence base for a Lean Business Case. Prioritisation criteria —
+with SAFe's Lean Business Case: the validation evidence required at
+blast-radius tier 2 and blast-radius tier 3 is the evidence base for a Lean
+Business Case. Prioritisation criteria —
 value × urgency × risk × strategic alignment — map directly to WSJF (Weighted
 Shortest Job First), with the ASDLC adding explicit blast radius and strategic
 alignment dimensions. The capacity model corresponds to SAFe's PI Planning
@@ -673,15 +697,15 @@ phase.
 | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Phase 1–2 | Informal need validation — confirm that some evidence exists before the loop runs; no formal gate required                                                                                      | Basic release record — what was deployed, when, by whom; no formal gate                                                                                                                      | No formal requirement — runbook optional, steward optional                                                                                                                    |
 | Phase 3   | Specification readiness gate (informal checklist, product owner-led); success criterion required for all loop entries                                                                           | Full release gate: evidence bundle complete, rollback tested, accountable human sign-off; compliance documentation where the change's risk profile requires it                               | Runbook (reduced scope) + on-call assignment + steward assigned + security scan; SLO configuration required if external consumers exist                                       |
-| Phase 4   | Formal demand governance: validated backlog with explicit ownership, documented prioritisation criteria, gate decision records for all Tier 2+ specifications, business demand sponsor sign-off | Release approval chain: tech lead + release manager for Tier 2; plus accountable human written acceptance for Tier 3; compliance officer for regulated systems; all gate conditions enforced | Full operational DoD: all nine conditions required; quarterly DoD review scheduled; maintenance cycle defined                                                                 |
+| Phase 4   | Formal demand governance: validated backlog with explicit ownership, documented prioritisation criteria, gate decision records for all Tier 2+ specifications, business demand sponsor sign-off | Release approval chain: tech lead + release manager for Tier 2; plus accountable human written acceptance for Tier 3; compliance officer for regulated systems; all gate conditions enforced | Full operational DoD: all conditions required (see [governance/gate-registry.md](governance/gate-registry.md)); quarterly DoD review scheduled; maintenance cycle defined                                                                 |
 | Phase 5   | Full Layer 1: formal demand governance + demand metrics (see `demand/metrics.md`); feedback path from L4 value data actively monitored; capacity model calculated and enforced                  | All release gate conditions enforced without exception; release metrics tracked; emergency change procedure tested                                                                           | Full Layer 4 with maintenance governance: stewardship transfer procedures tested, dependency update cycles scheduled, end-of-life planning current for all production systems |
 
-The phase calibration reflects a genuine dependency: at Phase 1–2, the loop
-itself is not reliable enough to benefit from full outer-layer governance. The
-outer layers add process overhead; the inner loop does not yet produce the
-consistent output that outer-layer governance processes. At Phase 5, the outer
-layers are not bureaucratic additions — they are the governance infrastructure
-that makes Phase 5 autonomy safe to operate.
+The phase calibration reflects a genuine dependency: at adoption phases 1–2,
+the loop itself is not reliable enough to benefit from full outer-layer
+governance. The outer layers add process overhead; the inner loop does not
+yet produce the consistent output that outer-layer governance processes. At
+adoption phase 5, the outer layers are not bureaucratic additions — they are
+the governance infrastructure that makes phase-5 autonomy safe to operate.
 
 **The transition decision.** Moving from Phase 3 to Phase 4 outer-layer
 requirements is not automatic. It is triggered by two signals: inner-loop
@@ -704,12 +728,13 @@ multi-team reality are not covered by the per-team adoption path — they requir
 deliberate organisational-level governance decisions.
 
 **Phase calibration across a portfolio.** When teams at different inner-loop
-phases produce changes that affect shared infrastructure, the governing phase
-for the shared infrastructure is the lowest phase of any team whose changes it
-accepts. A shared authentication service that receives changes from both a Phase
-4 team (with full evidence bundles and formal release governance) and a Phase 2
-team (with informal processes) cannot operate Phase 4 release governance for
-only the Phase 4 team's changes: every change to the shared service must meet
+adoption phases produce changes that affect shared infrastructure, the
+governing phase for the shared infrastructure is the lowest adoption phase of
+any team whose changes it accepts. A shared authentication service that
+receives changes from both an adoption-phase-4 team (with full evidence
+bundles and formal release governance) and an adoption-phase-2 team (with
+informal processes) cannot operate adoption-phase-4 release governance for
+only the adoption-phase-4 team's changes: every change to the shared service must meet
 the standard of the most demanding governance requirement that applies to that
 service, which in practice means meeting the higher standard for all changes.
 This creates an incentive to accelerate lower-phase teams to the shared

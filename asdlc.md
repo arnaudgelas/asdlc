@@ -39,8 +39,10 @@ flowchart TB
     L3["Layer 3: Release & Deployment\nLoop output → release readiness → production"]
     Gate3{{"Operational\nReadiness Gate"}}
     L4["Layer 4: Operations & Maintenance\nProduction → operated → maintained → retired"]
+    Gate4{{"Retirement Gate"}}
+    End["End of life"]
 
-    L1 --> Gate1 --> L2 --> Gate2 --> L3 --> Gate3 --> L4
+    L1 --> Gate1 --> L2 --> Gate2 --> L3 --> Gate3 --> L4 --> Gate4 --> End
 
     L4 -.->|"Value data"| L1
     L4 -.->|"Maintenance signals"| L2
@@ -49,10 +51,11 @@ flowchart TB
     L2 -.->|"Validation failures"| L1
 ```
 
-> **Note — Tier 1–3 flow.** The flowchart above represents the standard
-> gate-per-change flow applicable to Tier 1, 2, and 3 systems. For Tier 4
-> systems, the gate model is modified as described in the Tier 4 paragraphs in
-> each Layer section below: the Release Gate applies to the policy envelope
+> **Note — autonomy tier 1–3 flow.** The flowchart above represents the
+> standard gate-per-change flow applicable to autonomy tier 1, 2, and 3
+> systems. For autonomy tier 4 systems, the gate model is modified as described
+> in the Tier 4 paragraphs in each Layer section below: the Release Gate
+> applies to the policy envelope
 > specification rather than individual deployments, the inner loop executes
 > without per-change human approval, and Layer 4 accountability is
 > envelope-level rather than action-level. The layer sequence and feedback paths
@@ -93,7 +96,7 @@ Definition of Done — all defined in the [Manifesto](../manifesto.md). The oute
 layers govern what enters and leaves it; the manifesto governs what happens
 inside it.
 
-**Tier 4 operation in Layer 2.** For systems operating at Tier 4 autonomy, the
+**Tier 4 operation in Layer 2.** For autonomy tier 4 systems, the
 inner loop runs without per-change human approval. Agents execute within a
 human-approved, machine-enforced policy envelope; individual actions within that
 envelope do not require a separate human gate. The governance obligation does
@@ -121,57 +124,51 @@ managers, change management, and compliance officers in regulated environments.
 Timescale: hours to days — the release window governs the pace, not the loop.
 See [Release & Deployment Governance](release-governance.md).
 
-**Tier 4 operation in Layer 3.** For Tier 4 systems, the Release Gate applies to
-the policy envelope specification, not to individual deployments within an
-approved envelope. The gate conditions are the same — evidence bundle complete,
-independent validation passed, rollback procedure tested, accountable human
-sign-off, compliance documentation complete — but the object of the gate is the
-envelope definition: its constraint set, its authorised action scope, its
-monitoring configuration, and the evaluation portfolio that validated the
+**Tier 4 operation in Layer 3.** For autonomy tier 4 systems, the Release Gate
+applies to the policy envelope specification, not to individual deployments
+within an approved envelope. The gate conditions are the same — evidence bundle
+complete, independent validation passed, rollback procedure tested, accountable
+human sign-off, compliance documentation complete — but the object of the gate
+is the envelope definition: its constraint set, its authorised action scope,
+its monitoring configuration, and the evaluation portfolio that validated the
 envelope's safety properties. Once the envelope is gate-approved, subsequent
 agent-executed deployments that remain within the envelope do not require a
-separate release gate pass. Any deployment that would extend, modify, or operate
-outside the approved envelope is subject to the full release gate on the
-proposed envelope change. The transition from Tier 3 to Tier 4 operation for a
-system is itself a governed event: the decision to authorise autonomous
-operation within a policy envelope must pass the Release Gate on the initial
-envelope definition before Tier 4 operation begins. This gate pass is the formal
+separate release gate pass. Any deployment that would extend, modify, or
+operate outside the approved envelope is subject to the full release gate on
+the proposed envelope change. The transition from autonomy tier 3 to autonomy
+tier 4 operation for a system is itself a governed event: the decision to
+authorise autonomous operation within a policy envelope must pass the Release
+Gate on the initial envelope definition before Tier 4 operation begins. This gate pass is the formal
 record that the organisation has accepted the envelope as sufficient governance
 for the system's blast radius.
 
-**Tier 4 relocation mechanics.** A Tier 4 policy envelope may contain
-multiple action classes that are at different governance-relocation
-maturity stages under the Agentic Enterprise Manifesto (AEnt-M). One action
-class within the envelope may be operating under fully relocated control
-(synchronous gate replaced by an asynchronous control objective with
-demonstrated equivalence); another within the same envelope may still be
-governed by a synchronous check pending its own relocation evidence. Each
-action class is independently monitored against the AEnt-M Principle 7
-metrics — decision quality, error detection rate, audit reconstructability,
-and degradation response latency — at the granularity of the action class,
-not the envelope as a whole. Aggregated envelope-level metrics are a
-useful operational view but they are not the unit of relocation
-accountability.
+**Framework-agnostic autonomy tier 4 envelope.** Regardless of whether an
+organisation operates the Agentic Enterprise Manifesto (AEnt-M) or the
+Intelligence Governance Manifesto (IGM), every autonomy tier 4 envelope must
+satisfy the following minimal obligations: (a) the policy envelope is itself a
+gate-approved artefact, passed through the Release Gate as the object of the
+gate before autonomy tier 4 operation begins; (b) continuous monitoring
+telemetry confirms that agent actions remain within the envelope and surfaces
+boundary violations for immediate human review; (c) a named envelope steward
+initiates a re-gate cycle when the operating environment evolves materially
+enough to invalidate the envelope's safety assumptions; (d) per-action
+accountability collapses to envelope-level accountability anchored at a named
+human who has accepted production accountability for the envelope's design;
+and (e) evidence is produced at envelope boundaries — envelope definition,
+constraint set, evaluation portfolio, monitoring telemetry — not per
+individual agent action. These obligations apply to every autonomy tier 4
+envelope and are sufficient to govern autonomy tier 4 operation in the absence
+of AEnt-M or IGM.
 
-When the AEnt-M P7 metrics for a single action class degrade past the
-thresholds defined in that class's `relocation_decision_record` (see
-`release-governance.md` Condition 1), that action class reverts to
-synchronous checking automatically. The reversion does not affect the
-relocation status of other action classes within the same envelope; an
-envelope can simultaneously contain action classes operating under
-relocated control, action classes that have just reverted to synchronous
-control, and action classes that have never been relocated. The steward
-signs the per-class status record as part of the envelope's continuous
-monitoring telemetry; an envelope-level signature that does not record
-per-class status conceals the relocation state of the action classes it
-covers. Re-relocation of a reverted class — restoring it to asynchronous
-control — requires a new evidence bundle satisfying the
-governance-relocation evidence schema, including a fresh
-`decision_quality_baseline` measured under current operating conditions
-and a fresh `degradation_response_test`. The reversion-to-synchronous
-event itself is an audit-relevant transition; the AEnt-M escalation
-authority that originally approved the relocation must be notified, and
-re-relocation requires that authority's approval on the new evidence.
+**Pointer — relocation mechanics under AEnt-M.** When an organisation operates
+AEnt-M alongside the ASDLC, the autonomy tier 4 envelope additionally carries
+relocation mechanics — multi-class envelope composition, per-class P7 metric
+monitoring, automatic reversion to synchronous checking, and re-relocation
+evidence. These mechanics have been moved to
+[annex-aentm.md](annex-aentm.md), so that the core ASDLC remains independently
+adoptable for organisations not operating AEnt-M. The framework-agnostic
+envelope obligations above remain in `asdlc.md`; AEnt-M-specific relocation
+mechanics live in the annex.
 
 ### Layer 4: Operations & Maintenance
 
@@ -187,8 +184,9 @@ governed continuously in production?_ Primary stakeholder: SREs, system
 stewards, and the named accountable human. Timescale: months to years — the
 lifetime of the system. See [Operations & Governance](operations/governance.md).
 
-**Tier 4 operation in Layer 4.** For Tier 4 systems, the system steward's
-accountability model shifts from per-change approval to envelope stewardship.
+**Tier 4 operation in Layer 4.** For autonomy tier 4 systems, the system
+steward's accountability model shifts from per-change approval to envelope
+stewardship.
 The steward is not accountable for approving each agent action — those occur
 within the pre-approved envelope. The steward is accountable for: (a) confirming
 that the envelope remains correctly specified as the operating environment
@@ -206,62 +204,28 @@ envelope is a control failure — the machine enforcement layer failed, and the
 post-incident review must assess the enforcement mechanism's adequacy, not just
 the incident itself.
 
-#### Tier 4 Appendix A — Policy-Envelope Intelligence Constraints
-
-For Tier 4 systems whose actions are informed by intelligence governed under
-the Intelligence Governance Manifesto (IGM), the policy envelope must
-explicitly specify how the intelligence layer constrains agent action within
-the envelope. Without these elements, the envelope authorises autonomous
-operation against an unspecified epistemic substrate — a configuration in
-which the substrate's adequacy is assumed rather than governed. The
-following elements are required components of any Tier 4 policy envelope
-for an intelligence-bearing system:
-
-- *Epistemic-tier-to-action mapping.* For each action class the envelope
-  authorises, the minimum epistemic tier (Provisional, Candidate,
-  Confirmed, High Confidence, Authoritative) of the claims that must
-  inform that action. An envelope that authorises an action class without
-  specifying the required epistemic tier permits the action against any
-  claim, including Provisional ones — which is not a Tier 4 envelope, it
-  is unconstrained autonomy.
-- *Contradiction-handling rules per type.* For each contradiction type the
-  system's domain is known to produce (jurisdictional divergence, logical
-  contradiction, temporal supersession, scope variation, extraction
-  error), the rule the agent applies when it encounters the
-  contradiction: refuse, escalate, select-by-jurisdiction-policy, or
-  similar typed responses. Untyped contradiction handling — a single
-  fallback regardless of contradiction class — does not satisfy this
-  element.
-- *Decay boundaries per claim class.* For each claim class the system
-  depends on, the decay boundary beyond which the agent must refuse to
-  act on the claim within the envelope, and the latency within which the
-  agent must observe a re-verification event before resuming action. A
-  decay boundary stated only as a calendar window is insufficient; the
-  boundary must reference the claim class's own decay model.
-- *Feedback-loop closure rules.* The structured feedback the agent must
-  emit when it observes evidence that a claim it acted on was wrong,
-  stale, or contradicted in production. The feedback rules must specify
-  the artefact format, the destination IGM authority, and the latency
-  bound for emission. An envelope without feedback-loop closure rules
-  permits autonomous action that produces no return signal to the
-  substrate — which is incompatible with IGM Principle 10.
-
-These elements are governed by the composition rule defined in
-`governance/composition-rule.md` (planned), which specifies how individual
-constraints compose into a coherent policy envelope and how the
-envelope's effective constraint set is computed. A Tier 4 envelope for an
-intelligence-bearing system that omits any of the four elements above is
-not a complete envelope and cannot pass the Release Gate as the envelope
-specification under Layer 3.
+**Pointer — intelligence constraints under IGM.** When an organisation
+operates the Intelligence Governance Manifesto (IGM) alongside the ASDLC, an
+autonomy tier 4 envelope for an intelligence-bearing system additionally
+carries intelligence constraints — epistemic-tier-to-action mapping, typed
+contradiction-handling rules, per-claim-class decay boundaries, and
+feedback-loop closure rules. These constraints have been moved to
+[annex-igm.md](annex-igm.md), so that the core ASDLC remains independently
+adoptable for organisations not operating IGM. The framework-agnostic
+envelope obligations stated above remain in `asdlc.md`; IGM-specific
+intelligence constraints live in the annex.
 
 ---
 
 ## Layer Interface Contracts
 
-Each layer boundary is governed by a gate. Gates are not committee approvals.
-They are structured assessments of specific conditions — each condition binary,
-each condition necessary. A partial pass is a fail. A gate that was "run" but
-produced no record was not run.
+Each layer boundary is governed by a gate. The ASDLC defines four gates: the
+Specification Readiness Gate at L1 → L2, the Release Gate at L2 → L3, the
+Operational Readiness Gate at L3 → L4, and the Retirement Gate at L4 →
+end-of-life. Gates are not committee approvals. They are structured assessments
+of specific conditions — each condition binary, each condition necessary. A
+partial pass is a fail. A gate that was "run" but produced no record was not
+run.
 
 ---
 
@@ -271,25 +235,13 @@ produced no record was not run.
 
 **Pass conditions:**
 
-The following conditions operationalise the manifesto's loop-readiness
-definition at the Layer 1 governance boundary. A specification that satisfies
-all nine conditions satisfies the manifesto's loop-readiness requirement and may
-enter Layer 2:
-
-1. Business need validated with independent, examinable evidence (proportionate
-   to blast radius tier)
-2. Value measurable — a specific, time-bounded, quantitative success criterion
-   exists with a named owner
-3. Acceptance criteria expressible — a domain expert (not the specification
-   analyst) can produce a first draft
-4. Constraints identified — security, compliance, performance, domain ownership,
-   and data classification constraints are documented before loop entry
-5. Accountable human named — a specific person (not a team) accepts
-   business-level accountability for the outcome
-6. Blast radius assessed — maximum credible failure impact is characterised and
-   the appropriate autonomy tier is confirmed
-7. Out-of-scope explicitly stated — what this specification does not include is
-   named, not assumed
+The Specification Readiness Gate has 9 conditions. The canonical enumeration —
+condition titles, identifiers, and pass criteria — is maintained in
+[governance/gate-registry.md](governance/gate-registry.md), which is the
+authoritative source. A specification that satisfies all 9 conditions satisfies
+the manifesto's loop-readiness requirement and may enter Layer 2. This document
+does not restate the condition list inline, to prevent drift between the
+overview and the registry.
 
 **Failure mode if bypassed:** The loop executes correctly against an incorrectly
 understood need. Verify passes. Validate fails. The organisation has produced a
@@ -305,19 +257,14 @@ why. See [Specification Readiness](specification-readiness.md).
 
 **Pass conditions:**
 
-1. Evidence bundle complete — all seven engineering Definition of Done
-   conditions met, artefacts present and internally consistent
-2. Independent validation passed — for Phase 4 and above, and for all
-   high-stakes regulated systems: organisationally separate validation that the
-   engineering team's verification was rigorous
-3. Rollback procedure tested — not documented, tested — in a representative
-   environment, within 48 hours of the planned production deployment, with
-   time-to-rollback measured and within the agreed window
-4. Accountable human sign-off — the named P12 anchor has reviewed the evidence
-   bundle, not rubber-stamped it, and has accepted production accountability
-   with a dated, named sign-off against a specific evidence bundle ID
-5. Compliance documentation complete — all required regulatory documentation is
-   filed, not drafted
+The Release Gate has 8 conditions. The canonical enumeration — condition
+titles, identifiers, applicability rules (including the adoption-phase rule for
+independent validation), and pass criteria — is maintained in
+[governance/gate-registry.md](governance/gate-registry.md), which is the
+authoritative source. The detailed prose is in
+[Release & Deployment Governance](release-governance.md). This document does
+not restate the condition list inline, to prevent drift between the overview
+and the registry.
 
 **Failure mode if bypassed:** Unverified or ungoverned output reaches
 production. When a production incident occurs, there is no reliable record of
@@ -334,33 +281,53 @@ environments, the deployment itself may be a compliance violation. See
 
 **Pass conditions:**
 
-1. Runbook complete — architecture overview, SLOs and measurement methodology,
-   alerting thresholds with rationale, known failure modes with diagnostic
-   steps, escalation chain with current contact information, rollback procedure
-   with tested time-to-rollback, links to specification and evidence bundle for
-   the deployed version
-2. SLOs defined and monitoring configured — service health, output quality rate,
-   reasoning trace completeness, escalation response time, and rollback success
-   rate SLOs defined and instrumented
-3. On-call engineer assigned and briefed — named, briefed on SLOs and known
-   failure modes, confirmed access to runbook and rollback procedure
-4. System steward assigned — named steward has actively reviewed the
-   specification and evidence bundle and accepted accountability for ongoing
-   governance
-5. Security scan clean — dependency vulnerability scan run against the deployed
-   dependency tree, passed at defined severity thresholds, SBOM generated and
-   filed
-6. License compliance confirmed — license compatibility report generated for the
-   deployed dependency tree
-7. Trace retention policy set and configured — which decisions produce a trace,
-   retention period, format, and access path; policy configured and access path
-   exercised in a non-incident context
+The Operational Definition of Done has 8 conditions in total: 7 unconditional
+and 1 conditional (DR/failover, applicable to blast-radius tier 3 systems
+only). The canonical enumeration — condition titles, identifiers, applicability
+rules, and pass criteria — is maintained in
+[governance/gate-registry.md](governance/gate-registry.md), which is the
+authoritative source. The detailed prose is in
+[Operational Definition of Done](operations/dod.md). This document does not
+restate the condition list inline, to prevent drift between the overview and
+the registry.
 
 **Failure mode if bypassed:** Ungoverned systems in production. The runbook does
 not exist or is stale. The steward is unnamed. Security vulnerabilities
 accumulate without detection. When an incident occurs, the on-call engineer has
 no escalation path, no rollback procedure, and no record of what the system was
 built to do. See [Operational Definition of Done](operations/dod.md).
+
+---
+
+### Retirement Gate (L4 → end-of-life)
+
+**Boundary:** Separates governed production operation from controlled,
+documented end-of-life. A system that exits production without passing this
+gate has not been retired; it has been abandoned.
+
+**Pass conditions:**
+
+The Retirement Gate has 8 conditions. The canonical enumeration — condition
+titles, identifiers, applicability rules (including the IGM-conditional
+condition for systems whose claims have informed governed intelligence), and
+pass criteria — is maintained in
+[governance/gate-registry.md](governance/gate-registry.md), which is the
+authoritative source. The detailed prose is in
+[Retirement Gate](retirement-gate.md). This document does not restate the
+condition list inline, to prevent drift between the overview and the registry.
+
+**Failure mode if bypassed:** Orphaned systems with open obligations. Records
+that were due for archival or destruction remain in undefined state.
+Accountability transfers were never made: the named human on the runbook has
+left the organisation, the system steward has rotated off, and no successor
+has accepted the residual obligations. Dependency notifications were never
+sent: downstream systems still call endpoints that no longer exist.
+Retention-rights violations accrue silently as personal data outlives its
+lawful retention basis. For systems that have informed governed intelligence,
+retired claims continue to inform live decisions in the Intelligence
+Governance Manifesto's substrate, because no supersession or invalidation
+record was filed at the retirement boundary. See
+[Retirement Gate](retirement-gate.md).
 
 ---
 
@@ -382,9 +349,14 @@ whether the demand layer is working. A value realisation shortfall triggering
 this path must produce a demand layer retrospective initiated within 30 calendar
 days of the value measurement window closing. The retrospective must produce a
 documented process change — not an acknowledgement — within 20 business days of
-its initiation. If the retrospective cannot be scheduled within the 30-day
-window, the business demand sponsor for the affected initiative is accountable
-for explaining the delay.
+its initiation, and a corresponding evaluation/validation update — to the
+demand-validation criterion or the demand-evidence schema — that encodes the
+failure class so that future demand items of this type are detected before the
+loop runs. Closure is recorded only when the evaluation update is filed and
+the next equivalent demand passes through the updated criterion. If the
+retrospective cannot be scheduled within the 30-day window, the business
+demand sponsor for the affected initiative is accountable for explaining the
+delay.
 
 **L4 → L2: Maintenance signals to engineering.** Maintenance burden and
 structural regression signals — high rates of post-deployment defects,
@@ -411,8 +383,11 @@ layer problems — they are engineering loop problems surfaced at the release
 boundary. A pattern of release gate failures (two or more failures tracing to
 the same root cause within a rolling 60-day window) must produce a loop-level
 process change in progress within 10 business days of the pattern being
-identified. A single release failure does not trigger this SLO; the pattern
-does.
+identified, and a corresponding evaluation-suite update encoding the failure
+class, plus a re-run of the affected evaluation cases under the updated suite.
+The loop-level process change is not closed until the evaluation update has
+been filed and demonstrably passes. A single release failure does not trigger
+this SLO; the pattern does.
 
 **L2 → L1: Validation failures to demand.** When the loop builds the wrong thing
 correctly — verification passes, validation fails — the proximate cause is
@@ -425,9 +400,12 @@ The retrospective must produce a specific process change — not an
 acknowledgement that "we need to be more careful." A validation failure that
 produces a demand-signal classification (the specification did not represent the
 actual need) must produce a demand layer retrospective initiated within 5
-business days and a documented process change within 20 business days. A
-validation failure at a customer-facing system triggers the 5-business-day SLO
-regardless of the rolling pattern.
+business days and a documented process change within 20 business days, and a
+corresponding update to the demand-validation criterion, plus a re-run of the
+validation evidence in the demand layer's accumulated artefacts — closure is
+recorded only when the updated criterion is in force and the next equivalent
+demand item passes through it. A validation failure at a customer-facing
+system triggers the 5-business-day SLO regardless of the rolling pattern.
 
 **L4 → Intelligence Lifecycle: Production incidents and maintenance signals.**
 For systems whose actions are informed by intelligence — domain-graph claims,
@@ -450,6 +428,11 @@ operational expression of IGM Principle 10 (*Every engagement feeds the domain
 graph*) at the L4 boundary: production is itself an engagement on the
 substrate, and incidents are the highest-signal observations that engagement
 produces.
+
+All four feedback paths share the same closure schema: a process-change
+record, a corresponding evaluation/validation/demand-criterion update, and a
+re-run that demonstrates the change is effective. A path that produces only a
+process-change record without the evaluation update has not closed.
 
 The SLOs documented for each feedback path above govern human-driven feedback
 processes. Where governance agents are configured to continuously monitor
@@ -539,6 +522,19 @@ governance infrastructure that has not been re-verified following a material
 change is not a governed system enforcing governance — it is an unverified claim
 that governance is operating.
 
+**Termination of recursion.** The recursion of governing the governance
+terminates at a named accountable executive who accepts residual risk on the
+governance infrastructure on behalf of the organisation. This executive is
+identified by name and role in the governance portfolio register. The
+acceptance is renewed at the cadence defined by the operational Definition of
+Done review (default: quarterly) and is filed as an EvidenceArtifact in the
+governance graph with an approved_by edge to the executive's HumanOwner node.
+A governance infrastructure with no named executive holding residual-risk
+acceptance, or with an expired acceptance, is itself in stale GateState — the
+recursion cannot be silently open. The accountable executive may delegate
+operational stewardship of the governance infrastructure but may not delegate
+the residual-risk acceptance.
+
 ---
 
 ## How to Adopt
@@ -549,8 +545,8 @@ Begin at Layer 1. Establish a minimal demand governance practice: validate needs
 with evidence before engineering begins, define a measurable success criterion
 for each initiative, and name an accountable human before the loop runs. Then
 build the inner loop — governed agentic delivery in one domain, following the
-manifesto's phase model. Once the inner loop is stable at Phase 3, add the
-release gate. Once the release gate is routine, assess the operational readiness
+manifesto's phase model. Once the inner loop is stable at adoption phase 3,
+add the release gate. Once the release gate is routine, assess the operational readiness
 gate. Add the outer layers incrementally as the inner loop stabilises.
 Attempting to build all four layers simultaneously produces well-documented
 processes that no team has the capacity to operate. See
@@ -801,7 +797,7 @@ designed to address. Examples include a claims processing agent deployed to
 interact with customers, a regulatory reporting agent filing structured outputs
 to a regulator, or a trading agent executing on market positions. In each case,
 the agent is the product; its behavior is what must be governed throughout its
-operational life. See [APLC](aplc.md) for the full framework.
+operational life. See [APLC](https://github.com/arnaudgelas/aplc) for the full framework (sibling repository).
 
 The shared inner layer is the mechanism by which the two frameworks remain
 consistent. Both route engineering execution through the manifesto. The
@@ -838,10 +834,10 @@ classified as an agent product.
 The FinOps Foundation Framework defines cloud financial management practices
 across a Crawl/Walk/Run maturity model. The ASDLC's FinOps governance layer (see
 [FinOps Governance](finops-governance.md)) is aligned with this maturity model:
-Crawl-phase practices correspond to Phase 1–2 cost visibility; Walk-phase
-practices correspond to Phase 3–4 cost attribution and unit economics; Run-phase
-practices correspond to Phase 5 continuous cost optimisation and committed usage
-governance.
+Crawl-phase practices correspond to adoption phase 1–2 cost visibility;
+Walk-phase practices correspond to adoption phase 3–4 cost attribution and
+unit economics; Run-phase practices correspond to adoption phase 5 continuous
+cost optimisation and committed usage governance.
 
 The FOCUS (FinOps Open Cost and Usage Specification) provides a vendor-neutral
 standard for representing cloud cost and usage data in a normalised format that
@@ -917,6 +913,7 @@ framework, autonomy tier definitions, and epistemic tier labelling requirements.
 | `operations/governance.md`   | L4            | Operational lifecycle                                              |
 | `maintenance-governance.md`  | L4            | Maintenance lifecycle                                              |
 | `operations/dod.md`          | L4            | Operational Definition of Done                                     |
+| `retirement-gate.md`         | L4            | L4→end-of-life gate definition                                     |
 | `finops-governance.md`       | Cross-cutting | FinOps and inference cost governance                               |
 | `security-governance.md`     | Cross-cutting | Security lifecycle and SSDF mapping                                |
 | `devsecops-controls.md`      | Cross-cutting | DevSecOps pipeline control matrix by tier                          |

@@ -1,0 +1,236 @@
+---
+# ASDLC Gate Condition Registry — machine-readable source of truth.
+#
+# This YAML is the canonical normative enumeration of every ASDLC gate's
+# condition list, identifiers, titles, blocking/conditional status, and tier
+# applicability. The companion `gate-registry.md` is a human-readable view;
+# every other ASDLC document that refers to gate condition counts or titles
+# must derive from this YAML, not restate it manually.
+#
+# Lint enforces consistency: scripts/check_gate_counts.py reads this file
+# directly and reports any prose enumeration that diverges.
+#
+# Versioning policy: see gate-registry.md "Versioning policy".
+
+schema_version: "1.0"
+asdlc_version: "0.1.0"
+last_updated: "2026-05-07"
+
+# Canonical GateState enum mirror; authoritative source is governance/graph.md
+# "Canonical Enum Authority" subsection. Listed here so machine-readable
+# consumers (lint, review-system fixtures, conformance assertions) have a
+# single load.
+gate_state_enum:
+  - pass
+  - fail
+  - missing
+  - stale
+  - contradicted
+  - waived
+  - requires-human-decision
+
+gates:
+
+  - id: SR
+    name: Specification Readiness Gate
+    boundary: "L1 -> L2"
+    count: 9
+    authoritative_doc: specification-readiness.md
+    summary: >-
+      Separates governed demand from engineering execution. A specification
+      that does not satisfy all nine conditions does not enter Layer 2.
+    conditions:
+      - id: SR-1
+        title: Business Need Validated
+        blocking: true
+        tier_applicability: all
+      - id: SR-2
+        title: Value Measurable
+        blocking: true
+        tier_applicability: all
+      - id: SR-3
+        title: Acceptance Criteria Expressible
+        blocking: true
+        tier_applicability: all
+      - id: SR-4
+        title: Constraints Identified
+        blocking: true
+        tier_applicability: all
+      - id: SR-5
+        title: Accountable Human Named
+        blocking: true
+        tier_applicability: all
+      - id: SR-6
+        title: Blast Radius Assessed
+        blocking: true
+        tier_applicability: all
+      - id: SR-7
+        title: Out-of-Scope Explicitly Stated
+        blocking: true
+        tier_applicability: all
+      - id: SR-8
+        title: Loop Cost Justified
+        blocking: true
+        tier_applicability: all
+        note: depth tier-calibrated
+      - id: SR-9
+        title: Context Thread Assembled and Reviewed
+        blocking: true
+        tier_applicability: all
+
+  - id: RG
+    name: Release Gate
+    boundary: "L2 -> L3"
+    count: 8
+    authoritative_doc: release-governance.md
+    summary: >-
+      Separates engineering execution from production deployment. The condition
+      set is exhaustive; a release that does not satisfy every applicable
+      condition does not proceed.
+    conditions:
+      - id: RG-1
+        title: Evidence Bundle Complete
+        blocking: true
+        tier_applicability: all
+      - id: RG-2
+        title: Independent Validation Passed
+        blocking: true
+        tier_applicability: phase4_or_high_stakes_regulated
+        note: >-
+          Blocking at adoption phase 4+ regardless of tier; blocking at any
+          phase for high-stakes regulated systems.
+      - id: RG-3
+        title: Rollback Procedure Tested
+        blocking: true
+        tier_applicability: all
+      - id: RG-4
+        title: Accountable Human Sign-Off
+        blocking: true
+        tier_applicability: all
+      - id: RG-5
+        title: Compliance Documentation Complete
+        blocking: true
+        tier_applicability: all
+        note: scope tier-dependent
+      - id: RG-6
+        title: Dynamic Security Testing Passed
+        blocking: false
+        tier_applicability: external_facing_or_blast_radius_2_3
+        note: >-
+          Blocking for external-facing changes and for blast-radius tier 2 and
+          3. Recommended at blast-radius tier 1 unless inputs can affect other
+          users, systems, or stored data.
+      - id: RG-7
+        title: Control State Record Complete and Current
+        blocking: true
+        tier_applicability: all
+      - id: RG-8
+        title: Waiver Governance
+        blocking: true
+        tier_applicability: all
+
+  - id: DoD
+    name: Operational Definition of Done
+    boundary: "persistent (checked at L3 -> L4 Operational Readiness Gate)"
+    count: 8
+    unconditional_count: 7
+    conditional_count: 1
+    authoritative_doc: operations/dod.md
+    summary: >-
+      Persistent obligation. The Operational Readiness Gate checks the DoD at
+      the L3 -> L4 boundary; the steward re-checks it on a defined cadence
+      thereafter (practitioner default: quarterly).
+    conditions:
+      - id: DoD-1
+        title: Runbook Complete
+        blocking: true
+        tier_applicability: all
+      - id: DoD-2
+        title: Operational Observability Configured
+        blocking: true
+        tier_applicability: all
+      - id: DoD-3
+        title: On-Call Assignment Made
+        blocking: true
+        tier_applicability: all
+      - id: DoD-4
+        title: System Steward Assigned
+        blocking: true
+        tier_applicability: all
+      - id: DoD-5
+        title: Security Scan Clean
+        blocking: true
+        tier_applicability: all
+      - id: DoD-6
+        title: License Compliance Confirmed
+        blocking: true
+        tier_applicability: all
+      - id: DoD-7
+        title: Trace Retention Policy Set
+        blocking: true
+        tier_applicability: all
+      - id: DoD-8
+        title: DR/Failover Tested
+        blocking: false
+        tier_applicability: blast_radius_3
+        note: >-
+          Blocking for blast-radius tier 3. Recommended at blast-radius tier 1
+          and 2 unless required by regulatory or contractual mandate.
+
+  - id: RT
+    name: Retirement Gate
+    boundary: "L4 -> end-of-life"
+    count: 8
+    authoritative_doc: retirement-gate.md
+    summary: >-
+      The fourth gate. Governs safe decommissioning of agent-built systems.
+      The retirement-gate.md document is the canonical prose authority; this
+      registry mirrors the count and titles.
+    conditions:
+      - id: RT-1
+        title: Stewardship Handoff or Termination
+        blocking: true
+        tier_applicability: all
+      - id: RT-2
+        title: Runbook Archived and Immutable
+        blocking: true
+        tier_applicability: all
+      - id: RT-3
+        title: Trace and Reasoning-Record Archival
+        blocking: true
+        tier_applicability: all
+      - id: RT-4
+        title: Model and Prompt Deprecation Propagated
+        blocking: true
+        tier_applicability: all
+      - id: RT-5
+        title: IGM Claim Retraction
+        blocking: false
+        tier_applicability: igm_bearing_only
+        note: Blocking for IGM-bearing systems; not applicable otherwise.
+      - id: RT-6
+        title: Dependency Consumers Notified
+        blocking: true
+        tier_applicability: first_party_consumers
+      - id: RT-7
+        title: FinOps Zero-Out
+        blocking: true
+        tier_applicability: all
+      - id: RT-8
+        title: Final Accountability Sign-Off
+        blocking: true
+        tier_applicability: all
+
+# Aliases — for backward-compatible references in older prose. Lint treats
+# any reference to an alias as if it referenced the canonical gate name.
+aliases:
+  - alias: "SR Gate"
+    canonical: Specification Readiness Gate
+  - alias: "G1"
+    canonical: Specification Readiness Gate
+  - alias: "G2"
+    canonical: Release Gate
+  - alias: "G3"
+    canonical: Operational Readiness Gate
+  - alias: "G4"
+    canonical: Retirement Gate

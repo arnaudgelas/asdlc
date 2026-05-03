@@ -5,7 +5,7 @@ _The measurement framework for demand layer health._
 See [Demand & Value](value.md) for the demand layer processes these
 metrics govern. See [Specification Readiness](../specification-readiness.md) for
 the gate whose health several of these metrics assess. See
-[adoption-metrics.md](../../adoption-metrics.md) for the inner-loop metrics this
+[adoption-metrics.md](../../adoption/metrics.md) for the inner-loop metrics this
 document complements.
 
 ---

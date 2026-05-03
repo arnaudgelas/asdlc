@@ -59,6 +59,17 @@ compliance condition waivers, the waiver owner must be the compliance function
 lead or a named delegate. The waiver owner cannot be the same person who
 requested the waiver.
 
+**Grantor distinction.** The grantor of a waiver, including a renewed waiver,
+must not be the same individual as the accountable human who would authorise
+gate pass under the waived condition. For Release Gate waivers, this means
+the waiver grantor must be a different individual from the release manager
+authorising the deployment. The separation prevents a single person from
+both waiving a gate condition and authorising the release that proceeds over
+the waived condition; without it, the waiver mechanism collapses into
+self-approval. This rule is canonical here and is restated in
+[release-governance.md](release-governance.md) Condition 8 (Waiver
+Governance) for the Release Gate; both statements bind.
+
 **Risk description.** A statement of the specific risk introduced by not
 satisfying the gate condition. Not a general description of the condition — a
 specific statement of what could go wrong as a result of proceeding without the
@@ -102,7 +113,22 @@ record.
 ## Section 3: Waiver Lifecycle
 
 A waiver moves through five states from approval to closure. The GateState of
-the underlying condition tracks this lifecycle in the governance graph.
+the underlying condition tracks this lifecycle in the governance graph using
+the canonical seven-state GateState enum defined in
+[governance/graph.md](governance/graph.md) "Canonical Enum Authority"; this
+document does not introduce new GateState values. Compound conditions —
+"waived with a still-current expiry" — are expressed as predicates over the
+canonical state and the waiver record's attributes, not as new states.
+
+**Gate-time enum rule.** At gate assessment, a waiver-protected condition is
+recorded as `waived` only if the waiver expiry is later than the
+gate-assessment instant — equivalent to the predicate
+`GateState = waived AND waiver.expiry > t_gate`. A condition whose waiver
+expiry is at or before the gate-assessment instant has GateState reverted to
+its pre-waiver value (typically `fail` or `missing`); it does not record as
+`waived` and the gate does not pass on its account. The seven canonical
+states are the complete enum; "waived-but-expiring" and similar compound
+labels are not states and must not be filed as such.
 
 **Issued.** The waiver has been approved by the waiver owner and the accountable
 human. The gate condition GateState is set to `waived`. The compensating control
@@ -130,6 +156,30 @@ failure requiring steward action within the remediation SLO.
 GateState updates to `pass`. The waiver record is closed with a reference to the
 evidence artefact that satisfied the condition. Closed waivers are retained in
 the governance record for audit purposes.
+
+### Audit Trail and Immutability
+
+Waiver records are immutable once issued. Subsequent lifecycle events —
+renewal, expiry without renewal, closure on remediation, or attachment of an
+updated compensating control — do not overwrite the issued record. Renewal
+specifically creates a new waiver record with a `supersedes` edge in the
+governance graph pointing to the prior record; the prior record is retained
+unchanged. A waiver record that has been edited after issuance is not a
+waiver record — it is a draft, and any gate pass that referenced an
+edited-after-issuance record is not a clean pass.
+
+The audit trail must record three identifiers as distinct: the requester
+(the person who initiated the waiver request), the grantor (the person who
+approved the waiver under the grantor-distinction rule above), and the
+reviewer of any compensating control (the function lead who confirmed the
+compensating control is operational and adequate). These three identifiers
+must be explicitly distinct in the waiver record; conflating any two of
+them — for example, the requester recording themselves as the compensating-
+control reviewer — defeats the separation-of-duties property the audit
+trail exists to preserve. Where the organisation's structure means the same
+function lead is the natural reviewer for both the waiver and the
+compensating control, a second qualified reviewer must be named for the
+compensating control.
 
 ---
 

@@ -7,6 +7,15 @@ produced. See the [Manifesto](../manifesto.md) for what the Agentic Loop
 requires of a specification. See [Demand Metrics](demand/metrics.md) for how
 gate health is measured.
 
+This document is the canonical specification for the Specification Readiness
+Gate's conditions. The condition list, count, and identifiers are also
+recorded in [governance/gate-registry.md](governance/gate-registry.md), which
+is the cross-document precedence registry; this file is the prose authority
+for the conditions' substantive content. Where another document's count or
+title diverges from the registry, the registry governs and the divergent
+document is corrected; where another document's prose diverges from this
+file, this file governs.
+
 ---
 
 ## What the Specification Readiness Gate Is
@@ -77,22 +86,26 @@ down what they thought they were building or why.
 criterion exists. It states what the business outcome looks like in numbers,
 within a defined timeframe, compared to a defined baseline.
 
-**Minimum evidence by risk tier.**
+**Minimum evidence by risk tier.** Tier references in this section, and
+throughout this document, denote blast-radius tier unless explicitly stated
+otherwise.
 
-At Tier 1: a single quantifiable success criterion, stated in the specification.
-"Reduces analyst lookup time by at least 15 minutes per case, measured on the
-first 100 cases after deployment" is sufficient. The baseline value must be
-stated.
+At blast-radius tier 1: a single quantifiable success criterion, stated in
+the specification. "Reduces analyst lookup time by at least 15 minutes per
+case, measured on the first 100 cases after deployment" is sufficient. The
+baseline value must be stated.
 
-At Tier 2: a success criterion with a defined measurement method, a named owner,
-and a time boundary. The measurement method must exist — it cannot be "we will
-figure out how to measure this after deployment."
+At blast-radius tier 2: a success criterion with a defined measurement
+method, a named owner, and a time boundary. The measurement method must
+exist — it cannot be "we will figure out how to measure this after
+deployment."
 
-At Tier 3: a success criterion with documented measurement methodology, a named
-accountable owner separate from the specification analyst, a time boundary, and
-a mechanism for collecting the measurement data that is confirmed to exist
-before loop entry. The business demand sponsor signs off on the success
-criterion and its measurement methodology explicitly.
+At blast-radius tier 3: a success criterion with documented measurement
+methodology, a named accountable owner separate from the specification
+analyst, a time boundary, and a mechanism for collecting the measurement
+data that is confirmed to exist before loop entry. The business demand
+sponsor signs off on the success criterion and its measurement methodology
+explicitly.
 
 **Passing case.** "Success criterion: mean time to resolution for claims in
 category B reduces from 47 minutes (Q4 2025 baseline, n=1,847 cases) to 32
@@ -131,7 +144,8 @@ translated into executable evaluations, with explicit pass/fail conditions.
 Domain expert sign-off is documented.
 
 At Tier 3: acceptance criteria follow the structured format defined in the
-companion requirements engineering framework (`companion-re-framework.md`),
+companion requirements engineering framework (`companion-re-framework.md`,
+which is an alias for `../companion/re-framework.md` in the parent monorepo),
 covering both behavioural criteria and constraint criteria. They include
 adversarial cases and edge conditions. Domain expert review is recorded with
 specific sign-off on each criterion category.
@@ -676,6 +690,12 @@ expected business outcome justify running it? A rough order-of-magnitude
 estimate is sufficient evidence. What is not sufficient is silence — the absence
 of any estimate.
 
+For calibrated loop-cost ranges by tier — reviewer-hour bands, governance
+overhead estimates, and inference-cost worked examples — see
+[annex-adoption-cost.md](annex-adoption-cost.md). The annex provides the
+quantitative bands that this condition's prose evaluates against; this
+condition is the gate test, the annex is the calibration source.
+
 **Minimum evidence by risk tier.**
 
 At Tier 1: a brief written statement confirming that the expected value
@@ -1120,12 +1140,13 @@ discard even when the validation evidence does not support it.
 
 ## Phase-Calibrated Gate
 
-The gate scales with the organisation's inner-loop maturity phase. The nine
-conditions remain constant — they are non-negotiable. What changes is the
-formality of the assessment, the depth of evidence required, and the tooling
-available to support it.
+The gate scales with the organisation's inner-loop adoption phase (the
+manifesto's phase model, not a blast-radius tier). The nine conditions
+remain constant — they are non-negotiable. What changes is the formality of
+the assessment, the depth of evidence required, and the tooling available to
+support it. References to "Phase N" below denote adoption phase N.
 
-**Phase 2.** The gate is run as an informal checklist. The product owner reviews
+**Adoption phase 2.** The gate is run as an informal checklist. The product owner reviews
 the specification against the nine conditions and documents the outcome in the
 ticket or specification document. Single-reviewer assessment is acceptable. Most
 gate failures at this phase will be on Conditions 2 (value measurable), 7

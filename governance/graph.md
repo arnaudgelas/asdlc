@@ -203,6 +203,35 @@ inconsistency. A requires-human-decision condition requires a human to exercise
 judgment. These are not gaps in the governance agent model — they are the
 boundary that defines where agent assistance ends and human governance begins.
 
+### Canonical Enum Authority
+
+This document defines the canonical GateState enum. The seven values — pass,
+fail, missing, stale, contradicted, waived, and requires-human-decision — are
+the complete and exhaustive set. Every other ASDLC document must use exactly
+these seven values when describing GateState; no document may introduce an
+eighth value, rename one of the seven, or vary their semantics.
+
+Compound conditions that combine GateState with other graph data (for example,
+"waived with a waiver whose expiry is still in the future", or "stale and
+deferred to a later gate") must be expressed as derived predicates over the
+canonical state and the relevant graph attributes — for example,
+`GateState = waived AND waiver.expiry > t`, or
+`GateState = stale AND deferral.target_gate IS NOT NULL`. Such compound
+conditions must not be introduced as new GateState values. A predicate over the
+graph is the correct construct; an enum extension is not.
+
+Pre-gate workflow statuses — for example, draft, in-review, ready-for-gate, or
+returned-for-rework — are not GateStates. They describe the lifecycle of an
+artefact before a gate condition has been formally assessed and live outside
+this enum. A document that conflates a workflow status with a GateState
+violates this authority.
+
+A document that introduces a new GateState value, that omits a canonical value
+without a documented migration path, or that varies the semantics of a
+canonical value violates this authority. Such a document must either land a
+major-version registry update first (see § 2.2) or replace the proposed
+extension with a derived predicate over the canonical state.
+
 **Note — Control State Record and GateState are distinct.** The control state
 record is a concrete artefact — an EvidenceArtifact node in the governance graph
 — produced by the engineering loop at completion. It contains the structured
@@ -557,13 +586,16 @@ gate and artefact. GateDecisions are the formal record of governance judgments �
 they record not only the outcome but the conditions assessed, the GateState of
 each condition, the evidence reviewed, and the human who decided. A GateDecision
 node carries a stable identifier, a gate type drawn from: specification
-readiness, release, or operational readiness, the date of assessment, the
-outcome drawn from: pass, conditional, or fail, the set of conditions assessed
-with their GateState values at assessment time, a reference to the deciding
-human (HumanOwner), and an expiry date if the outcome was conditional.
-GateDecisions connect to the Specification, Release, or Deployment they
-assessed, to the HumanOwner who made the determination, and to the
-EvidenceArtifacts that were reviewed as part of the assessment.
+readiness, release, operational readiness, or retirement, the date of
+assessment, the outcome drawn from: pass, conditional, or fail, the set of
+conditions assessed with their GateState values at assessment time, a reference
+to the deciding human (HumanOwner), and an expiry date if the outcome was
+conditional. GateDecisions connect to the Specification, Release, Deployment,
+or retiring system they assessed, to the HumanOwner who made the determination,
+and to the EvidenceArtifacts that were reviewed as part of the assessment.
+
+<!-- review/prompts/*.md may need re-checking after this change -->
+
 
 ---
 
@@ -721,6 +753,550 @@ regulatory retention mandate.
 
 ---
 
+## 2.1 Schema (formal)
+
+The node and edge type definitions in the preceding sections are normative at
+the semantic level. To make those definitions enforceable in an implementation,
+organisations must publish a formal schema that fixes required fields, types,
+identifier patterns, and cardinality constraints. The fragments below are
+exemplars expressed in JSON Schema; an organisation may publish equivalent
+schemas in JSON Schema, XSD, Protobuf, RDF/SHACL, or any comparable schema
+language. Organisations must publish a schema for every node type and every
+edge type defined in this document before claiming governance-graph
+conformance.
+
+The fragments are illustrative only. They demonstrate the level of precision
+required and the patterns to follow; they are not the complete schema set.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asdlc.example/schema/EvidenceArtifact.json",
+  "title": "EvidenceArtifact",
+  "type": "object",
+  "required": [
+    "id",
+    "content_hash",
+    "filed_at",
+    "epistemic_tier",
+    "producer_id",
+    "freshness_window_seconds"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^evd:[A-Za-z0-9_-]{1,64}$"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "filed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "epistemic_tier": {
+      "type": "string",
+      "enum": [
+        "human-authored",
+        "tool-generated",
+        "agent-proposed-with-human-review",
+        "agent-generated"
+      ]
+    },
+    "producer_id": {
+      "type": "string",
+      "pattern": "^(agent|tool|human):[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "human_reviewer_id": {
+      "type": "string",
+      "pattern": "^human:[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "freshness_window_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tool_invocations": {
+      "type": "array",
+      "items": { "$ref": "ToolInvocation.json" }
+    },
+    "external_data_sources": {
+      "type": "array",
+      "items": { "$ref": "ExternalDataSource.json" }
+    },
+    "tool_authorization_basis": {
+      "type": "string",
+      "pattern": "^tar:[A-Za-z0-9_-]{1,64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "epistemic_tier": { "const": "agent-proposed-with-human-review" }
+        }
+      },
+      "then": { "required": ["human_reviewer_id"] }
+    }
+  ]
+}
+```
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asdlc.example/schema/GateDecision.json",
+  "title": "GateDecision",
+  "type": "object",
+  "required": [
+    "id",
+    "gate_type",
+    "assessed_at",
+    "outcome",
+    "deciding_human_id",
+    "conditions_assessed"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^gd:[A-Za-z0-9_-]{1,64}$"
+    },
+    "gate_type": {
+      "type": "string",
+      "enum": ["specification-readiness", "release", "operational-readiness"]
+    },
+    "assessed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["pass", "conditional", "fail"]
+    },
+    "deciding_human_id": {
+      "type": "string",
+      "pattern": "^human:[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "expiry": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "conditions_assessed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["condition_id", "gate_state"],
+        "properties": {
+          "condition_id": { "type": "string" },
+          "gate_state": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "missing",
+              "stale",
+              "contradicted",
+              "waived",
+              "requires-human-decision"
+            ]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^evd:[A-Za-z0-9_-]{1,64}$"
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "outcome": { "const": "conditional" } } },
+      "then": { "required": ["expiry"] }
+    }
+  ]
+}
+```
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asdlc.example/schema/HumanOwner.json",
+  "title": "HumanOwner",
+  "type": "object",
+  "required": ["id", "role", "availability_status"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^human:[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "demand-sponsor",
+        "specification-analyst",
+        "steward",
+        "economics-owner",
+        "release-approver",
+        "governance-portfolio-owner",
+        "waiver-grantor",
+        "tool-authorisation-grantor"
+      ]
+    },
+    "availability_status": {
+      "type": "string",
+      "enum": ["available", "unavailable", "delegated"]
+    },
+    "delegate_id": {
+      "type": "string",
+      "pattern": "^human:[A-Za-z0-9_.:-]{1,128}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "availability_status": { "const": "delegated" } }
+      },
+      "then": { "required": ["delegate_id"] }
+    }
+  ]
+}
+```
+
+The full schema set must define equivalent fragments for every node type listed
+in the Node Types section and every edge type listed in the Edge Types section,
+including identifier patterns, required and optional fields, types (string,
+integer, ISO 8601 timestamp, sha-256 hash hex), and any conditional
+requirements implied by the prose (for example, that an EvidenceArtifact at the
+agent-proposed-with-human-review tier requires a human_reviewer_id).
+
+### Cardinality rules
+
+The following cardinality rules are normative for the edges defined in this
+document. An organisation's schema must enforce them.
+
+- **validates** (DemandItem → Specification): one DemandItem may validate many
+  Specifications; each Specification must be validated by exactly one
+  DemandItem. The validates edge is required at Specification creation; a
+  Specification with no validates edge must not pass the Specification
+  Readiness Gate.
+- **implements** (Specification → AcceptanceCriterion; Specification →
+  Constraint): one Specification implements many AcceptanceCriteria and many
+  Constraints (1:N in each case). Each Specification must have at least one
+  AcceptanceCriterion and at least one Constraint linked by an implements edge
+  for the Specification Readiness Gate to pass.
+- **verifies** (EvidenceArtifact → AcceptanceCriterion; EvidenceArtifact →
+  Control): many EvidenceArtifacts may verify many AcceptanceCriteria and many
+  Controls (M:N). For each AcceptanceCriterion, at least one verifies edge
+  from a non-stale EvidenceArtifact is required for the corresponding GateState
+  to evaluate to pass; absence of any verifies edge produces a missing
+  GateState.
+- **mitigates** (Control → Risk): many Controls may mitigate many Risks (M:N).
+  A Risk with no mitigates edge from any Control is in a structurally
+  unmitigated state and must carry an explicit acceptance record on the
+  associated GateDecision before any gate can pass.
+- **violates** (Incident → Constraint; Finding → Constraint): many Incidents
+  or Findings may violate many Constraints (M:N).
+- **depends_on** (Build → Dependency; Deployment → Dependency): many Builds
+  and Deployments may depend on many Dependencies (M:N). Every Dependency
+  reachable through a depends_on edge from a Build must appear in the SBOM
+  EvidenceArtifact for that Build.
+- **generated_by** (EvidenceArtifact → Agent or Tool): each EvidenceArtifact
+  must have exactly one generated_by edge; multiple producers must instead be
+  represented by an aggregating EvidenceArtifact whose tool_invocations list
+  records the individual producers.
+- **approved_by** (Release → HumanOwner; GateDecision → HumanOwner): one
+  Release is approved by exactly one HumanOwner (1:1); one GateDecision is
+  approved by exactly one HumanOwner (1:1). The approved_by edge is required
+  at Release Gate sign-off; a Release with no approved_by edge must not be
+  promoted to Deployment.
+- **owned_by** (any governance node → HumanOwner): every governance node must
+  have exactly one current owned_by edge to a HumanOwner with availability
+  status `available` or `delegated`. Multiple historical owned_by edges may
+  exist through supersedes lineage.
+- **deployed_as** (Release → Deployment): one Release may be deployed as many
+  Deployments (1:N).
+- **observed_by** (Deployment → EvidenceArtifact): one Deployment may be
+  observed by many EvidenceArtifacts (1:N).
+- **costs** (Deployment or Specification → CostRecord): one Deployment or
+  Specification may have many CostRecords (1:N).
+- **supersedes** (Specification, Release, or EvidenceArtifact → prior of same
+  type): forms a directed acyclic graph; cycles are forbidden. Each node may
+  supersede at most one prior node and may be superseded by at most one later
+  node.
+- **triggered_by** (Incident → Deployment event; Risk → Incident): many
+  Incidents may be triggered by many Deployment events (M:N); many Risks may
+  be triggered by many Incidents (M:N).
+- **invoked_via** (EvidenceArtifact → Tool): many EvidenceArtifacts may be
+  produced via many Tools (M:N); each invoked_via edge represents a single
+  invocation, with multiple invocations expressed as multiple edges.
+- **authorized_by** (ToolAuthorizationRecord → HumanOwner): one
+  ToolAuthorizationRecord is authorised by exactly one HumanOwner (1:1).
+
+### Referential integrity
+
+Deletion of a node referenced by a non-superseded edge is forbidden. A node
+that has been replaced by a newer version must be marked as superseded through
+the supersedes edge; the prior node remains in the graph and remains
+queryable, but is no longer the current node for queries that select the
+current state. The supersedes chain provides the lineage path for any
+replacement; it is the only mechanism by which a node may be effectively
+removed from current queries while preserving the audit record. An attempt to
+delete a node without a supersedes-style replacement, or to delete a
+HumanOwner referenced by an active approved_by or owned_by edge, must fail at
+the schema level.
+
+## 2.2 Schema versioning
+
+The governance graph schema is itself a versioned governance artefact. The
+following versioning policy applies.
+
+- The canonical GateState enum is normative. Adding a new value, removing a
+  value, or altering the semantics of an existing value requires a
+  major-version increment of the schema registry and a documented migration
+  plan for all affected graph instances.
+- New node types or edge types may be added in a minor-version registry
+  update without invalidating existing graph instances, provided no existing
+  node or edge type is altered.
+- Adding a new optional field to an existing node or edge type is a
+  minor-version change. Adding a new required field, removing a field, or
+  changing the type or pattern of an existing field is a major-version
+  change.
+- Renaming an existing node or edge type is a major-version change and
+  requires a documented migration path with a supersedes-style mapping from
+  the old type name to the new one. The migration mapping itself is a
+  governance artefact and must be retained for the same retention period as
+  the underlying graph data.
+- Existing EvidenceArtifact records remain valid against the schema version
+  they were filed under, even after the registry advances to a later version.
+  Queries against multi-version graphs must be schema-version-aware: the
+  query engine must apply the field set, type rules, and identifier patterns
+  appropriate to the schema version each artefact was filed under.
+
+## 2.3 GateState computation algorithm
+
+The following algorithm is normative for computing the GateState of a single
+gate condition at a specific instant. It is expressed as language-agnostic
+pseudocode. Two compliant implementations of the governance graph must
+produce the same GateState for the same input data at the same instant;
+divergence in computed GateState for identical inputs is non-conformance.
+
+```
+function compute_gate_state(condition, instant):
+    # condition is a registry definition; instant is an ISO 8601 timestamp.
+
+    # 1. Locate verifying evidence.
+    verifying = select EvidenceArtifact e
+                where exists verifies(e, condition)
+                  and e.filed_at <= instant
+                  and not superseded(e, instant)
+
+    # 2. Locate active waivers.
+    waivers = select Waiver w
+              where w.condition_id = condition.id
+                and w.granted_at <= instant
+                and w.expiry > instant
+                and not revoked(w, instant)
+
+    # 3. Locate human-decision artefacts.
+    human_decisions = select EvidenceArtifact e in verifying
+                      where e.kind = "human-decision-record"
+
+    # 4. Missing check.
+    if verifying is empty and waivers is empty:
+        return missing
+
+    # 5. Active-waiver check (waiver overrides downstream states except
+    #    contradicted, which signals an internal inconsistency that a waiver
+    #    cannot validly suppress without explicit acknowledgement).
+    if waivers is non-empty:
+        if exists_contradiction(verifying):
+            return contradicted
+        return waived
+
+    # 6. Contradiction check.
+    if exists_contradiction(verifying):
+        # Two artefacts disagree on a load-bearing fact identified by the
+        # condition's registry definition (e.g., model_version,
+        # dependency_version, sbom_hash).
+        return contradicted
+
+    # 7. Freshness check.
+    fresh = filter verifying where
+            (e.filed_at + e.freshness_window_seconds) > instant
+            and not invalidated_by_event(e, instant)
+    if fresh is empty:
+        # An expired waiver, if any, has already been excluded above; the
+        # condition has no current evidence supporting a pass state.
+        return stale
+
+    # 8. Human-decision flag.
+    if condition.requires_human_decision and human_decisions is empty:
+        return requires-human-decision
+
+    # 9. Substantive failure check.
+    if exists e in fresh where e.verdict = "fail":
+        return fail
+
+    # 10. Default.
+    return pass
+```
+
+The functions `superseded`, `revoked`, `exists_contradiction`, and
+`invalidated_by_event` are themselves derived from graph structure: a node is
+superseded if a supersedes edge from a later node points to it with effective
+date prior to the instant; a waiver is revoked if a Revocation node references
+it with effective date prior to the instant; a contradiction exists if two
+non-superseded EvidenceArtifacts verifying the same condition disagree on a
+load-bearing fact identified by the condition's registry definition; an
+artefact is invalidated by an event if a depends_on or behavioral_dependency
+relationship targets a node whose state changed after the artefact was filed
+and the registry definition marks that change as freshness-invalidating.
+
+## 2.4 Query examples (concrete)
+
+The following examples illustrate the canonical question "Which Risks
+currently have no Control with a passing test record within the last 90
+days?" expressed against three implementation substrates. Each example is
+syntactically plausible against the schemas described above and includes
+inline comments mapping clauses to node and edge types.
+
+```cypher
+// Cypher (property graph)
+// Risks lacking a mitigates edge from a Control whose most recent test
+// EvidenceArtifact is non-stale and within 90 days.
+MATCH (r:Risk { acceptance_status: "blocking" })
+WHERE NOT EXISTS {
+  MATCH (c:Control)-[:mitigates]->(r)        // Control → Risk
+  MATCH (e:EvidenceArtifact)-[:verifies]->(c) // Evidence → Control
+  WHERE e.kind = "control-test-result"
+    AND e.verdict = "pass"
+    AND e.filed_at >= datetime() - duration({days: 90})
+}
+RETURN r.id AS risk_id, r.category AS category;
+```
+
+```sparql
+# SPARQL (RDF)
+# Same question, expressed against an RDF representation.
+PREFIX g: <https://asdlc.example/graph/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?risk_id ?category
+WHERE {
+  ?risk a g:Risk ;
+        g:id ?risk_id ;
+        g:category ?category ;
+        g:acceptance_status "blocking" .
+  FILTER NOT EXISTS {
+    ?control g:mitigates ?risk .                # Control mitigates Risk
+    ?evidence g:verifies ?control ;             # Evidence verifies Control
+              g:kind "control-test-result" ;
+              g:verdict "pass" ;
+              g:filed_at ?filed_at .
+    FILTER (?filed_at >= (NOW() - "P90D"^^xsd:duration))
+  }
+}
+```
+
+```sql
+-- SQL (relational)
+-- Same question, expressed against a relational projection of the graph.
+-- Tables: risks, controls, mitigates_edges, evidence_artifacts, verifies_edges.
+SELECT r.id AS risk_id, r.category
+FROM risks r
+WHERE r.acceptance_status = 'blocking'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM mitigates_edges m                              -- Control → Risk
+    JOIN controls c               ON c.id = m.control_id
+    JOIN verifies_edges v         ON v.target_id = c.id -- Evidence → Control
+                                 AND v.target_kind = 'Control'
+    JOIN evidence_artifacts e     ON e.id = v.evidence_id
+    WHERE m.risk_id = r.id
+      AND e.kind = 'control-test-result'
+      AND e.verdict = 'pass'
+      AND e.filed_at >= NOW() - INTERVAL '90 days'
+  );
+```
+
+The following two examples illustrate further canonical questions in Cypher
+only.
+
+```cypher
+// "Which AcceptanceCriteria of the active Specification have GateState =
+//  missing right now?"
+// AcceptanceCriteria reachable from the active Specification with no
+// non-superseded verifies edge from any EvidenceArtifact.
+MATCH (s:Specification { status: "active" })-[:implements]->(ac:AcceptanceCriterion)
+WHERE NOT EXISTS {
+  MATCH (e:EvidenceArtifact)-[:verifies]->(ac)
+  WHERE NOT EXISTS { MATCH (later:EvidenceArtifact)-[:supersedes]->(e) }
+}
+RETURN s.id AS specification_id, ac.id AS acceptance_criterion_id;
+```
+
+```cypher
+// "Which active waivers expire in the next 14 days, and which conditions do
+//  they cover?"
+MATCH (w:Waiver)
+WHERE w.granted_at <= datetime()
+  AND w.expiry > datetime()
+  AND w.expiry <= datetime() + duration({days: 14})
+  AND NOT EXISTS { MATCH (rev:Revocation)-[:revokes]->(w) }
+RETURN w.id AS waiver_id,
+       w.condition_id AS condition_id,
+       w.expiry AS expires_at,
+       w.granted_by AS waiver_grantor;
+```
+
+## 2.5 Conformance test
+
+An organisation claiming governance-graph conformance must demonstrate, on a
+synthetic test corpus, that its implementation produces the canonical
+GateState defined in § 2.3 for every condition under at least the following
+scenarios.
+
+- **Fresh-evidence pass.** A condition with a single non-stale verifying
+  EvidenceArtifact at the appropriate epistemic tier, no contradictions, and
+  no active waiver. Expected GateState: pass.
+- **Stale-window expiry.** A condition with a verifying EvidenceArtifact
+  whose freshness window has elapsed prior to the evaluation instant, no
+  active waiver, no contradictions. Expected GateState: stale.
+- **Contradicted artefact pair.** A condition with two non-superseded
+  verifying EvidenceArtifacts that disagree on a load-bearing fact (for
+  example, model_version), no active waiver. Expected GateState:
+  contradicted.
+- **Expired waiver fall-through.** A condition with a Waiver whose expiry is
+  prior to the evaluation instant and verifying evidence that is otherwise
+  stale. Expected GateState: stale (the expired waiver does not preserve the
+  pass state).
+- **Active waiver.** A condition with a Waiver whose expiry is after the
+  evaluation instant, regardless of underlying evidence freshness. Expected
+  GateState: waived.
+- **Missing artefact.** A condition with no verifying EvidenceArtifact and no
+  active waiver. Expected GateState: missing.
+- **Requires-human-decision flag.** A condition whose registry definition
+  carries the requires-human-decision flag, with verifying evidence present
+  but no human-decision-record EvidenceArtifact. Expected GateState:
+  requires-human-decision.
+- **Multi-condition gate, mixed states.** A gate with at least three
+  conditions where one is in pass state, one is waived (active waiver), and
+  one is missing. Expected GateDecision outcome at the gate level: not pass,
+  with each condition's GateState surfaced individually.
+
+This is the conformance baseline. The schema registry repository should ship
+a synthetic test corpus, expected GateState outputs, and a conformance test
+harness once the Phase 2 schema work lands. An implementation that passes the
+baseline corpus has demonstrated GateState computation parity with the
+canonical algorithm; an implementation that fails any baseline scenario has
+not.
+
+---
+
 ## Governance State Projection
 
 The governance graph must be able to project future governance state, not only
@@ -773,84 +1349,95 @@ discovery from a gate-blocking reactive event into a routine pre-gate activity.
 
 ---
 
-## Governance Quality Score
+## Governance Quality Indicators
 
-GateState is binary per condition: a condition is either pass, fail, stale,
-missing, contradicted, waived, or requires-human-decision. A gate that passes —
-all conditions at pass or waived — is a governance outcome. But not all gate
-passes represent the same governance assurance. A gate pass where every
-condition is backed by human-authored evidence, independently reviewed, with no
-waivers, and where the deciding human documented specific challenges before
-sign-off provides different governance assurance than a gate pass where every
-condition is backed by agent-generated evidence, reviewed nominally, with three
-active waivers covering critical conditions, and where sign-off was
-instantaneous. The governance graph must capture this distinction. GateState
-cannot capture it. The Governance Quality Score does.
+GateState is per-condition: a condition resolves to pass, fail, missing,
+stale, contradicted, waived, or requires-human-decision. A gate that closes
+with every condition at pass or waived is a governance outcome. Not all such
+outcomes represent the same governance assurance. A gate closure where every
+condition is backed by human-authored evidence, independently reviewed, with
+no waivers, and where the deciding human documented specific challenges before
+sign-off provides different governance assurance than a gate closure where
+every condition is backed by agent-generated evidence, reviewed nominally,
+with several active waivers covering critical conditions, and where sign-off
+was instantaneous. The governance graph must make these differences observable.
+GateState alone does not. Governance quality indicators do.
 
-The **Governance Quality Score (GQS)** is a computed integer from 0 to 100
-assigned to any GateDecision node at the time of gate closure. It is not a
-subjective rating — it is derived from four components with defined weights,
-each computable from the governance graph's existing data.
+The four indicators below are computed at gate closure from data already
+present in the governance graph. Each indicator is a descriptive measure
+recorded as an attribute of the GateDecision node and projected into portfolio
+dashboards and trend reports. The indicators are not synthesised into a single
+score, and none of them is gating: a gate decision is determined by the
+GateState of its conditions and the governance process around sign-off, not by
+the indicators below.
 
-**Epistemic composition (40% weight).** The proportion of gate artefacts at the
-human-authored or tool-generated epistemic tier versus the
-agent-proposed-with-review or agent-generated tier. The score for this dimension
-ranges from 0 to 40. A gate pass where every condition is supported by
-human-authored or tool-generated evidence with full documentation scores 40. A
-gate pass where every condition is supported by agent-generated evidence with
-nominal human review scores 0. Intermediate compositions are scored
-proportionally: a gate where 60% of artefacts are human-authored or
-tool-generated and 40% are agent-generated scores 24 on this dimension. The
-epistemic composition component reflects the fundamental principle that the more
-of the evidence chain that involves direct human authorship or deterministic
-tool execution, the more the gate assessment can be relied upon as representing
-actual governance assurance rather than agent-summarised governance assurance.
+**Epistemic composition ratio.** Recorded as a percentage. The proportion of
+gate artefacts whose epistemic tier is human-authored or tool-generated, over
+the total number of gate artefacts assessed. A complementary percentage
+(agent-proposed-with-human-review plus agent-generated) makes the agent share
+of the evidence chain visible. The indicator is not weighted, scored on a
+fixed scale, or thresholded; it is a descriptive measure of the evidence
+composition behind the gate decision.
 
-**Waiver burden (20% weight).** The number of active waivers at gate time,
-weighted by waiver duration and the criticality of the condition each waiver
-covers. The score for this dimension ranges from 0 to 20. Zero active waivers
-scores 20. Each active waiver reduces the score proportionally, with waivers
-covering high-criticality conditions reducing the score more than waivers
-covering standard conditions, and long-duration waivers reducing the score more
-than short-duration ones. A gate pass that relies on waivers for critical
-conditions accumulated over multiple prior gates scores near 0 on this
-dimension.
+**Active waiver burden.** Recorded as a count, broken down by criticality of
+the condition each waiver covers. The breakdown distinguishes at least
+high-criticality conditions from standard conditions and reports the number of
+active waivers in each band, together with the median and maximum remaining
+waiver duration in days. The indicator is not collapsed to a single score; the
+count and breakdown are the indicator.
 
-**Independence quality (20% weight).** Whether the independent validator was
-organisationally separate from the engineering team responsible for the
-artefacts they validated, and whether the accountable human sign-off was
-provided by a different person from the specification analyst. The score for
-this dimension ranges from 0 to 20. Full organisational separation of validator
-and sign-off from the engineering team scores 20. A gate where the independent
-validator is a peer within the same team, or where the accountable sign-off is
-the same person as the specification analyst, scores 0. Intermediate
-independence arrangements score proportionally. Independence quality reflects
-the principle that governance assurance is weaker when the people who produced
-the evidence are also the people who assessed it.
+**Independence quality.** Recorded as a binary indicator (independent or
+not-independent), with the precise definition adopted by
+[Release Governance](../release-governance.md). A gate is independent only
+when the independent validator is organisationally separate from the
+engineering team responsible for the artefacts they validated, and when the
+accountable human sign-off is provided by a different person from the
+specification analyst. Intermediate arrangements are recorded as
+not-independent; partial credit is not assigned.
 
-**Approval signal quality (20% weight).** Derived from the approval time pattern
-— the proportion of review time spent on primary evidence artefacts versus
-agent-generated summaries — and the challenge rate: whether any conditions were
-formally questioned, whether the deciding human requested strengthening of any
-evidence before sign-off, and whether any condition was returned for rework. The
-score for this dimension ranges from 0 to 20. A sign-off with documented
-challenge, formal response to challenge, and at least one condition strengthened
-before approval scores 20. An instantaneous sign-off with no documented
-engagement with the evidence scores 0. The approval signal quality component
-operationalises the principle that a gate sign-off that includes no evidence of
-substantive review provides less governance assurance than one where the
-deciding human demonstrably engaged with the evidence.
+**Approval engagement signal.** Recorded as a structured set of fields rather
+than a single score. The fields are: review duration (the elapsed time from
+evidence bundle delivery to sign-off, in minutes), the number of documented
+challenges raised by the deciding human prior to sign-off, the number of
+conditions returned for rework before approval, and the proportion of review
+time spent on primary evidence artefacts versus agent-generated summaries
+where that breakdown is observable. Each field is recorded as filed; no
+field is converted into a 0-to-N score.
 
-The GQS is recorded as an attribute of the GateDecision node at gate closure. It
-is not recalculated retrospectively — it reflects the governance quality of the
-assessment as it was conducted. Two portfolio-level thresholds apply. First, a
-GQS below 40 on any gate pass for a high-blast-radius system triggers a
-mandatory independent review of the gate assessment within 5 business days: a
-gate pass is not sufficient at high blast radius if the quality of the pass is
-below this floor. Second, a GQS trend declining over rolling four-gate windows
-for any system is a governance health signal requiring governance portfolio
-owner review. A system whose gate quality is systematically declining may be
-nominally compliant while its actual governance assurance is eroding.
+These indicators are descriptive, not gating. They populate portfolio
+dashboards and trend reports for the governance portfolio owner, the steward
+of the governed system, and the operational DoD review. They do not, by
+themselves, block a gate decision, trigger a mandatory independent review, or
+override the GateState computation defined in § 2.3.
+
+A synthesised score (for example, a 0-to-100 composite indicator) requires
+empirical calibration against external truth — incident outcomes, audit
+findings, regulatory examination results, or comparable independent signals —
+before adoption. The framework does not currently ship a calibrated synthesis.
+Organisations that compute one for their internal use must document the
+calibration evidence, the cohort against which the calibration was performed,
+and the failure modes the synthesis is known to be susceptible to. Two failure
+modes must be acknowledged explicitly: Goodhart's law applied to the epistemic
+composition ratio (driving the ratio up by reclassification rather than by
+substantive change to the evidence chain), and the performative-challenge
+incentive applied to the approval engagement signal (raising challenges that
+are recorded for the indicator but do not represent substantive review).
+
+Portfolio review of governance quality indicators is mandatory at the same
+cadence as the operational DoD review (quarterly by default; more frequently
+where the governance portfolio owner determines that the indicators warrant
+it). Portfolio review is not triggered by an indicator value crossing an
+arbitrary threshold; it occurs on the defined cadence, and it considers the
+indicators in their descriptive form alongside the GateState records, the
+incident record, and the audit record.
+
+[^1]: A prior specification of this section defined a 0-to-100 Governance
+    Quality Score (GQS) with fixed component weights (40/20/20/20) and a
+    threshold (GQS below 40 on any gate pass for a high-blast-radius system
+    triggering a mandatory independent review). That specification was
+    withdrawn pending the calibration evidence described above. The four
+    components are retained as descriptive indicators; the synthesis and the
+    threshold are not.
 
 ---
 

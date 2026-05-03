@@ -156,6 +156,21 @@ received human endorsement carry the agent-proposed epistemic label; artefacts
 endorsed by a qualified human reviewer carry the agent-proposed, human-reviewed
 label and reference the reviewer's identity and the date of endorsement.
 
+The **enforcement_mode** field declares the mechanism by which the agent's
+allowed_tools and forbidden_tools constraints, and any active
+ToolAuthorizationRecord scope, are enforced at runtime. The permitted values
+are `in-band-token`, `sandbox`, `post-hoc-audit`, or compound combinations of
+these expressed with the `+` separator (for example, `in-band-token + sandbox`).
+The enforcement_mode is not a deployment hint — it is a normative declaration
+that determines which classes of tool-misuse threats the agent is structurally
+defended against, and which it is not. The applicability of each mode by
+autonomy tier, and the threats each mode does and does not mitigate, are
+specified in the Enforcement Mechanism section below. An Agent node deployed
+with no declared enforcement_mode has not been fully specified for governance
+purposes, and the omission is non-conformant — the agent must not enter
+production governance use until the field is populated and the mode is
+operationally verified.
+
 The **logging_required** field is set to yes for all governance agents without
 exception. Every input consumed, every output produced, every tool call invoked,
 and every approval requested or granted must be logged with a timestamp and the
@@ -915,6 +930,131 @@ precision as the approval_required_for field.
 
 ---
 
+## Enforcement Mechanism
+
+The Tool Authorization Matrix defines what an agent is permitted to invoke. It
+does not, by itself, prevent unauthorised invocation. Two agents with identical
+allowed_tools and forbidden_tools schemas but different enforcement mechanisms
+present materially different governance surfaces: one may refuse an
+unauthorised call before any side effect occurs; the other may record the
+unauthorised call after the fact, with the side effect already realised.
+Tool-authorisation enforcement must therefore be specified, not assumed. Every
+Agent node MUST declare an enforcement_mode field; an Agent node with no
+declared enforcement_mode at deployment is non-conformant.
+
+Three enforcement modes are permitted, and they may be composed:
+
+**In-band capability token.** The control plane issues a short-lived signed
+token that references the active ToolAuthorizationRecord, the agent_id, the
+authorised tool set, and the validity window. The default token lifetime SHALL
+NOT exceed one hour; shorter lifetimes are acceptable and recommended for
+higher autonomy tiers. The agent presents the token at every tool invocation.
+The tool runtime verifies the signature, checks that the token is within its
+validity window, confirms that the tool being invoked is in the token's
+authorised set, and refuses any invocation that fails verification before the
+tool's effect is produced. Token issuance, presentation, and verification are
+each logged.
+
+**Sandboxed runtime mediation.** A trusted runtime mediator intercepts every
+tool call the agent attempts. Before any side effect occurs, the mediator
+checks the agent's allowed_tools and forbidden_tools, verifies that the call
+falls within the scope of an active ToolAuthorizationRecord, and either
+permits or refuses the call. The mediator is a structurally separate enforcement
+surface from the agent's own decision logic; it is the runtime equivalent of
+the schema's permission boundary. Sandbox mediation is appropriate for
+capabilities with side effects beyond reading and for capabilities whose
+parameters cannot be safely validated by signature alone.
+
+**Post-hoc audit.** Every tool call is logged with the orchestrating agent's
+identifier, the tool identifier, a hash of the parameters (not the full
+parameters, to avoid logging sensitive operational data), the timestamp, and
+the ToolAuthorizationRecord reference under which the call was claimed to be
+authorised. The log is reviewed continuously or on a defined cadence against
+the agent's authorised envelope. Any unauthorised invocation produces an
+immediate Incident node and an EvidenceArtifact node recording the violation,
+both linked to the offending Agent node. Post-hoc audit detects unauthorised
+calls; it does not prevent them. The unauthorised side effect has, by
+definition, already occurred when the audit fires.
+
+**Mode applicability by AutonomyTier.** The autonomy tier governs which
+enforcement modes are sufficient. The mapping below is normative; an Agent
+node's declared enforcement_mode MUST satisfy the requirement for its
+autonomy_tier:
+
+- **A1 (advisory).** Post-hoc audit is acceptable. In-band capability token is
+  recommended, because the operational cost of token issuance is low and the
+  governance benefit of refusing unauthorised calls before they occur is
+  retained even at advisory autonomy.
+- **A2 (monitored execution).** Sandboxed runtime mediation OR in-band
+  capability token MUST be used. Post-hoc-audit-only is non-conformant at A2:
+  monitored-execution agents file outputs into the governance graph
+  autonomously, and an unauthorised tool call that succeeds before audit detects
+  it can corrupt the governance record before any human review.
+- **A3 (limited autonomy).** In-band capability token is REQUIRED. Sandboxed
+  runtime mediation is additionally REQUIRED for any tool with side effects
+  beyond reading (Production-write, Code-execution, Rollback-trigger, and any
+  Write-class tool). Post-hoc audit remains required as an additional control
+  for the audit trail; it is not a substitute for the in-band and sandbox
+  controls.
+- **A4 (Tier 4 envelope operation).** In-band capability token AND sandboxed
+  runtime mediation are BOTH REQUIRED. Post-hoc audit logs are an additional
+  control, not a substitute. A Tier 4 envelope operates at scale and outside
+  per-action human review; the structural defence against unauthorised tool
+  use must be in-band and machine-enforced, with audit serving the
+  reconstructive role defined in operations/governance.md and the Tier 4
+  Operational Model.
+
+**Threat-model mapping.** Each enforcement mode defends against a different
+set of threats from OWASP GenAI Security Project, *Agentic AI — Threats and
+Mitigations* (2025) (referenced in the Normative References section). The
+mapping below states which threats each mode mitigates and which threats it
+does NOT mitigate. The threats are stated by category; the specific
+identifiers in the OWASP taxonomy at the date of this document are referenced
+where stable.
+
+- **In-band capability token** mitigates tool misuse (the agent cannot invoke
+  a tool not in its token's authorised set), identity and privilege abuse
+  (the token binds the invocation to a specific agent_id and a specific
+  authorisation record), and unsafe tool composition for tokens issued to
+  composed pipelines (the composed token reflects the composed authorisation
+  record). It does NOT, on its own, mitigate goal hijacking (an agent
+  presented with manipulated context may still invoke an authorised tool with
+  an attacker-controlled parameter), memory poisoning (tokens authorise the
+  invocation, not the integrity of the agent's memory store), or excessive
+  agency (a tool that is authorised for a permissible purpose may still be
+  invoked with excessive scope when the agent's reasoning has been
+  manipulated).
+- **Sandboxed runtime mediation** mitigates tool misuse (the mediator refuses
+  out-of-scope calls before side effects), unsafe tool composition (the
+  mediator can enforce composition-level constraints that individual agents
+  cannot), and excessive agency for capabilities whose parameters can be
+  validated at the mediation point (a sandbox can refuse a Production-write
+  call whose target falls outside an approved scope). It does NOT mitigate
+  goal hijacking or memory poisoning (these are upstream of the tool call),
+  and its mitigation of identity and privilege abuse depends on the mediator's
+  ability to verify the calling agent's identity at the mediation surface — a
+  mediator that trusts agent-asserted identity provides weaker mitigation
+  than one that verifies a control-plane-issued token.
+- **Post-hoc audit** detects tool misuse, identity and privilege abuse,
+  excessive agency, and unsafe tool composition retrospectively, providing
+  the audit record required for incident reconstruction and steward review.
+  It does NOT mitigate any of these threats in the prevention sense — the
+  unauthorised effect has occurred. It does not address goal hijacking or
+  memory poisoning at all; these manifest as authorised-looking tool calls
+  with manipulated parameters or context, which an audit checking
+  authorisation against the schema cannot distinguish from legitimate calls.
+
+The composed mode `in-band-token + sandbox` mitigates the largest set of
+threats and is the required configuration for A4. No enforcement mode by
+itself mitigates goal hijacking or memory poisoning; those threats are
+addressed by the trust-boundary enforcement requirements on allowed_inputs
+and by the adversarial evaluation cases required in *Adding Agents to the
+Control Plane*. The OWASP Agentic AI threat catalogue is the practitioner
+reference for the threat surface this section governs; the mode mapping
+above is the structural control surface the ASDLC commits to.
+
+---
+
 ## Preventing Tool Permission Escalation via Agent Composition
 
 When Agent A orchestrates Agent B, the effective tool permission set for the
@@ -981,11 +1121,14 @@ specification and operational context.
 **Review triggers.** A tool authorization record must be reviewed whenever any
 of the following conditions occurs:
 
-- The agent's GASH changes — any update to the model version, system prompt, or
-  tool manifest used by the agent constitutes a GASH change and requires
-  re-evaluation of the authorization record, because a changed agent may
-  exercise its authorized tools differently than the agent that was originally
-  authorized.
+- The agent's Governance Agent State Hash (GASH) changes — the GASH is the
+  hash over the agent's application code commit, system prompt version,
+  foundation model identifier and snapshot version, and tool manifest, as
+  defined in [Governance Agents](governance/agents.md#governance-agent-behavioral-identity).
+  Any update to any of those four components constitutes a GASH change and
+  requires re-evaluation of the authorization record, because a changed agent
+  may exercise its authorized tools differently than the agent that was
+  originally authorized.
 - The system's blast radius tier changes — a blast radius increase requires
   immediate review, because tool classes that were appropriate for a lower blast
   radius may require additional controls or removal at a higher tier.

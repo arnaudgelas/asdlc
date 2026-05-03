@@ -385,9 +385,9 @@ Tier 2 and above. This condition is met when all of the following hold:
 
 - The governance node for this system exists in the governance graph and was
   updated no later than the most recent release gate.
-- All gate records (specification readiness gate, release gate, and any
-  intermediate gate records) link to the system's governance node as evidence
-  edges.
+- All gate records (specification readiness gate, release gate, operational
+  readiness gate, retirement gate, and any intermediate gate records) link to
+  the system's governance node as evidence edges.
 - The current system steward is assigned as an accountability edge on the
   governance node, pointing to a current personnel record.
 - The governance graph node reflects the currently deployed version, not a prior
@@ -476,17 +476,190 @@ it according to the system's variability and the cost of an SLA breach.
 
 ---
 
+## Model and Data Drift Detection
+
+Operational observability instruments tell an operator that the system is
+running. SLO indicators tell an operator whether the running system is meeting
+its targets. Neither, on its own, answers a different question that agentic
+systems require operators to answer continuously: is the deployed system still
+the system that was evaluated? A foundation model whose provider has updated
+its weights, an input distribution that has shifted as upstream business
+conditions changed, or a retrieval corpus whose contents have evolved since
+the evaluation suite last ran can each cause a system that passes service
+health checks to produce outputs no longer consistent with the behaviour the
+release gate validated. Drift detection is the production-side practice that
+surfaces this divergence before it becomes an undetected quality incident.
+
+**Definitions.** *Model drift* is a measurable change in the deployed system's
+outputs, output distributions, or evaluation-suite scores against a stable
+benchmark portfolio, where the change is not attributable to a specification
+change, configuration change, or other governed modification recorded in the
+deployment governance record. *Data drift* is a measurable change in the
+input distribution feeding the deployed system, assessed against the input
+distribution observed at the time the evaluation suite was constructed or
+last calibrated. The two are distinct phenomena — model drift can occur with
+a stationary input distribution (a provider model update is the canonical
+example), and data drift can occur without model drift (the input
+distribution shifts but the system's outputs remain within the evaluated
+behaviour space). Both are operational signals that the assurance basis
+established at the release gate may no longer hold.
+
+**Mandatory production-side benchmark portfolio.** Every deployed system at
+Tier 2 and above MUST run a continuous or periodic benchmark portfolio in
+production. The portfolio is a defined subset of the agent's evaluation
+suite — selected to be stable, representative of the system's primary
+behaviours, and feasible to run repeatedly in production — plus a small live-
+canary subset sampled from real production input. The fixed evaluation
+subset establishes the model-drift signal: the same inputs, run repeatedly,
+should produce stable outputs. The live-canary subset establishes the data-
+drift signal: it characterises the input distribution the system is actually
+encountering and supports comparison against the distribution observed at
+release. The benchmark portfolio definition is filed at deployment as part of
+the system's runbook and is itself a governance artefact subject to the
+freshness rules that apply to the evaluation suite.
+
+**Cadence.** The benchmark portfolio's run frequency is governed by the
+system's autonomy tier:
+
+- **AutonomyTier=A4 (envelope-operated systems).** Continuous. The portfolio
+  runs without scheduled gaps, and any gap in the portfolio's execution is
+  itself a governance state signal surfaced to the steward.
+- **AutonomyTier=A3 (limited autonomy).** Daily at minimum. The cadence may
+  be tighter where the system's blast radius profile justifies it.
+- **AutonomyTier=A2 (monitored execution).** Weekly at minimum.
+
+For Tier 1 systems, drift detection is recommended but not mandated by this
+document; teams should adopt it commensurate with the system's risk profile.
+
+**Champion/challenger pattern.** For any system using a foundation model, the
+deployment configuration MAY run a champion variant in production and a
+challenger variant in shadow mode simultaneously. The champion serves
+production traffic; the challenger receives the same inputs (or a sampled
+subset) and produces outputs that are logged but not returned to consumers.
+Output divergence between champion and challenger that exceeds a configured
+threshold is itself a drift signal — particularly useful when the challenger
+is an unchanged baseline against which the champion's drift can be isolated,
+or when the challenger is a candidate replacement whose readiness for
+promotion is being assessed. The threshold, the divergence metric, and the
+sampling methodology are defined at deployment and recorded in the runbook.
+
+**Drift SLO.** When a drift signal exceeds its configured threshold, the
+steward MUST initiate a re-evaluation within an SLO appropriate to the
+system's autonomy tier:
+
+- **A4:** within 4 hours.
+- **A3:** within 24 hours.
+- **A2:** within 72 hours.
+
+The re-evaluation re-runs the agent's full evaluation suite under the current
+reproducibility surface as defined in
+[Release Governance, Condition 1](../release-governance.md). The
+re-evaluation's outputs are filed as a drift report EvidenceArtifact and are
+the basis for the action mapping below. A drift signal that has exceeded its
+threshold and for which no re-evaluation has been initiated within the SLO
+is a governance staleness event independent of whether the drift is
+ultimately confirmed.
+
+**Action mapping.** The re-evaluation produces one of three findings, each of
+which determines the operational response:
+
+- *Drift confirmed.* The re-evaluation reproduces the drift signal: outputs
+  on the stable benchmark subset have moved beyond threshold, or the input
+  distribution has shifted in ways the evaluation suite was not constructed
+  to cover. The response is a re-gate cycle. Where the system operates under
+  a Tier 4 policy envelope, the re-gate addresses the policy envelope; where
+  the system operates at Tier 2 or Tier 3, the re-gate addresses the system
+  itself. The re-gate cycle follows the procedures in
+  [Release Governance](../release-governance.md).
+- *Drift suspected but not confirmed.* The re-evaluation does not reproduce
+  the drift signal, or the signal is within the noise band of the
+  benchmark portfolio's measurement methodology. The response is continued
+  monitoring with explicit steward review at the next weekly review, and a
+  drift report EvidenceArtifact recording the suspected signal and the
+  inconclusive re-evaluation outcome. A pattern of repeated suspected-but-
+  not-confirmed signals on the same dimension is itself a governance signal
+  that warrants steward investigation of the benchmark portfolio's
+  sensitivity.
+- *Drift detected and traceable to provider-side foundation-model behavioural
+  change.* The re-evaluation isolates the drift to a foundation model whose
+  provider has updated the model's behaviour outside the organisation's
+  governance control. This is a foundation-model-drift event and triggers
+  the foundation-model dependency review described in
+  [Maintenance Governance](../maintenance-governance.md), in addition to
+  the re-gate cycle described above for the affected system. A
+  foundation-model-drift event affecting multiple systems must be raised
+  to the governance portfolio owner — provider-side drift is rarely
+  isolated to a single deployment, and the response surface is portfolio-
+  wide.
+
+**NIST AI RMF integration.** Drift detection is the operational expression of
+the MEASURE function of the NIST AI Risk Management Framework 1.0 (NIST AI
+100-1, 2023, https://doi.org/10.6028/NIST.AI.100-1) and its Generative AI
+Profile (NIST AI 600-1, 2024, https://doi.org/10.6028/NIST.AI.600-1). The
+benchmark portfolio and the re-evaluation procedure correspond to MEASURE 2
+(measure AI risks and related impacts — analyse and assess); the continuous
+or periodic cadence and the drift SLO correspond to MEASURE 4 (measurement
+risks are tracked and monitored over time). Organisations operating under an
+AI RMF programme can treat the drift report EvidenceArtifact as the MEASURE
+artefact corresponding to monitored deployed-system risk.
+
+**Incident classification: drift incident.** A drift incident is added to
+the incident classifications defined in this document, alongside Quality,
+Infrastructure/Application, and Security. A drift incident is declared when
+a drift signal is confirmed by re-evaluation. The drift incident response
+proceeds along the NIST SP 800-61 lifecycle as adapted in this section, with
+the specific obligations that the threat model and evaluation portfolio be
+updated where the confirmed drift exposes a class of input or behaviour the
+existing artefacts did not cover, and that a re-gate cycle be initiated per
+the action mapping above. A drift incident closes only when the re-gate
+cycle has completed or the system has been withdrawn; it does not close on
+the rollback of the drifting deployment alone.
+
+**EvidenceArtifact: drift report.** The drift report is a governance
+artefact recording a drift detection event and its disposition. Its
+structure is:
+
+- *Benchmark portfolio reference.* The identifier and version of the
+  benchmark portfolio in effect at the time of the detection.
+- *Sampling window.* The start and end timestamps over which the signal was
+  observed, and the sample size or invocation count covered.
+- *Baseline scores.* The benchmark portfolio's reference scores at last
+  calibration, with the calibration date and the GASH or model version
+  under which they were established.
+- *Observed scores.* The portfolio's scores in the sampling window, with
+  per-dimension breakdown matching the baseline.
+- *Threshold breach details.* Which dimension(s) breached threshold, by how
+  much, and the configured threshold value(s).
+- *Root-cause hypothesis.* The steward's working hypothesis for the drift
+  source — provider-side model change, input distribution shift, retrieval
+  corpus evolution, configuration drift, or unknown — with supporting
+  evidence references.
+- *Action taken.* The disposition: re-gate initiated, continued monitoring,
+  foundation-model-drift escalation, or other governance response, with
+  references to the resulting governance records (gate decision records,
+  Incident nodes, foundation-model review records).
+
+The drift report EvidenceArtifact is filed in the governance graph and
+linked to the affected system's governance node, to the benchmark portfolio
+reference, and to any Incident node produced by the disposition. Drift
+reports must be retained for the system's audit retention window; they are
+the operational record that drift was being monitored and that detected
+drift was responded to as governed.
+
+---
+
 ## Incident Management for Agentic Systems
 
 Incident management for agentic systems follows the lifecycle defined in NIST SP
 800-61 (Computer Security Incident Handling Guide): Preparation, Detection and
 Analysis, Containment, Eradication, and Recovery, followed by Post-Incident
-Activity. The three incident classifications defined in this section — Quality,
-Infrastructure/Application, and Security — represent different response paths
-within this lifecycle. All three share the same lifecycle phases; the
-classification determines the response procedure, escalation chain, and evidence
-preservation requirements within each phase. The NIST lifecycle applies in full
-to all three classifications.
+Activity. The four incident classifications defined in this document —
+Quality, Infrastructure/Application, Security, and Drift (defined in *Model
+and Data Drift Detection* above) — represent different response paths within
+this lifecycle. All four share the same lifecycle phases; the classification
+determines the response procedure, escalation chain, and evidence
+preservation requirements within each phase. The NIST lifecycle applies in
+full to all four classifications.
 
 Beyond this lifecycle, three characteristics of agentic systems require specific
 handling.

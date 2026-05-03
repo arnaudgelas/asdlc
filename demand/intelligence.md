@@ -5,7 +5,10 @@ Layer 1 validation begins._
 
 See [Demand & Value](value.md) for Layer 1 demand governance. See
 [Specification Readiness](../specification-readiness.md) for the Layer 1→2 gate.
-See [asdlc.md](../asdlc.md) for the full four-layer model.
+See [asdlc.md](../asdlc.md) for the full four-layer model. The epistemic-tier
+vocabulary used in this document (Provisional, Candidate, Confirmed, High
+Confidence, Authoritative) is imported from the Intelligence Governance
+Manifesto (IGM); refer to IGM for canonical definitions.
 
 ---
 
