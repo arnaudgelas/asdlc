@@ -1,0 +1,72 @@
+{
+  "$schema_note": "Manifest of terms intentionally imported from sibling frameworks. Each entry lists the source framework and a one-line definition pointer. The check_term_imports.py checker reports any occurrence of these terms in ASDLC core docs that is neither defined locally nor explicitly attributed to its source.",
+  "imports": [
+    {
+      "term": "epistemic substrate",
+      "source": "IGM",
+      "pointer": "Intelligence Governance Model — the substrate of evidence, claims, and confidence that grounds every governance decision."
+    },
+    {
+      "term": "epistemic tier",
+      "source": "IGM",
+      "pointer": "Intelligence Governance Model — five-level confidence ladder: Provisional, Candidate, Confirmed, High Confidence, Authoritative.",
+      "aliases": [
+        "Provisional tier",
+        "Candidate tier",
+        "Confirmed tier",
+        "High Confidence tier",
+        "Authoritative tier"
+      ]
+    },
+    {
+      "term": "relocation mechanics",
+      "source": "AEnt-M",
+      "pointer": "Agentic Enterprise Manifesto — the mechanics by which authority for a control is relocated from human to agent under demonstrated equivalence."
+    },
+    {
+      "term": "AEnt-M Principle 7 metrics",
+      "source": "AEnt-M",
+      "pointer": "Agentic Enterprise Manifesto, Principle 7 — the canonical control-relocation metrics."
+    },
+    {
+      "term": "AEnt-M escalation authority",
+      "source": "AEnt-M",
+      "pointer": "Agentic Enterprise Manifesto — the named human role with authority to override or halt agent-controlled processes."
+    },
+    {
+      "term": "domain graph",
+      "source": "IGM",
+      "pointer": "Intelligence Governance Model — the typed graph of evidence, claims, decisions, and dependencies."
+    },
+    {
+      "term": "IGM Principle 10",
+      "source": "IGM",
+      "pointer": "Intelligence Governance Model, Principle 10 — structured feedback as a first-class governance signal."
+    },
+    {
+      "term": "structured feedback",
+      "source": "IGM",
+      "pointer": "Intelligence Governance Model — feedback captured in the typed graph and bound to its originating decision."
+    },
+    {
+      "term": "Layer 2",
+      "source": "AEM",
+      "attribution": "cross_reference",
+      "pointer": "Agentic Engineering Manifesto — the engineering execution loop that ASDLC wraps."
+    },
+    {
+      "term": "manifesto",
+      "source": "AEM",
+      "attribution": "cross_reference",
+      "pointer": "Agentic Engineering Manifesto — the Layer 2 execution layer."
+    }
+  ],
+  "scoped_files": [
+    "asdlc.md",
+    "asdlc-guide.md",
+    "README.md",
+    "governance/",
+    "operations/",
+    "demand/"
+  ]
+}
