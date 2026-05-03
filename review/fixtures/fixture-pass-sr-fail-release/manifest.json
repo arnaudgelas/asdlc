@@ -1,0 +1,26 @@
+{
+  "fixture_name": "fixture-pass-sr-fail-release",
+  "fixture_description": "SpecCraft — strong Demand Shaping layer satisfies all 9 SR conditions; deliberately lightweight Release process omits evidence bundle, independent validation, rollback testing, and compliance documentation. Should pass SR, fail RG.",
+  "expected_outcomes": {
+    "specification_readiness_gate": {
+      "verdict": "pass",
+      "passing_conditions": [
+        "SR-1", "SR-2", "SR-3", "SR-4", "SR-5",
+        "SR-6", "SR-7", "SR-8", "SR-9"
+      ]
+    },
+    "release_gate": {
+      "verdict": "fail",
+      "failing_conditions": ["RG-1", "RG-2", "RG-3", "RG-5"],
+      "passing_conditions": ["RG-4", "RG-6", "RG-7", "RG-8"]
+    },
+    "operational_definition_of_done": {
+      "verdict": "fail"
+    },
+    "retirement_gate": {
+      "verdict": "fail"
+    }
+  },
+  "minimum_finding_count": 4,
+  "expected_overall_verdict": "fail"
+}

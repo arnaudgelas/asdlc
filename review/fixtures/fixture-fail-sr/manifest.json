@@ -1,0 +1,22 @@
+{
+  "fixture_name": "fixture-fail-sr",
+  "fixture_description": "LoopForge — a tight engineering-loop framework that explicitly defers demand validation, value measurement, constraint identification, accountability, and blast-radius assessment to host organisations. Should fail Specification Readiness Gate.",
+  "expected_outcomes": {
+    "specification_readiness_gate": {
+      "verdict": "fail",
+      "failing_conditions": ["SR-1", "SR-2", "SR-4", "SR-5", "SR-6"],
+      "passing_conditions": ["SR-3", "SR-7", "SR-8", "SR-9"]
+    },
+    "release_gate": {
+      "verdict": "fail"
+    },
+    "operational_definition_of_done": {
+      "verdict": "fail"
+    },
+    "retirement_gate": {
+      "verdict": "fail"
+    }
+  },
+  "minimum_finding_count": 5,
+  "expected_overall_verdict": "fail"
+}

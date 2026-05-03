@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/arnaudgelas/asdlc/review/test_harness/output_schema.json",
+  "title": "ASDLC Review Sub-Prompt Companion Output",
+  "description": "Machine-readable companion to a sub-prompt's Markdown narrative. Each ASDLC review sub-prompt is intended to emit, alongside its `*.md` output, a `*.json` document conforming to this schema. Structured per-condition / per-gate / per-layer / per-category verdicts allow the merge agent and downstream tooling to verify cross-agent consistency without re-parsing prose.",
+  "type": "object",
+  "required": [
+    "metadata",
+    "gate_verdicts",
+    "layer_scores",
+    "category_scores",
+    "composite_score",
+    "disclaimers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "framework",
+        "framework_version",
+        "asdlc_hash",
+        "run_date",
+        "sub_prompt_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "type": "string",
+          "description": "Framework name as it appears in its own documentation (the [[FRAMEWORK]] orchestrator variable)."
+        },
+        "framework_version": {
+          "type": "string",
+          "description": "Version, tag, or commit hash declared at run time (the [[FRAMEWORK_VERSION]] orchestrator variable). Use 'unknown' if not versioned."
+        },
+        "asdlc_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Full 40-character SHA-1 commit hash of the ASDLC repository used for scoring (the [[ASDLC_HASH]] orchestrator variable)."
+        },
+        "run_date": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD) on which this sub-prompt was run."
+        },
+        "sub_prompt_id": {
+          "type": "string",
+          "description": "Identifier of the sub-prompt that emitted this output (e.g., '01', '02-l1', '02-g4', '03', '04c', '05b', '06', '07', '08b', '09')."
+        },
+        "accountable_human": {
+          "type": "string",
+          "description": "Optional name or role of the human who reviewed this output before merge."
+        }
+      }
+    },
+    "gate_verdicts": {
+      "type": "object",
+      "description": "Per-gate verdicts keyed by canonical gate id. Each entry carries condition-level verdicts, the aggregated gate verdict (one of the canonical seven GateState values), and evidence anchors back into [[FRAMEWORK]]'s source.",
+      "additionalProperties": false,
+      "properties": {
+        "G1": { "$ref": "#/definitions/gate_verdict" },
+        "G2": { "$ref": "#/definitions/gate_verdict" },
+        "G3": { "$ref": "#/definitions/gate_verdict" },
+        "G4": { "$ref": "#/definitions/gate_verdict" }
+      }
+    },
+    "layer_scores": {
+      "type": "object",
+      "description": "Per-layer score keyed by canonical layer id. Score is 0-100; weight_applied is the decimal weight per the orchestrator's weighting scheme.",
+      "additionalProperties": false,
+      "properties": {
+        "L1": { "$ref": "#/definitions/layer_score" },
+        "L2": { "$ref": "#/definitions/layer_score" },
+        "L3": { "$ref": "#/definitions/layer_score" },
+        "L4": { "$ref": "#/definitions/layer_score" }
+      }
+    },
+    "category_scores": {
+      "type": "object",
+      "description": "Per-category score covering the 12 weighted categories from the orchestrator's revised weighting scheme. Each entry carries the score, the decimal weight applied, and an optional source-agent attribution.",
+      "additionalProperties": false,
+      "properties": {
+        "layer_1_demand_value": { "$ref": "#/definitions/category_score" },
+        "specification_readiness_gate_g1": { "$ref": "#/definitions/category_score" },
+        "layer_2_engineering_execution": { "$ref": "#/definitions/category_score" },
+        "release_gate_g2": { "$ref": "#/definitions/category_score" },
+        "layer_3_release_deployment": { "$ref": "#/definitions/category_score" },
+        "operational_readiness_gate_g3": { "$ref": "#/definitions/category_score" },
+        "layer_4_operations_maintenance": { "$ref": "#/definitions/category_score" },
+        "retirement_gate_g4": { "$ref": "#/definitions/category_score" },
+        "tier_4_policy_envelope": { "$ref": "#/definitions/category_score" },
+        "cross_cutting_governance": { "$ref": "#/definitions/category_score" },
+        "finops_security_devsecops": { "$ref": "#/definitions/category_score" },
+        "feedback_paths_closure": { "$ref": "#/definitions/category_score" }
+      }
+    },
+    "composite_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Composite score = sum(category_score * decimal_weight) over all twelve categories, rounded to one decimal place."
+    },
+    "disclaimers": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Disclaimers attached to this output. The self-referential-grading disclaimer (the orchestrator's preamble paragraph stating that ASDLC grades against its own assertions, not against externally-anchored regulatory or engineering source-of-truth) MUST always be present.",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for the disclaimer (e.g., 'self-referential-grading')."
+          },
+          "text": {
+            "type": "string",
+            "description": "The disclaimer text, verbatim."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "gate_state_enum": {
+      "type": "string",
+      "description": "The canonical seven-state GateState enum from governance/gate-registry.yaml.gate_state_enum (also asserted in governance/graph.md).",
+      "enum": [
+        "pass",
+        "fail",
+        "missing",
+        "stale",
+        "contradicted",
+        "waived",
+        "requires-human-decision"
+      ]
+    },
+    "evidence_anchor": {
+      "type": "object",
+      "required": ["file"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "File path within [[FRAMEWORK]]'s source corpus, relative to the framework root."
+        },
+        "line_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "description": "Optional verbatim quote from the cited lines."
+        }
+      }
+    },
+    "condition_verdict": {
+      "type": "object",
+      "required": ["verdict"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "$ref": "#/definitions/gate_state_enum" },
+        "evidence_anchors": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/evidence_anchor" }
+        },
+        "rationale": {
+          "type": "string",
+          "description": "One-sentence rationale for the condition verdict."
+        }
+      }
+    },
+    "gate_verdict": {
+      "type": "object",
+      "required": ["verdict", "condition_verdicts"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "$ref": "#/definitions/gate_state_enum" },
+        "condition_verdicts": {
+          "type": "object",
+          "description": "Per-condition verdicts keyed by canonical condition id (e.g., 'SR-1', 'RG-3', 'DoD-2', 'RT-5'). Keys MUST match governance/gate-registry.yaml condition ids.",
+          "patternProperties": {
+            "^(SR|RG|DoD|RT)-[0-9]+$": { "$ref": "#/definitions/condition_verdict" }
+          },
+          "additionalProperties": false
+        },
+        "evidence_anchors": {
+          "type": "array",
+          "description": "Gate-level evidence anchors (typically the artefacts that aggregate condition-level evidence).",
+          "items": { "$ref": "#/definitions/evidence_anchor" }
+        }
+      }
+    },
+    "layer_score": {
+      "type": "object",
+      "required": ["score", "weight_applied"],
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "weight_applied": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Decimal weight (e.g., 0.18 for L2 under the current weighting scheme)."
+        }
+      }
+    },
+    "category_score": {
+      "type": "object",
+      "required": ["score", "weight_applied"],
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "weight_applied": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "source_agent": {
+          "type": "string",
+          "description": "Optional sub-prompt id of the authoritative source agent for this category."
+        }
+      }
+    }
+  }
+}

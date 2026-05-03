@@ -1,0 +1,36 @@
+{
+  "fixture_name": "fixture-pass-all-but-retirement",
+  "fixture_description": "Helio — a four-stage agentic delivery framework (Capture / Build / Promote / Operate) that addresses demand, engineering, release, and operational obligations credibly. Helio is silent on retirement, archival, claim retraction, and decommissioning; the framework treats sunset as out of scope. Should pass SR, RG, DoD; fail RT.",
+  "expected_outcomes": {
+    "specification_readiness_gate": {
+      "verdict": "pass",
+      "passing_conditions": [
+        "SR-1", "SR-2", "SR-3", "SR-4", "SR-5",
+        "SR-6", "SR-7", "SR-8", "SR-9"
+      ]
+    },
+    "release_gate": {
+      "verdict": "pass",
+      "passing_conditions": [
+        "RG-1", "RG-2", "RG-3", "RG-4",
+        "RG-5", "RG-6", "RG-7", "RG-8"
+      ]
+    },
+    "operational_definition_of_done": {
+      "verdict": "pass",
+      "passing_conditions": [
+        "DoD-1", "DoD-2", "DoD-3", "DoD-4",
+        "DoD-5", "DoD-6", "DoD-7", "DoD-8"
+      ]
+    },
+    "retirement_gate": {
+      "verdict": "fail",
+      "failing_conditions": [
+        "RT-1", "RT-2", "RT-3", "RT-4",
+        "RT-5", "RT-6", "RT-7", "RT-8"
+      ]
+    }
+  },
+  "minimum_finding_count": 8,
+  "expected_overall_verdict": "fail"
+}
