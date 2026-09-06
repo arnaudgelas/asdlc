@@ -69,9 +69,9 @@ alter agent outputs in ways not detected by the current evaluation suite" is a
 risk description.
 
 **Expiry date.** The date on which the waiver expires. There are no permanent
-waivers. An expiry date more than 90 days from the waiver issue date requires
+waivers. An expiry date more than a policy-set 90 days from the waiver issue date requires
 additional justification and the approval of the accountable human (not just the
-waiver owner). An expiry date more than 180 days from issue requires the
+waiver owner). An expiry date more than a policy-set 180 days from issue requires the
 approval of the accountable human and a written escalation rationale. At expiry,
 the GateState of the waived condition automatically reverts to its pre-waiver
 state (typically `fail` or `missing`) unless the waiver has been renewed or the
@@ -113,7 +113,7 @@ is active. The remediation plan is in progress.
 the remediation plan's progress and the compensating control's operational
 status.
 
-**Expiring.** The waiver is within 30 days of its expiry date. The waiver owner
+**Expiring.** The waiver is within a policy-set 30 days of its expiry date. The waiver owner
 and accountable human are notified. Three outcomes are possible: remediation
 completes before expiry (waiver closes, condition GateState updates to reflect
 the satisfied condition), waiver is renewed (requires the same approval process
@@ -153,7 +153,7 @@ requires investment.
 Waiver counts are a governance metric: the total number of active waivers per
 system, per tier, and per gate condition type should be tracked and reviewed
 against defined warning thresholds. More than 3 active waivers per system at any
-time indicates a governance capacity problem. More than 20% of a tier's systems
+time indicates a governance capacity problem. More than a policy-set 20% of a tier's systems
 carrying waivers on the same condition type indicates a systemic gap. These
 thresholds are starting points, not universal limits; organizations calibrate
 them based on their phase and risk appetite.
@@ -175,7 +175,7 @@ normal waiver approval timeline is incompatible with the urgency of the change.
 An emergency waiver follows the same structure as a standard waiver but has a
 compressed timeline: the waiver owner and accountable human must approve within
 the emergency change window (typically measured in hours, not days). An
-emergency waiver has a maximum validity of 14 days — sufficient to address the
+emergency waiver has a policy-set maximum validity of 14 days — sufficient to address the
 immediate urgency while ensuring rapid remediation. At 14 days, the emergency
 waiver either converts to a standard waiver (with full standard approval) or the
 condition must be satisfied. Conversion to a standard waiver is not automatic;

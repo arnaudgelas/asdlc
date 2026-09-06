@@ -5,12 +5,12 @@ _The measurement framework for demand layer health._
 See [Demand & Value](value.md) for the demand layer processes these
 metrics govern. See [Specification Readiness](../specification-readiness.md) for
 the gate whose health several of these metrics assess. See
-[adoption-metrics.md](../../adoption-metrics.md) for the inner-loop metrics this
+[adoption-metrics.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/adoption/metrics.md) for the inner-loop metrics this
 document complements.
 
 ---
 
-Metrics without thresholds are accounting. Metrics without owners are
+Every threshold value in this document is a policy-set default: the authors chose it to make the metric actionable, and none is derived from a measured distribution across real programmes, so each is marked as such where it appears. Metrics without thresholds are accounting. Metrics without owners are
 decoration. The metrics in this document each have a warning threshold, a unit
 of measurement, and an implied owner — the role that must act when the metric
 signals a problem. A demand layer that collects these metrics but does not act
@@ -39,8 +39,8 @@ the measurement period.
 **The unit.** Percentage of success criteria met or exceeded per measurement
 period (quarter is the typical cadence).
 
-**Warning threshold.** Below 60% across any rolling four-release window. This is
-not a precision target — it is a floor. Consistently failing to meet 40% or more
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Below 60% across any rolling four-release window. This is
+not a precision target — it is a floor. Consistently failing to meet a policy-set 40% or more
 of business success criteria means the demand validation process is producing
 false positives: items are passing the gate with insufficient evidence that the
 need is real and the value is achievable.
@@ -72,8 +72,8 @@ these two dates.
 **The unit.** Days from deployment to first measurable value signal. Track
 median and P90 across a rolling window.
 
-**Warning threshold.** Median value realisation lag exceeding 90 days for
-customer-facing systems. For internal tooling at Tier 1, 45 days is the
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Median value realisation lag exceeding 90 days for
+customer-facing systems. For internal tooling at Tier 1, a policy-set 45 days is the
 appropriate threshold. Lag above these thresholds indicates one of three
 problems: the measurement infrastructure for the success criterion does not
 actually exist (a gate failure — Condition 2 requires the measurement method to
@@ -105,7 +105,7 @@ a loop execution bottleneck.
 **The unit.** Calendar days per stage, plus total. Track median and P90 per
 quarter.
 
-**Warning threshold.** Total lead time growing quarter-over-quarter while
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Total lead time growing quarter-over-quarter while
 inner-loop cycle time is stable. If inner-loop cycle time is stable or improving
 but total lead time is growing, the bottleneck is in the demand layer or the
 release layer. Decompose by stage to isolate.
@@ -136,7 +136,7 @@ without material specification revision versus those that required at least one.
 **The unit.** Percentage of loop iterations with zero material specification
 changes, per quarter.
 
-**Warning threshold.** Below 80%. Any specification churn above 20% of
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Below 80%. Any specification churn above a policy-set 20% of
 iterations indicates that specifications are entering the loop before they are
 genuinely ready. The gate is either being passed prematurely or is miscalibrated
 for the organisation's context.
@@ -164,14 +164,14 @@ where the first assessment resulted in a pass.
 
 **The unit.** Percentage, per quarter.
 
-**Warning threshold.** Below 60%. A first-pass rate above 60% indicates the
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Below 60%. A first-pass rate above the policy-set 60% indicates the
 demand layer preparation before gate assessment is generally adequate. Below 60%
 means the gate is consistently being attempted before the preparatory work is
 complete — which either means the gate is being used as a checkpoint during
 specification development (not its purpose) or that the team's understanding of
 the gate conditions is insufficient.
 
-**What a healthy rate looks like.** At Phase 2, a first-pass rate of 40–60% is
+**What a healthy rate looks like** — the bands below are the authors' expectations, not measured outcomes, and their origin is not established. At Phase 2, a first-pass rate of 40–60% is
 expected — teams are learning what the conditions require. At Phase 4, 70–80% is
 achievable. At Phase 5, 85%+ with mature teams and good tooling. A first-pass
 rate of 100% that is sustained over time is a warning sign: it may indicate the
@@ -206,8 +206,8 @@ within the loop without demand layer involvement).
 assessment, per quarter. Track separately: demand-signal failures versus
 design-signal failures.
 
-**Warning threshold.** Validation rate below 70% over any two consecutive
-quarters, or any single quarter where demand-signal failures exceed 30% of all
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Validation rate below 70% over any two consecutive
+quarters, or any single quarter where demand-signal failures exceed a policy-set 30% of all
 loop iterations. The second threshold is more diagnostic: demand-signal
 validation failures mean the demand layer is consistently producing
 specifications that do not match the underlying need.
@@ -234,10 +234,10 @@ P90. Track separately by tier.
 **The unit.** Calendar days from validation to loop entry, for items currently
 in the backlog and for items that were completed in the period.
 
-**Warning threshold.** Median backlog age growing quarter-over-quarter without a
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Median backlog age growing quarter-over-quarter without a
 corresponding growth in the backlog volume. Stable or growing backlog age with
 stable volume indicates a throughput problem: the loop is not consuming demand
-as fast as demand is being validated. Items at P90 age exceeding 180 days should
+as fast as demand is being validated. Items at P90 age exceeding a policy-set 180 days should
 be individually reviewed — either they are lower priority than everything else
 (which is a valid outcome and should be documented) or they have been forgotten
 (which is a governance failure).
@@ -261,14 +261,14 @@ The abandonment rate is the proportion of removed items classified as abandoned.
 
 **What a healthy rate looks like.** Some abandonment is healthy. Demand
 conditions change, business priorities shift, regulatory deadlines pass. An
-abandonment rate of 10–20% per quarter is normal for a well-functioning demand
+abandonment rate of 10–20% per quarter — a policy-set band, not an observed one — is normal for a well-functioning demand
 layer — it means the demand layer is responding to changes in the environment
-rather than mechanically processing a queue. A rate consistently below 5% is a
+rather than mechanically processing a queue. A rate consistently below a policy-set 5% is a
 warning sign: it may indicate that items are not being reviewed for continued
 relevance, and the backlog contains stale demand that the prioritisation process
 is politely avoiding.
 
-**Warning threshold.** Abandonment rate consistently above 35% for two
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Abandonment rate consistently above 35% for two
 consecutive quarters. This level of abandonment indicates one of two problems:
 the validation process is not filtering effectively (items are being validated
 that do not survive to loop entry), or the portfolio governance process is not
@@ -295,11 +295,11 @@ changes post-gate.
 **The unit.** Percentage of specifications experiencing material change after
 gate entry, per quarter.
 
-**Warning threshold.** Above 20% of specifications per quarter. Any
+**Warning threshold** — policy-set, chosen by the authors rather than measured. Above 20% of specifications per quarter. Any
 specification churn inside the loop is a gate failure signal — the gate was
 either passed prematurely (a condition was not genuinely satisfied) or a
 condition became unsatisfied after the gate (the business environment changed).
-At 20% of specifications, the pattern is systemic and requires a demand layer
+At the policy-set 20% of specifications, the pattern is systemic and requires a demand layer
 process review, not case-by-case investigation.
 
 **Owner.** Product owner, with root-cause analysis responsibility for each churn
@@ -313,7 +313,7 @@ The following combinations require escalated investigation — not routine metri
 review, but a demand layer retrospective with the product owner, business demand
 sponsor, and engineering lead.
 
-**Validation rate below 60% for three consecutive releases.** At this level,
+**Validation rate below a policy-set 60% for three consecutive releases.** At this level,
 more than one in three loop iterations is producing something the Validate phase
 rejects. The demand layer is not filtering effectively. Either the gate
 conditions are not being applied rigorously (the evidence bar is too low), the
@@ -322,7 +322,7 @@ business environment is changing faster than the demand layer is adapting. These
 require different responses, which is why root-cause classification is essential
 before prescribing a fix.
 
-**Specification churn rate above 20% for two consecutive quarters.** The gate is
+**Specification churn rate above a policy-set 20% for two consecutive quarters.** The gate is
 consistently being passed before specifications are ready. This may reflect
 stakeholder pressure (anti-pattern documented in
 [Specification Readiness](../specification-readiness.md)), insufficient
@@ -337,7 +337,7 @@ iterations), or release time (covered by
 [Release Governance](../release-governance.md)). Growing lead time with stable
 inner-loop performance means the outer governance layers are the constraint.
 
-**Value realisation lag exceeding 90 days for customer-facing systems.** The
+**Value realisation lag exceeding a policy-set 90 days for customer-facing systems.** The
 most likely causes are: the measurement infrastructure for the success criterion
 did not exist at deployment (gate failure on Condition 2), the specification was
 scoped at the wrong granularity to produce incremental value, or the success
@@ -345,7 +345,7 @@ criterion was set at the wrong level of abstraction to detect early value
 signals. In any of these cases, the gate records for the affected specifications
 should be reviewed to identify the common failure pattern.
 
-**Business value realised below 60% for any rolling four-release window.** This
+**Business value realised below a policy-set 60% for any rolling four-release window.** This
 is the demand layer's defining health signal. Below this threshold, the
 organisation is investing more loop capacity in building things that do not
 achieve their stated business purpose than in things that do. No amount of
@@ -367,20 +367,20 @@ concerns are discoverable in the data but are not being surfaced.
 
 **T2G-Demand:** Time from when a demand intelligence signal meets the draft item
 threshold to when a product owner reviews and makes a validation or rejection
-decision. Target: 5 business days. A signal that produces a draft item and then
+decision. Policy-set target: 5 business days. A signal that produces a draft item and then
 sits unreviewed is governance debt accumulating — the organisation may be
 missing an obligation or an opportunity while the draft waits.
 
 **T2G-Specification:** Time from when a specification quality signal
 (inconsistent success criterion, unmeasurable acceptance criteria, missing
 constraint class) is detectable by governance agent analysis to when it is
-acknowledged and resolved. Target: 3 business days within the loop. A
+acknowledged and resolved. Policy-set target: 3 business days within the loop. A
 specification quality issue that is detectable at specification entry but
 surfaces as a gate failure at the release gate is a T2G-Specification failure —
 the signal was present, the governance did not act on it.
 
 **T2G-Release:** Time from when a gate condition transitions to stale or
-projected-stale to when the team begins evidence regeneration. Target: within
+projected-stale to when the team begins evidence regeneration. Policy-set target: within
 the predictive clearing lead time window (at minimum 3 business days before
 gate). Teams that consistently have T2G-Release greater than 1 business day
 before the gate are not operating predictive gate clearing effectively.
@@ -388,12 +388,12 @@ before the gate are not operating predictive gate clearing effectively.
 **T2G-Incident:** Time from when an incident's root cause is traceable to a
 governance gap (missing constraint, stale threat model, evaluation that did not
 cover the failure class) to when that governance gap enters the learning closure
-mechanism. Target: 10 business days from root cause analysis finalisation. A
+mechanism. Policy-set target: 10 business days from root cause analysis finalisation. A
 root cause analysis that identifies a governance gap but does not produce a
-learning closure record within 10 days is an open governance debt item.
+learning closure record within the policy-set 10 days is an open governance debt item.
 
 **T2G-Regulatory:** Time from when a regulatory source update is published to
-when its impact on the organisation's deployed systems is assessed. Target: 10
+when its impact on the organisation's deployed systems is assessed. Policy-set target: 10
 business days. An unassessed regulatory update affecting deployed systems is a
 compliance exposure that compounds over time.
 

@@ -3,7 +3,7 @@
 _The complete governed software delivery lifecycle for organisations where
 autonomous agents participate as first-class execution partners._
 
-See the [Manifesto](../manifesto.md) for the engineering execution layer (Layer
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the engineering execution layer (Layer
 2). See [Implementation Guide](asdlc-guide.md) for how to build ASDLC governance
 incrementally.
 
@@ -89,7 +89,7 @@ for Layer 3. The primary question is: _Was this built correctly, does it do what
 the specification required, and is the evidence complete?_ Primary stakeholder:
 engineering leads and specification analysts. Timescale: days to weeks per loop
 iteration. This layer has its own governance structures, autonomy tiers, and
-Definition of Done — all defined in the [Manifesto](../manifesto.md). The outer
+Definition of Done — all defined in the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md). The outer
 layers govern what enters and leaves it; the manifesto governs what happens
 inside it.
 
@@ -111,7 +111,7 @@ the approved specification.
 ### Layer 3: Release & Deployment
 
 Layer 3 begins where the engineering loop ends. A loop-complete output — one
-that has satisfied all seven Definition of Done conditions — is not yet
+that has satisfied all eight Definition of Done conditions — is not yet
 production-ready. The release layer governs the journey from loop-complete to
 production-deployed: verifying the evidence bundle, applying the release
 approval chain, executing the deployment, and formally initiating the handoff to
@@ -247,7 +247,7 @@ for an intelligence-bearing system:
   substrate — which is incompatible with IGM Principle 10.
 
 These elements are governed by the composition rule defined in
-`governance/composition-rule.md` (planned), which specifies how individual
+`agentic-engineering-manifesto/governance/composition-rule.md`, which specifies how individual
 constraints compose into a coherent policy envelope and how the
 envelope's effective constraint set is computed. A Tier 4 envelope for an
 intelligence-bearing system that omits any of the four elements above is
@@ -290,6 +290,11 @@ enter Layer 2:
    the appropriate autonomy tier is confirmed
 7. Out-of-scope explicitly stated — what this specification does not include is
    named, not assumed
+8. Loop cost justified — the expected value of the work exceeds the expected
+   cost of running the loop to produce it
+9. Context thread assembled and reviewed — governance lineage assembled by a
+   governance agent and reviewed by the specification analyst before Layer 2
+   entry
 
 **Failure mode if bypassed:** The loop executes correctly against an incorrectly
 understood need. Verify passes. Validate fails. The organisation has produced a
@@ -305,13 +310,13 @@ why. See [Specification Readiness](specification-readiness.md).
 
 **Pass conditions:**
 
-1. Evidence bundle complete — all seven engineering Definition of Done
+1. Evidence bundle complete — all eight engineering Definition of Done
    conditions met, artefacts present and internally consistent
 2. Independent validation passed — for Phase 4 and above, and for all
    high-stakes regulated systems: organisationally separate validation that the
    engineering team's verification was rigorous
 3. Rollback procedure tested — not documented, tested — in a representative
-   environment, within 48 hours of the planned production deployment, with
+   environment, within a policy-set 48 hours of the planned production deployment, with
    time-to-rollback measured and within the agreed window
 4. Accountable human sign-off — the named P12 anchor has reviewed the evidence
    bundle, not rubber-stamped it, and has accepted production accountability
@@ -373,16 +378,14 @@ acknowledgement, not a retrospective note, but a change to a process.
 **L4 → L1: Value data to demand.** Production incidents and value realisation
 data feed back into demand prioritisation. If deployed systems consistently fail
 to achieve their business success criterion, the demand layer's validation
-process is producing false positives. A value realisation rate below 60% over
-any rolling four-release window is a demand health emergency: the needs are
+process is producing false positives. A value realisation rate below a policy-set 60% over
+any rolling four-release window — a floor the authors chose, not one measured
+from delivery data — is a demand health emergency: the needs are
 either not as real as the evidence suggested, or the success criteria were set
 wrong, or the measurement infrastructure does not exist. All three are Layer 1
 failures. This feedback path is the outer loop's primary quality signal on
 whether the demand layer is working. A value realisation shortfall triggering
-this path must produce a demand layer retrospective initiated within 30 calendar
-days of the value measurement window closing. The retrospective must produce a
-documented process change — not an acknowledgement — within 20 business days of
-its initiation. If the retrospective cannot be scheduled within the 30-day
+this path must produce a demand layer retrospective initiated within a policy-set 30 calendar days of the value measurement window closing. The retrospective must produce a documented process change — not an acknowledgement — within a policy-set 20 business days of its initiation. If the retrospective cannot be scheduled within the 30-day
 window, the business demand sponsor for the affected initiative is accountable
 for explaining the delay.
 
@@ -395,8 +398,7 @@ evaluation portfolio, the memory, and the design constraints so that the class
 of failure is caught before the next loop iteration completes. A maintenance
 signal that produces only a hotfix, without an evaluation update, has not closed
 — it has been deferred. A maintenance signal requiring a specification or
-evaluation update must result in a filed specification or evaluation change
-within 30 calendar days of the signal being identified. A maintenance signal
+evaluation update must result in a filed specification or evaluation change within a policy-set 30 calendar days of the signal being identified. A maintenance signal
 that produces only a hotfix without an evaluation update has not been closed at
 30 days — the evaluation update is the closing condition, not the hotfix.
 
@@ -408,9 +410,7 @@ identification is insufficiently thorough. A pattern of rollback procedure
 failures at test time is a signal that the Govern phase is not treating rollback
 testing as a first-class engineering concern. Release failures are not release
 layer problems — they are engineering loop problems surfaced at the release
-boundary. A pattern of release gate failures (two or more failures tracing to
-the same root cause within a rolling 60-day window) must produce a loop-level
-process change in progress within 10 business days of the pattern being
+boundary. A pattern of release gate failures (two or more failures tracing to the same root cause within a policy-set rolling 60-day window) must produce a loop-level process change in progress within a policy-set 10 business days of the pattern being
 identified. A single release failure does not trigger this SLO; the pattern
 does.
 
@@ -424,8 +424,8 @@ that reaches a customer-facing system, requires a demand layer retrospective.
 The retrospective must produce a specific process change — not an
 acknowledgement that "we need to be more careful." A validation failure that
 produces a demand-signal classification (the specification did not represent the
-actual need) must produce a demand layer retrospective initiated within 5
-business days and a documented process change within 20 business days. A
+actual need) must produce a demand layer retrospective initiated within a policy-set 5
+business days and a documented process change within a policy-set 20 business days. A
 validation failure at a customer-facing system triggers the 5-business-day SLO
 regardless of the rolling pattern.
 
@@ -441,9 +441,7 @@ action, identified by claim identifier and epistemic tier at the time of
 action; (ii) whether those claims were stale, contradicted, misapplied, or
 correctly reflecting reality but invoked outside their applicable scope; (iii)
 structured feedback to the IGM revision, assertion, and semantic authorities
-responsible for the affected claims and their relationships; and (iv) a
-timeline for claim re-verification not exceeding 30 calendar days from
-incident closure. A steward who closes an incident without producing the
+responsible for the affected claims and their relationships; and (iv) a policy-set timeline for claim re-verification not exceeding 30 calendar days from incident closure. A steward who closes an incident without producing the
 intelligence-feedback record has not closed the incident — the closure is
 provisional pending the IGM-side feedback artefact. This feedback path is the
 operational expression of IGM Principle 10 (*Every engagement feeds the domain
@@ -572,11 +570,43 @@ and blocks the pattern of shipping assertions as evidence.
 ### Regulated industry
 
 Start with your domain file's regulatory requirements for each layer and map
-gaps bottom-up. Regulated industries have externally imposed gate conditions —
-DORA Article 14, SR 11-7, IEC 62304, GAMP 5 — that are not optional and that map
-directly onto the ASDLC's gate structures. The release gate's independent
-validation condition is the SR 11-7 validation requirement. The evidence bundle
-is the IEC 62304 configuration management record. The operational readiness
+gaps bottom-up. Regulated industries have externally imposed gate conditions
+that map onto the ASDLC's gate structures, and in the list this paragraph used
+to give, exactly one of them is binding. **DORA — Regulation (EU) 2022/2554,
+Article 9(4)(e)** requires financial entities to *"implement documented
+policies, procedures and controls for ICT change management"*, with changes
+*"recorded, tested, assessed, approved, implemented and verified in a
+controlled manner"*; the closing subparagraph of Article 9(4) adds that *"the
+ICT change management process shall be approved by appropriate lines of
+management and shall have specific protocols in place"*. Article 9(4) opens
+*"financial entities shall"*, so that is a gate condition in the instrument's
+own words and it is not optional.
+
+**The other three instruments are marked here rather than dropped, because
+"not optional" does not hold of them as this paragraph stated it.** **SR 11-7**
+is supervisory guidance, not a rule: it says validation *"should be done by
+people who are not responsible for development or use"* and that *"Validation
+involves a degree of independence from model development and use"*, and the
+successor guidance on model risk management (**SR 26-2**, 17 April 2026)
+states that it *"does not set forth enforceable standards or prescriptive
+requirements; accordingly, non-compliance with this guidance will not result in
+supervisory criticism against a banking organization"*, the sentence carrying
+footnote 1: *"See 12 CFR Part 4, Subpart F, Appendix A (OCC); 12 CFR Part 262,
+Appendix A (Board); 12 CFR Part 302, Appendix A (FDIC). However, supervisory
+action may result for any violations of law or unsafe or unsound practices
+stemming from insufficient management of model risk."*
+**Quoted to its end the sentence still defeats "not optional", and it bounds
+that conclusion in the same place**: supervisory action may follow from
+violations of law or unsafe-or-unsound practices, so the marking here is that
+SR 11-7 imposes nothing by force of its own text, not that nothing follows from
+poor model risk management. **IEC 62304**, **GAMP 5** and **DO-178C** are paid
+standards that this programme has not purchased and has not read; **nothing
+here asserts what they require.** The mappings that follow from them are
+therefore **the ASDLC's own construction and are unsourced**, not established
+requirements: the release
+gate's independent validation condition corresponds to SR 11-7's validation
+principle, and the evidence bundle corresponds to what the ASDLC understands
+IEC 62304 to call a configuration management record. The operational readiness
 gate's security scan condition is the minimum floor for most financial services
 change management regimes. The ASDLC does not replace these regulatory
 requirements — it defines how agentic execution fits within them, and it
@@ -801,7 +831,7 @@ designed to address. Examples include a claims processing agent deployed to
 interact with customers, a regulatory reporting agent filing structured outputs
 to a regulator, or a trading agent executing on market positions. In each case,
 the agent is the product; its behavior is what must be governed throughout its
-operational life. See [APLC](aplc.md) for the full framework.
+operational life. See [APLC](https://github.com/arnaudgelas/aplc/blob/main/aplc.md) for the full framework.
 
 The shared inner layer is the mechanism by which the two frameworks remain
 consistent. Both route engineering execution through the manifesto. The
@@ -921,7 +951,7 @@ framework, autonomy tier definitions, and epistemic tier labelling requirements.
 | `security-governance.md`     | Cross-cutting | Security lifecycle and SSDF mapping                                |
 | `devsecops-controls.md`      | Cross-cutting | DevSecOps pipeline control matrix by tier                          |
 | `governance/agents.md`       | Cross-cutting | Governance agent framework and epistemic tiers                     |
-| `human-oversight-patterns.md` | Cross-cutting | Human oversight pattern taxonomy, governance requirements, and gate integration |
+| `human-oversight-patterns.md` *(not yet written)* | Cross-cutting | Human oversight pattern taxonomy, governance requirements, and gate integration — **this row records an intended document, not an available one: no file of that name exists anywhere in this corpus as of 06.09.2026, so the row is kept as the record that it was planned rather than deleted** |
 | `governance/graph.md`        | Cross-cutting | Semantic governance graph: node types, edge types, GateState model |
 | `agent-control-plane.md`     | Cross-cutting | Named governance agents, schemas, and human decision points        |
 | `waiver-governance.md`       | Cross-cutting | Waiver lifecycle, debt tracking, and portfolio governance          |

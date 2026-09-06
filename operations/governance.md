@@ -2,7 +2,7 @@
 
 _The operational governance layer of the Agentic Software Delivery Lifecycle._
 
-See the [Manifesto](../../manifesto.md) for the engineering execution layer (Layer
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the engineering execution layer (Layer
 2). See [Release Governance](../release-governance.md) for the Layer 3 release
 layer. See [Maintenance Governance](../maintenance-governance.md) for the long-term
 stewardship layer. See [Operational Definition of Done](dod.md) for
@@ -289,7 +289,7 @@ review times on complex evidence bundles is. This signal requires tracking
 review timestamps and bundle complexity metrics over time. The Runbook Drift
 Agent or an equivalent monitoring agent tracks this signal and surfaces patterns
 to the governance portfolio owner. The methodology for rubber-stamping detection
-is defined in adoption-metrics.md.
+is defined in `agentic-engineering-manifesto/adoption/metrics.md`.
 
 #### Rubber-Stamping Response: Autonomy Tier Adjustment
 
@@ -301,9 +301,7 @@ maintained. The correct operational response is tier adjustment: lowering the
 autonomy tier for the affected domain until governance quality is restored and
 re-demonstrated.
 
-**Detection threshold.** A rubber-stamping pattern is confirmed when all three
-of the following conditions hold over a rolling 90-day window for a given domain
-or system:
+**Detection threshold.** A rubber-stamping pattern is confirmed when all three of the following conditions hold over a policy-set rolling 90-day window for a given domain or system — and every figure in the three conditions is an author-set default, because **no safety-critical field has a validated, non-disruptive method for distinguishing functional oversight from rubber-stamping in live operations**, so these are behavioural proxies chosen here rather than calibrated discriminators:
 
 1. The median approval time for gate submissions is shorter than the defined
    minimum plausible review time for evidence bundles of observed complexity —
@@ -312,11 +310,60 @@ or system:
    reader's pace.
 2. No gate submission in the window has a recorded challenge, clarifying
    question, conditional approval, or rejection from the approver.
-3. At least 80% of gate submissions in the window share the same approver or
+3. At least a policy-set 80% of gate submissions in the window share the same approver or
    approver chain.
 
 A pattern that meets two of three conditions is a preliminary warning; all three
 conditions met is a confirmed rubber-stamping event requiring action.
+
+**What this detector cannot do — read before using its absence as evidence.**
+All three conditions are behavioural proxies an approver can satisfy without
+doing the cognitive work: a minimum-plausible-time floor is met by waiting, a
+challenge count is met by a trivial clarifying question, and approver
+concentration is met by rotating a signature. Human-factors research on
+monitoring highly reliable automation reports that operators habituate rapidly
+to timing and acknowledgement controls of this kind, and no safety-critical
+field has a validated, non-disruptive method for distinguishing functional
+oversight from rubber-stamping in live operations. (Evidence via the
+commissioned synthesis *Progressive Automation Safety Evaluation*, citing
+Bainbridge 1983 and Parasuraman & Riley 1997; a secondary source, not second-read
+against those primaries.) The detector therefore finds *careless*
+rubber-stamping and not *adapted* rubber-stamping. **It is adequate to confirm a
+rubber-stamping event and inadequate to clear one.** A domain that trips none of
+the three conditions is not thereby shown to have substantive review, and the
+same holds for a declining rate of gate challenges, rejections or interventions:
+that rate is a composite of the evidence bundles' true defect rate and the
+approver's disengagement, and it falls identically under an assurance process
+that has genuinely improved and under an approval chain that has stopped
+reading. **A falling challenge rate is a reason to test engagement, never a
+result, and it must not be offered as the evidence for an autonomy tier
+increase.**
+
+**What can be offered.** A positive result from an *Engagement Falsification
+Protocol* run for the affected gate — the double-blind synthetic fault injection
+design specified in the agentic engineering manifesto's adoption metrics
+document (`agentic-engineering-manifesto/adoption/metrics.md`).
+Unambiguous, domain-valid synthetic defects are interleaved into gate submissions
+at a low fixed rate, blinded to approvers **and their immediate supervisors**,
+with every injected submission intercepted and discarded after the approval
+decision is recorded so that none ever reaches release. Detection on injected
+defects is tracked separately from the baseline challenge rate. **Supported
+within scope** if detection on injected defects holds while the baseline
+declines; **contradicted** if the two decline together; **inconclusive** if the
+run is underpowered or void — which is never permission to raise a tier. State
+the pass criterion structurally — *detection on injected defects must not decline
+with the baseline* — against a detection floor declared before the run; the
+source synthesis's only numeric threshold for it exists as an embedded image with
+no text equivalent and is not reproduced here. **The protocol is proposed and
+unvalidated, it is run first in simulation or shadow review, and nothing in this
+document authorises live fault injection into a production gate.** It also does
+not reach every case: it requires a recordable, interceptable human decision
+point, so it says nothing about actions inside an approved envelope with no
+per-action approval; it excludes irreversible and person-affecting submissions;
+and a low-volume gate cannot be powered within a 60-day window, in which case the
+result is **inconclusive** and the tier holds. Where the protocol cannot be run,
+the tier record states that the assurance basis is gate design and post-hoc
+audit, not a measurement of approver engagement.
 
 **Authorization required to lower a tier.** Tier adjustment downward requires
 approval from the governance portfolio owner (one level above the system
@@ -339,15 +386,29 @@ be visible in governance state observability dashboards.
 automatic and cannot be self-certified by the domain's own approvers.
 Restoration requires:
 
-1. A minimum 60-day observation window after the tier reduction, during which
-   gate reviews in the affected domain demonstrate: review times consistent with
-   genuine engagement, recorded challenges or questions on at least 30% of
-   submissions, and approver chain diversity (no single approver handling more
-   than 60% of submissions).
-2. A restoration assessment conducted by the governance portfolio owner
-   reviewing the 60-day evidence record.
-3. A new governance record documenting the restoration decision, the evidence
-   reviewed, and the portfolio owner's rationale.
+1. A policy-set minimum 60-day observation window after the tier reduction, during which gate reviews in the affected domain demonstrate: review times consistent with
+   genuine engagement, recorded challenges or questions on at least a policy-set 30% of
+   submissions, and approver chain diversity (no single approver handling more than a policy-set 60% of submissions). **These are the same proxies that confirmed the
+   pattern, and they are asymmetric** — clearing them shows the careless form of
+   the pattern has stopped, not that engagement has returned. This condition is
+   necessary and is not sufficient on its own.
+2. **A positive engagement result, or a recorded statement that one could not be
+   obtained.** Either a *supported within scope* result from an Engagement
+   Falsification Protocol run over the affected gate (above), or — where the gate
+   is too low-volume to power such a run, or its submissions fall inside the
+   protocol's exclusions — a blind post-hoc adjudication of a sample of approved
+   submissions by adjudicators outside the approval chain who see neither the
+   approver's decision nor the agent's confidence signalling, reported as a
+   disagreement rate. Where neither is available, the restoration record states
+   in terms that no measurement of approver engagement supports the restoration
+   and that it rests on the proxies in condition 1 alone. **Adding approvers to
+   the same chain at the same volume is not a restoration measure**; independent
+   adjudication outside the loop is a different intervention and is.
+3. A restoration assessment conducted by the governance portfolio owner
+   reviewing the 60-day evidence record and the condition-2 result.
+4. A new governance record documenting the restoration decision, the evidence
+   reviewed, whether condition 2 was met by protocol run, by blind adjudication,
+   or not at all, and the portfolio owner's rationale.
 
 A system operating at a reduced tier retains all production obligations of that
 lower tier — the reduction is not nominal. Capabilities and autonomy levels that
@@ -433,7 +494,7 @@ which will diverge from the evaluation suite over time.
 
 **Reasoning trace completeness SLO.** Define the minimum acceptable percentage
 of production decisions that must have a complete, inspectable reasoning trace
-retained and retrievable. For most systems, this target should be 100% for Tier
+retained and retrievable. For most systems, this policy-set target should be 100% for Tier
 3 decision classes (high-risk, production-impacting actions per the P12
 accountability framework) and should be set proportionate to risk for lower-tier
 decisions. For regulated systems subject to model documentation requirements —
@@ -610,21 +671,30 @@ reasons before forensic preservation is complete, the decision to prioritise
 rollback over forensic preservation requires explicit accountable human approval
 and must be documented.
 
-_Step 3 — Legal and compliance escalation._ Within one hour of security incident
-classification, the security function (or security point of contact for the
-system) and the legal/compliance function must be notified. This escalation path
-must be documented in the runbook separately from the operational escalation
-chain — the on-call engineer and the P12 accountable human are not the
-appropriate final escalation points for a security incident.
+_Step 3 — Legal and compliance escalation._ Within a policy-set one hour of
+security incident classification, the security function (or security point of
+contact for the system) and the legal/compliance function must be notified.
+This escalation path must be documented in the runbook separately from the
+operational escalation chain — the on-call engineer and the P12 accountable
+human are not the appropriate final escalation points for a security incident.
 
 _Step 4 — Breach notification obligation assessment._ In parallel with
-containment and forensic investigation, the legal/compliance function assesses
-whether the incident triggers regulatory breach notification obligations. This
-assessment must be completed within the shortest applicable notification window
-— which may be as short as 24 hours for early warning obligations under DORA or
-NIS2. The assessment cannot be deferred until the incident is fully resolved:
-notification obligations are time-bound from the moment of awareness, not from
-the moment of resolution.
+containment and forensic investigation, the legal/compliance function
+assesses whether the incident triggers regulatory breach notification
+obligations. This assessment must be completed within the shortest
+applicable notification window — which may be as short as 24 hours, the
+NIS2 Article 23(4)(a) early warning.
+**DORA creates no early-warning obligation**: `early warning` occurs once in
+Regulation (EU) 2022/2554, at Article 17(3)(a), as *"early warning
+indicators"* — an internal detection control the incident management process
+must "put in place", not a duty to warn an authority — and the Regulation
+sets no hour figure at all: `hours` occurs once, in Article 15, point (b), in
+an unrelated list of anomaly indicators. DORA's own reporting clocks are not in the Regulation either;
+Article 19(4) sets them *"within the time limits to be laid down in
+accordance with Article 20, first paragraph, point (a), point (ii)"*, that
+is, in the delegated technical standards. The assessment cannot be deferred
+until the incident is fully resolved: notification obligations are
+time-bound from the moment of awareness, not from the moment of resolution.
 
 _Step 5 — Post-incident investigation._ The security incident post-incident
 investigation follows forensic investigation principles: it must not be
@@ -661,19 +731,31 @@ persons, affected data subjects must be notified "without undue delay" (Article
 notification cannot be made within 72 hours, the reasons for the delay must
 accompany the notification.
 
-**DORA Article 19.** For entities in scope of the Digital Operational Resilience
-Act, major ICT-related incidents must be reported to the competent authority.
-The reporting timeline comprises: an initial notification within the timeframe
-set by the competent authority after classification as a major incident; an
-intermediate report within 72 hours of the initial notification; and a final
-report within one month. DORA defines major incident in terms of criteria
-including number of clients affected, data losses, and duration of service
-disruption — confirm applicable thresholds with compliance counsel.
+**DORA Article 19.** For entities in scope of the Digital Operational
+Resilience Act, major ICT-related incidents must be reported to the
+competent authority. The reporting timeline comprises an initial
+notification, an intermediate report and a final report (Article 19(4),
+points (a) to (c)) — but **the Regulation states no clock for any of them**:
+Article 19(4) sets them *"within the time limits to be laid down in
+accordance with Article 20, first paragraph, point (a), point (ii)"*. Any
+hour or day figure quoted for DORA reporting comes from the delegated
+technical standards adopted under Article 20, not from the Regulation, and
+must be attributed to the standard in force at the time. DORA defines major
+incident in terms of criteria including number of clients affected, data
+losses, and duration of service disruption — confirm applicable thresholds
+with compliance counsel.
 
-**NIS2 Directive.** For entities in scope of the NIS2 Directive (operators of
-essential services, digital service providers), a significant incident requires:
-an early warning to the competent authority within 24 hours of becoming aware;
-an incident notification within 72 hours; and a final report within one month.
+**NIS2 Directive.** For *essential and important entities* in scope of the NIS2
+Directive — Directive (EU) 2022/2555; the phrase "operators of essential
+services" is NIS1 vocabulary and does not describe NIS2's scope — Article 23(4)
+requires Member States to ensure that a significant incident is reported to the
+CSIRT or, where applicable, the competent authority: an **early warning within
+24 hours** of becoming aware (Art. 23(4)(a)); an **incident notification within
+72 hours** of becoming aware (Art. 23(4)(b)); and a **final report not later
+than one month after the submission of the incident notification** under point
+(b) (Art. 23(4)(d)) — one month from the 72-hour notification, not from
+awareness. NIS2 is a Directive: these duties reach an entity through national
+transposition, so confirm the transposing law of each Member State in scope.
 
 These timelines vary by jurisdiction and framework. The applicable obligations
 depend on the system's data classification, the jurisdiction of operation, and
@@ -896,19 +978,19 @@ accelerated pace. No phase may be skipped; phases may be compressed. A
 compressed Verify phase with known-incomplete evaluation coverage is acceptable
 under time pressure if and only if the incompleteness is documented: which
 evaluations were not run, what risk that incompleteness represents, and who
-accepted that risk. Full verification against the complete evaluation suite is
-required within 48 hours of deployment.
+accepted that risk. Full verification against the complete evaluation suite is required within a policy-set 48 hours of deployment.
 
 ### Post-Hoc Normalisation
 
 Any change executed under emergency procedures must be treated as technically
-incomplete at the time of deployment. Within 24 hours of deployment: the full
-evidence bundle must be completed and filed, the abbreviated process must be
-documented with its justification, and the risk acceptance for any evaluation
-gaps must be recorded by the accountable human. Within 48 hours: full evaluation
-verification must be complete. If the full verification reveals issues, they are
-treated as a quality incident and handled accordingly — not silently accepted
-because the change is already in production.
+incomplete at the time of deployment. Within a policy-set 24 hours of
+deployment: the full evidence bundle must be completed and filed, the
+abbreviated process must be documented with its justification, and the risk
+acceptance for any evaluation gaps must be recorded by the accountable human.
+Within a policy-set 48 hours: full evaluation verification must be complete. If
+the full verification reveals issues, they are treated as a quality incident
+and handled accordingly — not silently accepted because the change is already
+in production.
 
 Post-hoc normalisation is not a loophole. It is a structured acknowledgement
 that time pressure is a real operational constraint, combined with a firm
@@ -1191,7 +1273,7 @@ stewardship responsibilities to
 [Maintenance Governance](../maintenance-governance.md). The
 [Operational Definition of Done](dod.md) defines the readiness
 conditions that a system must meet before the operational layer accepts it. The
-[Manifesto Principles](../../manifesto-principles.md) P9 (observability), P12
+[Manifesto Principles](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) P9 (observability), P12
 (accountability), and P5 (autonomy tiers) are the engineering principles most
 directly expressed in operational governance; their minimum bars apply in
 production as in development.

@@ -10,7 +10,7 @@ software organisation now has to face:
 > What does it take to govern a delivery system where agents can write, test,
 > change, and help deploy code?
 
-The [Agentic Engineering Manifesto](../manifesto.md) defines the inner
+The [Agentic Engineering Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) defines the inner
 engineering loop: how humans steer intent, agents execute within governed
 boundaries, and teams verify outcomes with evidence. The ASDLC defines
 everything around that loop: how demand is validated before execution, how
@@ -174,7 +174,7 @@ The ASDLC is not all-or-nothing. Each gate and layer has a minimum bar that can 
 If you are new to ASDLC, read in this order:
 
 1. [asdlc.md](asdlc.md) - the overview and conceptual model.
-2. [../manifesto.md](../manifesto.md) - the engineering execution layer that
+2. [Agentic Engineering Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) - the engineering execution layer that
    sits inside ASDLC Layer 2.
 3. [asdlc-guide.md](asdlc-guide.md) - the practical adoption sequence.
 4. [specification-readiness.md](specification-readiness.md) - the first gate
@@ -222,11 +222,11 @@ regulatory requirement mappings, see the [domains/](domains/) directory.
 
 ### Layer 2: Engineering Execution
 
-- [../manifesto.md](../manifesto.md): The Agentic Engineering Manifesto and
+- [Agentic Engineering Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md): The Agentic Engineering Manifesto and
   inner loop.
-- [../manifesto-principles.md](../manifesto-principles.md): The twelve
+- [Manifesto principles](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md): The twelve
   principles that govern agentic engineering execution.
-- [../manifesto-done.md](../manifesto-done.md): The engineering Definition of
+- [Manifesto Definition of Done](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-done.md): The engineering Definition of
   Done and hardening path.
 
 Layer 2 is intentionally referenced from the main manifesto document set rather
@@ -536,6 +536,7 @@ of each domain document (`security-governance.md`, `devsecops-controls.md`,
 ## License and Contribution
 
 This ASDLC document set is part of the broader
-[Agentic Engineering Manifesto](../README.md) repository. See the
+[Agentic Engineering Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/README.md) repository. See the
 repository-level license and contribution guidance for terms, authorship, and
-how to propose changes.
+how to propose changes. See [errata.md](errata.md) for a dated record of
+corrections made to previously published content.

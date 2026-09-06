@@ -104,7 +104,7 @@ EvidenceArtifact introduces a value that conflicts with an existing one linked
 to the same condition, the GateState transitions to `contradicted` and the
 relevant governance participants are notified.
 
-**Q-GH-4: Which waivers expire within the next 30 days?**
+**Q-GH-4: Which waivers expire within the next 30 days (a policy-set lead time)?**
 
 A waiver that expires without renewal or remediation causes the underlying
 condition's GateState to revert immediately to its pre-waiver state. For a
@@ -122,19 +122,20 @@ compensating control is still confirmed operational.
 without a remediation record?**
 
 A condition in `fail` state represents an active governance deficiency. A
-condition in `fail` state for 10 or more business days without a remediation
-record linked in the governance graph represents a deficiency that is not being
-actively addressed. This query surfaces dormant failures — conditions that have
-entered `fail` state and have not prompted a documented response.
+condition in `fail` state for a policy-set 10 or more business days without a
+remediation record linked in the governance graph represents a deficiency that
+is not being actively addressed. This query surfaces dormant failures —
+conditions that have entered `fail` state and have not prompted a documented
+response.
 
 Data: GateDecision nodes where GateState is `fail`, the timestamp of the last
 state change, and the presence or absence of a linked remediation
 EvidenceArtifact. Cadence: weekly. Any condition in `fail` state for more than
-10 business days without a remediation record linked in the governance graph
-warrants escalation to the accountable human. The escalation is not
-discretionary — the governance graph records the escalation as required when the
-threshold is crossed, and the accountable human's response (or absence of
-response) is itself part of the governance record.
+that policy-set 10 business days without a remediation record linked in the
+governance graph warrants escalation to the accountable human. The escalation
+is not discretionary — the governance graph records the escalation as required
+when the threshold is crossed, and the accountable human's response (or absence
+of response) is itself part of the governance record.
 
 ---
 
@@ -314,10 +315,11 @@ state for its reliability condition.
 The steward accountability model requires that each steward maintain meaningful
 oversight of the systems in their portfolio. Meaningful oversight is not
 possible at unlimited scale. The tier-calibrated limits — five Tier 3 systems,
-ten Tier 2 systems, or twenty Tier 1 systems per steward — represent the
-governance framework's assessment of the maximum portfolio at which a steward
-can exercise genuine accountability rather than nominal responsibility. A
-steward who exceeds these limits has more systems than they can govern.
+ten Tier 2 systems, or twenty Tier 1 systems per steward, all policy-set
+defaults chosen by the authors rather than measured — represent the governance
+framework's assessment of the maximum portfolio at which a steward can exercise
+genuine accountability rather than nominal responsibility. A steward who
+exceeds these limits has more systems than they can govern.
 
 Data: HumanOwner nodes with steward role, linked Deployment nodes grouped by
 tier. Steward portfolio counts are compared against the tier-calibrated limits.
@@ -325,7 +327,7 @@ Cadence: weekly. A violation is surfaced to the accountable human, who must
 either reduce the steward's portfolio or formally approve a temporary exception
 with a documented plan to return to compliance.
 
-**Q-OH-5: Which incidents from the last 90 days required evaluation suite
+**Q-OH-5: Which incidents from the last 90 days (a policy-set window) required evaluation suite
 updates that are still missing?**
 
 Post-incident reviews produce required actions. When a review determines that an
@@ -355,17 +357,19 @@ operational DoD condition, regardless of whether it is technically operational.
 These queries make the economic governance state of every system continuously
 visible.
 
-**Q-CV-1: Which systems have costs exceeding their forecast by more than 20%
+**Q-CV-1: Which systems have costs exceeding their forecast by more than a policy-set 20%
 over the last 30 days?**
 
 The cost forecast filed in the specification is not an aspiration — it is a
 governance commitment. A system whose actual costs exceed that forecast by more
 than 20% over a rolling 30-day period has drifted from its governed economic
-parameters. The 20% threshold is the FinOps governance warning level: above this
-threshold, the economics owner must be informed and a review must be scheduled.
-The threshold is not a permission to run 19% over forecast indefinitely; it is
-the boundary at which an informal management response becomes a required
-governance response.
+parameters. The 20% threshold is a policy-set FinOps governance warning level —
+chosen, not measured, and it does not match the 25% and 50% variance figures
+`finops-governance.md` states, which is a live inconsistency rather than a
+scope distinction: above this threshold, the economics owner must be informed
+and a review must be scheduled. The threshold is not a permission to run 19%
+over forecast indefinitely; it is the boundary at which an informal management
+response becomes a required governance response.
 
 Data: CostRecord nodes for each Deployment, compared against the cost_forecast
 linked to the Deployment's governing Specification. Cadence: continuous,
@@ -389,38 +393,40 @@ by the count of successful outcome events from operational observability and
 value realisation EvidenceArtifact nodes. Cadence: quarterly. If cost per
 successful outcome is increasing faster than value per outcome — if the system
 is becoming less economically efficient over time — the economics owner must
-initiate a formal review. A system whose cost per outcome has increased for two
-consecutive quarters without a documented explanation and a remediation plan is
-failing its economic governance condition.
+initiate a formal review. A system whose cost per outcome has increased for a
+policy-set two consecutive quarters without a documented explanation and a
+remediation plan is failing its economic governance condition.
 
 **Q-CV-3: Which systems have not had a value realisation measurement in more
 than 90 days?**
 
-Value realisation measurement is an operational DoD requirement, not an optional
-reporting exercise. A system operating for more than 90 days without a value
-realisation measurement has no current evidence that it is delivering the
-business value that justified its existence. The measurement method and
-measurement owner are defined at the specification gate; the absence of a recent
-measurement means the designated owner has not executed a required governance
-obligation.
+Value realisation measurement is an operational DoD requirement, not an
+optional reporting exercise. A system operating for more than a policy-set 90
+days without a value realisation measurement has no current evidence that it is
+delivering the business value that justified its existence. The measurement
+method and measurement owner are defined at the specification gate; the absence
+of a recent measurement means the designated owner has not executed a required
+governance obligation.
 
 Data: DemandItem nodes with linked measurement_method and measurement_owner,
-compared against the most recent EvidenceArtifact node of type
-`value realisation measurement` linked to the current Deployment. Cadence:
-monthly. Systems without a value realisation measurement within the past 90 days
-are in `missing` state for this operational DoD condition, and the measurement
-owner is the named governance participant accountable for remediation.
+compared against the most recent EvidenceArtifact node of type `value
+realisation measurement` linked to the current Deployment. Cadence: monthly.
+Systems without a value realisation measurement within that policy-set past 90
+days are in `missing` state for this operational DoD condition, and the
+measurement owner is the named governance participant accountable for
+remediation.
 
 **Q-CV-4: Which optimization proposals from the FinOps Agent have been open for
 more than 30 days without review by the budget owner?**
 
 The FinOps Agent identifies cost optimization opportunities and files them as
 EvidenceArtifacts awaiting budget owner review. An optimization proposal that
-sits unreviewed for more than 30 days is not a neutral administrative delay — it
-has a calculable carrying cost: the ongoing cost of the unoptimized
-configuration multiplied by the number of days since the proposal was filed.
-This query surfaces unreviewed proposals and their accumulated carrying cost,
-making the cost of non-action visible to governance participants.
+sits unreviewed for more than a policy-set 30 days is not a neutral
+administrative delay — it has a calculable carrying cost: the ongoing cost of
+the unoptimized configuration multiplied by the number of days since the
+proposal was filed. This query surfaces unreviewed proposals and their
+accumulated carrying cost, making the cost of non-action visible to governance
+participants.
 
 Data: EvidenceArtifact nodes of type `optimization proposal` from the FinOps
 Agent, with creation timestamps and approval status from the budget owner.

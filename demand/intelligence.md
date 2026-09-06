@@ -150,9 +150,9 @@ Draft items at Low confidence with no corroborating signal from a second
 category require explicit product owner acknowledgement before they consume any
 validation attention. High-volume Low-confidence items from a single agent
 signal a calibration problem in that agent's signal processing. When more than
-30% of items surfaced by a single agent in any rolling 30-day window carry Low
-confidence, the agent's accountable human is notified and a calibration review
-is opened.
+a policy-set 30% of items surfaced by a single agent in any policy-set rolling
+30-day window carry Low confidence, the agent's accountable human is notified
+and a calibration review is opened.
 
 ---
 
@@ -195,7 +195,7 @@ Evaluation suites for demand intelligence agents must include four case classes:
   agent would have surfaced them at the time with the evidence then available.
 
 Draft items consistently rejected by product owners without promotion to Layer 1
-are a calibration signal. A rejection rate above 80% for any signal category
+are a calibration signal. A rejection rate above a policy-set 80% for any signal category
 over a rolling 90-day window requires an agent evaluation review. The review
 examines whether the signal source is miscalibrated, whether the candidate need
 formulation is systematically off, or whether the product owner's rejection

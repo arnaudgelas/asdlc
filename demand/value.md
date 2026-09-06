@@ -2,7 +2,7 @@
 
 _The governed demand layer of the Agentic Software Delivery Lifecycle._
 
-See the [Manifesto](../../manifesto.md) for the engineering execution layer (Layer
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the engineering execution layer (Layer
 2). See [Specification Readiness](../specification-readiness.md) for the Layer 1→2
 gate. See [Demand Metrics](metrics.md) for measurement.
 
@@ -535,7 +535,8 @@ criterion traceability, and out-of-scope declarations. This step converts intent
 from business language into governed specification.
 
 The technical reference for this step is the companion requirements engineering
-framework (`companion-re-framework.md`). That document covers the mechanics:
+framework
+(`agentic-engineering-manifesto/companion/re-framework.md`). That document covers the mechanics:
 acceptance criteria templates, constraint taxonomy, traceability linking, and
 the format requirements for machine-readable specification. The demand layer
 governs whether translation is complete; the RE framework governs how
@@ -837,8 +838,7 @@ criterion. If they do not — consistently, across multiple loop iterations — 
 demand validation process is producing false positives. Either the needs are
 real but the success criteria are set wrong, or the needs are not as real as the
 evidence suggested, or the value measurement infrastructure does not exist to
-measure outcomes accurately. All three are demand layer failures. A value
-realisation rate below 60% over any rolling four-release window is a demand
+measure outcomes accurately. All three are demand layer failures. A value realisation rate below the policy-set 60% over any rolling four-release window is a demand
 health emergency, not an engineering quality problem.
 
 **Feedback handling protocol.** Each feedback signal from a downstream layer
@@ -927,7 +927,7 @@ verification.
 
 For the organizational evolution perspective — how these roles emerge through
 the ASDLC maturity phases and what skills they require — see
-[Adoption Roles](../../adoption-roles.md).
+[Adoption Roles](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/adoption/roles.md).
 
 ---
 

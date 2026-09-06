@@ -2,7 +2,7 @@
 
 _Long-term stewardship of agentic systems in production._
 
-See the [Manifesto](../manifesto.md) for the engineering execution layer (Layer
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the engineering execution layer (Layer
 2). See [Operations Governance](operations/governance.md) for the operational
 runtime layer. See [Operational Definition of Done](operations/dod.md) for the
 Layer 4 readiness conditions.
@@ -14,15 +14,15 @@ Layer 4 readiness conditions.
 Maintenance governance is what happens after the system is operationally
 running. It is the stewardship of the system's long-term health: keeping it
 current as its environment changes, managing its security surface as
-vulnerabilities are discovered, governing its technical debt before it compounds
-into architectural failure, and managing the eventual controlled retirement of a
-system that has served its purpose. The operational layer (see
+vulnerabilities are discovered, governing its technical debt before it
+compounds into architectural failure, and managing the eventual controlled
+retirement of a system that has served its purpose. The operational layer (see
 [Operations Governance](operations/governance.md)) governs the system's runtime
 behaviour — incidents, SLOs, on-call. Maintenance governance governs the
-system's structural health over the 12–36 month horizon after deployment. The
-two are not the same, and the failure mode of conflating them is a maintenance
-backlog that grows invisibly until a security incident or architectural crisis
-forces it into view.
+system's structural health over a policy-set 12–36 month horizon after
+deployment. The two are not the same, and the failure mode of conflating them
+is a maintenance backlog that grows invisibly until a security incident or
+architectural crisis forces it into view.
 
 ---
 
@@ -105,19 +105,19 @@ The audit examines three dimensions of the intelligence the system depends on:
   is a network whose judgments are increasingly being inherited rather than
   refreshed.
 
-Warning signals from the audit: more than 80% of load-bearing claims sourced
-from a single organisation, vendor, or jurisdiction; less than 2%
-contradiction density in a domain with known divergences; or a sustained
-decline in expert peer consultation against the deployment baseline. Any
-warning signal triggers a documented remediation plan with a defined window:
-expand the IGM Harvest or Capture acquisition modes to broaden the source
-base; activate cross-domain linking to surface analogous contradictions from
-adjacent domains; or escalate to the IGM revision, assertion, or semantic
-governance authority responsible for the affected claim class. A substrate
-diversity audit that surfaces a warning signal without producing a
-remediation plan within 20 business days is itself a steward governance
-failure, equivalent to leaving an architectural health degradation
-unaddressed.
+Warning signals from the audit, both figures policy-set and chosen rather than
+measured: more than 80% of load-bearing claims sourced from a single
+organisation, vendor, or jurisdiction; less than 2% contradiction density in a
+domain with known divergences; or a sustained decline in expert peer
+consultation against the deployment baseline. Any warning signal triggers a
+documented remediation plan with a defined window: expand the IGM Harvest or
+Capture acquisition modes to broaden the source base; activate cross-domain
+linking to surface analogous contradictions from adjacent domains; or escalate
+to the IGM revision, assertion, or semantic governance authority responsible
+for the affected claim class. A substrate diversity audit that surfaces a
+warning signal without producing a remediation plan within a policy-set 20
+business days is itself a steward governance failure, equivalent to leaving an
+architectural health degradation unaddressed.
 
 ### Ownership Transfer Protocol
 
@@ -168,9 +168,10 @@ knowledge gaps that accumulate until the steward can no longer pass the P12
 accountability test, and maintenance obligations that slip past their scheduled
 cadence without detection.
 
-**Portfolio limits as governance signals.** As a practitioner calibration
-starting point, a single steward should not be accountable for more than five
-Tier 3 systems, ten Tier 2 systems, or twenty Tier 1 systems concurrently. These
+**Portfolio limits as governance signals.** As a policy-set practitioner
+calibration starting point — chosen by the authors rather than derived from
+measured steward load — a single steward should not be accountable for more than
+five Tier 3 systems, ten Tier 2 systems, or twenty Tier 1 systems concurrently. These
 are not hard limits — they are signals. A steward approaching these limits
 without additional support, tooling assistance, or workload reduction is at
 elevated risk of the gradual degradation described above. The portfolio limit is
@@ -191,8 +192,9 @@ claims are fresh, which are projected-stale, which carry unresolved
 contradictions, and which have outstanding re-verification work — cannot be
 handled at the same density as routine operational stewardship.
 
-For intelligence-bearing systems, the portfolio limit is reduced to no more
-than three systems per steward, regardless of autonomy tier. This reduction
+For intelligence-bearing systems, the portfolio limit is reduced to a policy-set
+no more than three systems per steward, regardless of autonomy tier — again a
+chosen default, not a measured capacity. This reduction
 is not a refinement of the tier-calibrated limits — it supersedes them for
 the intelligence-bearing class. A steward accountable for three Tier 3
 intelligence-bearing systems is at the limit; a steward accountable for one
@@ -339,8 +341,7 @@ maintenance governance record and the results should be reviewed by the steward.
 
 **Time-to-patch SLOs by severity.** Define the maximum acceptable time between
 vulnerability identification and patch deployment, by severity tier.
-Practitioner defaults calibrated to standard industry practice: Critical
-vulnerabilities (CVSS 9.0+): 48 hours. High severity (CVSS 7.0–8.9): 7 calendar
+Policy-set practitioner defaults, chosen by the authors against no named industry source: Critical vulnerabilities (CVSS 9.0+): 48 hours. High severity (CVSS 7.0–8.9): 7 calendar
 days. Medium severity (CVSS 4.0–6.9): 30 calendar days. Low severity (CVSS below
 4.0): next planned maintenance window, with a ceiling of 90 days. These defaults
 should be calibrated to the system's regulatory context: DORA Article 9 (ICT
@@ -400,8 +401,10 @@ For financial services: DORA Article 9 (ICT risk management, vulnerability
 management) and Article 11 (ICT business continuity). For systems processing
 personal data in the EU: GDPR Article 32 (security of processing) and the EU
 Cyber Resilience Act SBOM requirements. For US financial institutions: SR 11-7
-(model risk management) and its requirement for ongoing model performance
-monitoring. This is not an exhaustive regulatory mapping — the applicable
+(model risk management), which is supervisory guidance written in "should" and
+which says *"Validation activities should continue on an ongoing basis after a
+model goes into use"* — a practice it recommends, not a requirement it
+imposes. This is not an exhaustive regulatory mapping — the applicable
 obligations depend on the system's jurisdiction, data classification, and use
 case. Confirm applicable obligations with qualified regulatory counsel before
 defining patch SLOs for regulated systems.
@@ -431,10 +434,10 @@ channel is a governance gap that the steward owns.
 Every received disclosure must be triaged within defined SLOs from the time of
 receipt:
 
-- **Critical:** initial assessment within 4 hours.
-- **High:** initial assessment within 24 hours.
-- **Medium:** initial assessment within 5 business days.
-- **Low:** initial assessment within 10 business days.
+- **Critical:** initial assessment within a policy-set 4 hours.
+- **High:** initial assessment within a policy-set 24 hours.
+- **Medium:** initial assessment within a policy-set 5 business days.
+- **Low:** initial assessment within a policy-set 10 business days.
 
 Triage produces four outputs, all documented in the maintenance governance
 record: a confirmed or not-confirmed status for the reported vulnerability; a
@@ -509,17 +512,17 @@ requirements in this section. Each domain file maps the general ASDLC
 maintenance requirements to the regulatory framework applicable in that sector:
 
 - Financial services: SR 11-7, DORA, EU AI Act, MiFID II — see
-  [Financial Services Regulatory Alignment](../domains/financial-services.md)
+  [Financial Services Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/financial-services.md)
 - Medical devices: FDA, IEC 62304, ISO 14971, MDR — see
-  [Medical Devices Regulatory Alignment](../domains/medical-devices.md)
+  [Medical Devices Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/medical-devices.md)
 - Aviation: DO-178C, ARP4754A, EASA — see
-  [Aviation Regulatory Alignment](../domains/aviation.md)
+  [Aviation Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/aviation.md)
 - Automotive: ISO 26262, SOTIF, UNECE WP.29 — see
-  [Automotive Regulatory Alignment](../domains/automotive.md)
+  [Automotive Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/automotive.md)
 - Pharmaceuticals: GxP, 21 CFR Part 11, ICH guidelines — see
-  [Pharma Regulatory Alignment](../domains/pharma.md)
+  [Pharma Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/pharma.md)
 - Defense and government: CMMC, FISMA, NIST SP 800-53 — see
-  [Defense and Government Regulatory Alignment](../domains/defense-government.md)
+  [Defense and Government Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/defense-government.md)
 
 ### Root Cause Analysis and Prevention
 
@@ -715,7 +718,7 @@ the current quarter.
 
 **Risk debt.** Debt that is not yet blocking but is increasing the blast radius
 of future changes, degrading security posture, or creating conditions for a
-future incident. Remediate within 1–2 quarters, prioritised by the steward
+future incident. Remediate within a policy-set 1–2 quarters, prioritised by the steward
 against other maintenance obligations.
 
 **Cosmetic debt.** Debt that increases the cognitive overhead of working with
@@ -811,16 +814,23 @@ runbook, on-call assignment, monitoring dashboards — are archived. The system'
 change record is closed.
 
 Artefact retention at decommission must reconcile potentially conflicting
-obligations. SR 11-7 (US financial institutions) requires model documentation to
-be retained for a minimum of seven years after the model is retired. GDPR
-requires personal data to be deleted when no longer necessary for the purpose it
-was collected for — which, at decommission, typically means data processed by
-the system should be deleted or anonymised unless there is a legal basis for
-retention. These obligations can conflict: a reasoning trace that includes
-personal data from a GDPR-covered subject may simultaneously need to be deleted
-(GDPR) and retained (SR 11-7). Reconcile these conflicts explicitly at
-decommission time, with qualified legal and compliance input for regulated
-systems. Document the reconciliation decision and retain the documentation.
+obligations. For US financial institutions, model documentation is retained
+for a policy-set minimum of seven years after the model is retired, with no
+instrument setting that period. SR 11-7 is supervisory guidance written in
+"should", and it states no retention period at all: the words `retention`
+and `seven years` each occur zero times in the guidance and its attachment
+as held at `inputs/20260905-arnaud/prep/D-20-primary/sources/sr1107a1.txt`
+(sha256 `d8ef343917…`). The seven years are this organisation's own choice
+and must not be presented to a supervisor as an SR 11-7 requirement. GDPR
+requires personal data to be deleted when no longer necessary for the
+purpose it was collected for — which, at decommission, typically means data
+processed by the system should be deleted or anonymised unless there is a
+legal basis for retention. These obligations can conflict: a reasoning trace
+that includes personal data from a GDPR-covered subject may simultaneously
+need to be deleted (GDPR) and retained (the seven-year retention policy).
+Reconcile these conflicts explicitly at decommission time, with qualified
+legal and compliance input for regulated systems. Document the
+reconciliation decision and retain the documentation.
 
 The artefacts that must be retained (subject to the above reconciliation): the
 specification at the time of final release, the evidence bundle from the final
@@ -831,19 +841,19 @@ retired.
 
 ### Stage 5: Post-Decommission Audit
 
-Within 30 days of decommission, the steward and the business demand sponsor
-conduct a brief post-decommission audit. The questions are: Did the system
-deliver the value it was built for, and what is the evidence? What would have
-been done differently in the specification, development, or maintenance phase?
-What failure modes, if any, were discovered in production that were not
-anticipated at deployment? The output of this audit is a brief document — not a
-lengthy retrospective — that is filed in the demand layer (Layer 1) as a
-learning for future demand governance. Systems that delivered their intended
-value under manageable maintenance cost are positive evidence for similar
-specifications in the future. Systems that fell short of their success
-criterion, accumulated unexpected maintenance cost, or encountered failure modes
-that could have been anticipated at the specification stage are inputs into how
-the organisation governs similar work in future.
+Within a policy-set 30 days of decommission, the steward and the business
+demand sponsor conduct a brief post-decommission audit. The questions are: Did
+the system deliver the value it was built for, and what is the evidence? What
+would have been done differently in the specification, development, or
+maintenance phase? What failure modes, if any, were discovered in production
+that were not anticipated at deployment? The output of this audit is a brief
+document — not a lengthy retrospective — that is filed in the demand layer
+(Layer 1) as a learning for future demand governance. Systems that delivered
+their intended value under manageable maintenance cost are positive evidence
+for similar specifications in the future. Systems that fell short of their
+success criterion, accumulated unexpected maintenance cost, or encountered
+failure modes that could have been anticipated at the specification stage are
+inputs into how the organisation governs similar work in future.
 
 This closes the ASDLC lifecycle loop: Layer 1 (demand) receives a learning from
 Layer 4 (operations/maintenance) that improves the quality of future demand
@@ -1022,12 +1032,12 @@ instrument for surfacing recurring patterns before they compound into a P1
 event.
 
 When a signal meets the Layer 1 entry threshold, the steward creates a demand
-item within five business days of the signal being received. The demand item
-references the triggering artefact and documents the steward's assessment of the
-engineering scope. Layer 1 then governs the prioritisation of the demand item
-alongside other demand — the steward does not unilaterally determine when the
-engineering work begins, but they are responsible for ensuring the demand item
-enters the queue.
+item within a policy-set five business days of the signal being received. The
+demand item references the triggering artefact and documents the steward's
+assessment of the engineering scope. Layer 1 then governs the prioritisation of
+the demand item alongside other demand — the steward does not unilaterally
+determine when the engineering work begins, but they are responsible for
+ensuring the demand item enters the queue.
 
 ---
 
@@ -1153,12 +1163,9 @@ effective.
 
 The cross-system lateral learning loop has defined service level objectives:
 
-- The candidate propagation query must be completed within 10 business days of
-  an incident's root cause analysis being finalised.
-- Stewards of candidate systems must be notified of the propagation assessment
-  within 5 business days of the assessment being completed.
-- Each steward's approval, modification, or rejection of the proposed update
-  must be recorded within 20 business days of notification.
+- The candidate propagation query must be completed within a policy-set 10 business days of an incident's root cause analysis being finalised.
+- Stewards of candidate systems must be notified of the propagation assessment within a policy-set 5 business days of the assessment being completed.
+- Each steward's approval, modification, or rejection of the proposed update must be recorded within a policy-set 20 business days of notification.
 
 A propagation assessment not completed within its SLO is a governance staleness
 event. The portfolio steward is notified.
@@ -1189,13 +1196,13 @@ stewards are consumers of this signal, not its producers.
 
 ### Impact Assessment
 
-Within 10 business days of receiving a regulatory source notification, the
-system steward and the compliance function assess: does the update change the
-interpretation of the current constraint? Does it create a new obligation not
-currently reflected in the constraint set? Does it relax an existing obligation
-in a way that may allow the constraint to be narrowed? The assessment is
-documented in full and filed as an EvidenceArtifact on the relevant Constraint
-node in the governance graph.
+Within a policy-set 10 business days of receiving a regulatory source
+notification, the system steward and the compliance function assess: does the
+update change the interpretation of the current constraint? Does it create a
+new obligation not currently reflected in the constraint set? Does it relax an
+existing obligation in a way that may allow the constraint to be narrowed? The
+assessment is documented in full and filed as an EvidenceArtifact on the
+relevant Constraint node in the governance graph.
 
 ### Maintenance Action Classification
 
@@ -1223,12 +1230,13 @@ applies.
 ### Regulatory Co-Evolution Escalation
 
 A regulatory source notification that has not received a completed impact
-assessment within 10 business days is a governance staleness event. The
-governance portfolio owner is notified. A regulatory source notification on a
-high-blast-radius system that remains unassessed beyond the SLO window is an
-immediate governance concern requiring escalation to the accountable human.
-Regulatory co-evolution that is not tracked is not a compliance posture — it is
-an accumulating compliance gap whose existence the organisation cannot document.
+assessment within that policy-set 10 business days is a governance staleness
+event. The governance portfolio owner is notified. A regulatory source
+notification on a high-blast-radius system that remains unassessed beyond the
+SLO window is an immediate governance concern requiring escalation to the
+accountable human. Regulatory co-evolution that is not tracked is not a
+compliance posture — it is an accumulating compliance gap whose existence the
+organisation cannot document.
 
 ---
 
@@ -1437,7 +1445,7 @@ investigation.
 This document is part of the ASDLC Layer 4 governance suite alongside
 [Operations Governance](operations/governance.md) and
 [Operational Definition of Done](operations/dod.md). The
-[Manifesto Principles](../manifesto-principles.md) P12 (accountability), P3
+[Manifesto Principles](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) P12 (accountability), P3
 (architecture as defence-in-depth), and P10 (containment) are most directly
 expressed in maintenance governance. The long-term ownership and stewardship
 model operationalises the P12 accountability principle across the system's

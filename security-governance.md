@@ -478,15 +478,15 @@ for compliance determinations.
 
 - Financial services: SR 11-7 model risk management, DORA operational
   resilience, EU AI Act obligations, MiFID II — see
-  [Financial Services Regulatory Alignment](../domains/financial-services.md)
+  [Financial Services Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/financial-services.md)
 - Medical devices: FDA software as a medical device requirements, IEC 62304, ISO
   14971 risk management — see
-  [Medical Devices Regulatory Alignment](../domains/medical-devices.md)
+  [Medical Devices Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/medical-devices.md)
 - Aviation: DO-178C software considerations, ARP4754A system development — see
-  [Aviation Regulatory Alignment](../domains/aviation.md)
+  [Aviation Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/aviation.md)
 - Automotive: ISO 26262 functional safety, SOTIF, UNECE WP.29 — see
-  [Automotive Regulatory Alignment](../domains/automotive.md)
+  [Automotive Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/automotive.md)
 - Pharmaceuticals: GxP validation, 21 CFR Part 11 electronic records — see
-  [Pharma Regulatory Alignment](../domains/pharma.md)
+  [Pharma Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/pharma.md)
 - Defense and government: CMMC, FISMA, NIST SP 800-53 — see
-  [Defense and Government Regulatory Alignment](../domains/defense-government.md)
+  [Defense and Government Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/defense-government.md)

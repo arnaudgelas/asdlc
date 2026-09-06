@@ -2,8 +2,8 @@
 
 _The Agentic Software Delivery Lifecycle, Layer 3: Deployment Governance._
 
-See [manifesto.md](../manifesto.md) for the core values and the Agentic Loop.
-See [manifesto-done.md](../manifesto-done.md) for the Definition of Done. See
+See [manifesto.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the core values and the Agentic Loop.
+See [manifesto-done.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-done.md) for the Definition of Done. See
 [release-governance.md](release-governance.md) for release gate conditions and
 the decision to deploy. See [operations/governance.md](operations/governance.md)
 for what happens after production deployment.
@@ -48,7 +48,7 @@ without a complete evidence bundle.
 
 **Test** is the first external verification environment. Test runs the
 evaluation suite (defined in
-[manifesto-principles.md](../manifesto-principles.md) under Principle 8) against
+[manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) under Principle 8) against
 the loop-complete artefact in an environment that is isolated from development
 but not yet integrated with other systems. Test answers: does the artefact
 behave as specified in isolation? Integration concerns — cross-service
@@ -80,15 +80,18 @@ preceding environment is necessary but not sufficient. Production smoke tests
 are required. Production monitoring coverage is required. The deployment is not
 done until it has been verified in production.
 
-**At regulated environment boundaries**, environment parity requirements extend
-beyond configuration. For pharmaceutical and medical device systems under GAMP 5
-and IEC 62304, staging must use validated test data sets, validated
-configuration baselines, and in some cases validated infrastructure components.
-The environment itself must be qualified, not just configured. For financial
-services systems under DORA and SR 11-7, the test and integration environments
-must be isolated from production data in ways that are auditable. These
-requirements do not override the standard environment model — they add specific
-constraints to its implementation.
+**At regulated environment boundaries**, environment parity extends beyond
+configuration. For pharmaceutical and medical device systems, the ASDLC's
+position — **its own construction, not attributed to GAMP 5 or IEC 62304, which
+are paid standards this programme has not purchased and has not read, OPEN under
+`T6.5`** — is that staging should use validated test data sets, validated
+configuration baselines, and in some cases validated infrastructure components,
+and that the environment itself should be qualified, not just configured. For
+financial services systems, isolation of test and integration environments from
+production data in auditable ways is required by DORA, a binding Regulation;
+SR 11-7 is supervisory guidance written in "should" and imposes nothing here.
+These constraints do not override the standard environment model — they add
+specific constraints to its implementation.
 
 **What testing must pass at each gate.** Development to test: the evaluation
 suite passes, and the evidence bundle is complete. Test to integration: test
@@ -186,7 +189,7 @@ documented, scoped, and accepted by the release manager as a known risk.
 **Staging → Production.** This is the most consequential promotion gate. All
 release gate conditions from [release-governance.md](release-governance.md) must
 be met. The deployment window is approved. The on-call engineer is notified and
-prepared. The rollback procedure has been tested within 48 hours. Smoke test
+prepared. The rollback procedure has been tested within a policy-set 48 hours. Smoke test
 scripts are ready to execute immediately after deployment.
 
 The evidence-passes-staging-but-fails-production failure pattern deserves
@@ -245,13 +248,14 @@ before the full cutover decision is made. The following governance conditions
 apply to any canary deployment.
 
 _Traffic percentage._ The initial canary traffic percentage must be documented
-in the release artefact before deployment begins. Practitioner defaults: 5% for
-Tier 3 systems with high blast radius; 10–20% for Tier 2 systems. The percentage
-must be set low enough that canary failures have bounded user impact but high
-enough that the observation period generates statistically meaningful signal
-within the defined observation window. Undocumented traffic percentages — "we'll
-start small and see" — are not acceptable; the percentage is a governance
-parameter, not an operational judgment made under time pressure.
+in the release artefact before deployment begins. Policy-set practitioner
+defaults, chosen by the authors rather than sized from deployment data: 5% for
+Tier 3 systems with high blast radius; 10–20% for Tier 2 systems. The
+percentage must be set low enough that canary failures have bounded user impact
+but high enough that the observation period generates statistically meaningful
+signal within the defined observation window. Undocumented traffic percentages
+— "we'll start small and see" — are not acceptable; the percentage is a
+governance parameter, not an operational judgment made under time pressure.
 
 _Observation window._ The minimum duration of the canary observation period
 before cutover is authorised must be specified in the release artefact and is
@@ -353,7 +357,7 @@ conditions.
 
 ## Rollback Operationalisation
 
-The [manifesto.md](../manifesto.md) requires rollback plans as a component of a
+The [manifesto.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) requires rollback plans as a component of a
 complete loop output. [Release-governance.md](release-governance.md) requires
 that rollback procedures be tested before the release gate opens. This document
 requires that rollback be operationally ready at the time of production
@@ -373,9 +377,7 @@ person who wrote it.
 **Tested in a representative environment within 48 hours of production
 deployment.** The test result is recorded: environment, date, time, duration,
 outcome, and the name of the person who conducted the test. A rollback procedure
-that has not been tested is not a rollback procedure — it is a hypothesis. The
-48-hour window is not arbitrary: it ensures the test reflects the current state
-of the environment, the current configuration, and the current operational team.
+that has not been tested is not a rollback procedure — it is a hypothesis. The 48-hour window is a policy-set default rather than an arbitrary one: it is chosen so the test reflects the current state of the environment, the current configuration, and the current operational team.
 A test conducted a week before deployment reflects a week-old state.
 
 **Time-to-rollback measured and within the agreed window.** The time from
@@ -428,8 +430,7 @@ deployment causes a production issue.
 completed, in YYYY-MM-DD HH:MM:SS UTC format. Not the time the deployment was
 initiated. Not an approximation. The completion timestamp is the moment at which
 the change became active in the production environment. This is the reference
-point for post-deployment monitoring windows, the start of the 24-hour
-post-deployment smoke test period, and the timestamp referenced in compliance
+point for post-deployment monitoring windows, the start of the policy-set 24-hour post-deployment smoke test period, and the timestamp referenced in compliance
 filings.
 
 **Configuration state hash at deployment time.** A cryptographic hash of the
@@ -480,7 +481,7 @@ document. Teams operating Tier 1 systems in regulated industries should consult
 the applicable regulatory framework to determine whether supply chain
 attestation requirements apply to their context.
 
-Reference: SLSA v1.0 framework (https://slsa.dev).
+Reference: SLSA v1.2 — https://slsa.dev/spec/ (confirmed current at slsa.dev, 05.09.2026; see also devsecops-controls.md's Normative References).
 
 This deployment evidence forms the Layer 3 portion of the system's audit trail.
 The Layer 2 audit trail is the evidence bundle from the loop. The Layer 3 audit

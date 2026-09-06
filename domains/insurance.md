@@ -2,7 +2,7 @@
 
 _Insurance-specific regulatory requirements for ASDLC Layers 1, 3, and 4._
 
-See [Insurance Manifesto Alignment](../../domains/insurance.md) for manifesto
+See [Insurance Manifesto Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/insurance.md) for manifesto
 principle mappings. See the [ASDLC Overview](../asdlc.md) for the full lifecycle
 framework.
 
@@ -103,16 +103,21 @@ for insurance agent products is an incomplete gate.
 Layer 3 — release and deployment governance as defined in
 [release-governance.md](../release-governance.md) — is where Solvency II
 model change governance and IDD product governance requirements impose specific
-pre-deployment obligations. The five release gate conditions are necessary but
+pre-deployment obligations. The eight release gate conditions are necessary but
 not sufficient for Solvency II models; major model changes require supervisory
 pre-approval that is not part of the standard release gate.
 
 ### Solvency II Model Change Policy — Major vs. Minor Change Governance
 
-Solvency II Article 115(3) requires internal model undertakings to have a policy
+Solvency II Article 115 requires internal model undertakings to have a policy
 on model changes that governs what constitutes a major change (requiring
 supervisory approval) and what constitutes a minor change (governed by internal
-procedures). The release gate's compliance documentation condition (Condition 5)
+procedures). [fabricated paragraph number withdrawn 2026-09-05: this
+previously appended a parenthetical "3" to the Article 115 citation. Article
+115 has no numbered paragraphs — it
+is five unnumbered subparagraphs. The article and the substance cited here
+are unaffected; only the "(3)" is cut.] The release gate's compliance documentation
+condition (Condition 5)
 must confirm the model change classification for every release to a Solvency II
 internal model: major or minor, and the governance path followed.
 
@@ -159,10 +164,33 @@ conduct risk that the release gate must catch.
 
 | Regulation  | Article/Section                | Release Requirement                                                                             | ASDLC Control                                                                                                                                                         | Gap                                                                                                                                                                                                                                                                                                  |
 | ----------- | ------------------------------ | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Solvency II | Art. 115(3)                    | Major model changes require supervisory pre-approval; minor changes governed by internal policy | Compliance documentation condition (Condition 5): model change classification; supervisory approval reference for major changes; actuarial sign-off for minor changes | Major model change classification is a judgment call that requires actuarial and legal input. The release gate does not include a model change classification verification step; this must be confirmed before the gate is assessed.                                                                 |
+| Solvency II | Art. 115 ¹                     | Major model changes require supervisory pre-approval; minor changes governed by internal policy | Compliance documentation condition (Condition 5): model change classification; supervisory approval reference for major changes; actuarial sign-off for minor changes | Major model change classification is a judgment call that requires actuarial and legal input. The release gate does not include a model change classification verification step; this must be confirmed before the gate is assessed.                                                                 |
 | Solvency II | Art. 115                       | Model documentation updated to reflect changes before deployment                                | Evidence bundle complete (Condition 1): change description in evidence bundle; composite state manifest reflecting updated configuration                              | Model documentation update for Solvency II purposes must satisfy the supervisory authority's format requirements — not only document what changed but demonstrate that the updated model still meets all six Solvency II tests. This requires a model validation update concurrent with the release. |
 | IDD         | Art. 25 / EIOPA POG guidelines | Distribution changes assessed against target market; POG sign-off before deployment             | Compliance documentation condition (Condition 5): POG sign-off confirmation; updated disclosure materials confirmed                                                   | POG sign-off involves the distribution governance function, which may not be part of the standard release gate stakeholder set. Ensuring POG sign-off is part of the release gate requires explicit inclusion in the compliance documentation checklist for IDD-scope agent products.                |
-| DORA        | Art. 14                        | Changes tested before implementation; rollback procedures documented                            | Evidence bundle complete (Condition 1); rollback procedure tested (Condition 3)                                                                                       | DORA applies to insurance undertakings. The DORA change management requirements are the same as described in the financial services domain file.                                                                                                                                                     |
+| DORA        | Art. 9(4)(e) ²      | Changes tested before implementation (carried by Art. 9(4)(e)'s "recorded, tested, assessed, approved, implemented and verified in a controlled manner"); rollback procedure documented — an ASDLC control, not sourced to DORA, the search term `rollback` occurring zero times in the Regulation. See ² | Evidence bundle complete (Condition 1); rollback procedure tested (Condition 3)                                                                                       | DORA applies to insurance undertakings. The DORA change management requirements are the same as described in the financial services domain file — see ² for the correction. The rollback half of the Release Requirement cell is not sourced to any DORA provision and must not be relied on as one; it is retained here as an ASDLC control.                                                                                                                                                     |
+
+¹ [fabricated paragraph number withdrawn 2026-09-05: this row previously
+appended a parenthetical "3" to the Art. 115 citation. Article 115 has no numbered paragraphs. The article and
+substance are unaffected; only the "(3)" is cut.]
+
+² [citation corrected 2026-09-05: this row previously cited DORA Article 14.
+That citation was withdrawn because DORA Article 14 is *Communication* — crisis
+communication plans, staff and stakeholder communication policies, and a
+named media contact — and carries no change-management provision; its
+paragraph 2 has no lettered sub-paragraphs, so `(a)`–`(c)` do not exist. The
+row above is now correctly cited at DORA Article 9(4)(e), verified verbatim
+against the primary (EUR-Lex, Regulation (EU) 2022/2554). Corrected further
+2026-09-05: Article 9(4)(e) does not use the word `rollback`, and the search term
+`rollback` occurs zero times in the Regulation against the hashed primary
+(`inputs/20260905-arnaud/prep/asdlc-standards/sources/dora_fulltext.txt`,
+sha256 `25328c7e…3b4d1e`) with a live one-word-swap negative control, so the
+rollback half of the row's Release Requirement is an ASDLC control rather than
+a DORA one. It was not deleted; it is marked in the row itself, matching the
+same marking in `domains/financial-services.md` and `release-governance.md`.
+See
+`domains/financial-services.md`'s "DORA Article 9(4)(e) — ICT Change
+Management" section for the full quotation and
+`inputs/20260905-arnaud/prep/asdlc-standards/` for the underlying research.]
 
 ---
 
@@ -176,33 +204,53 @@ obligations that persist throughout the agent product's operational life.
 
 ### Solvency II — Ongoing Model Monitoring and Validation Requirements
 
-Solvency II Article 120 requires that insurance undertakings regularly validate
-internal models through an annual validation cycle that includes: backtesting of
-model outputs against observed outcomes; analysis of model stability;
-sensitivity analysis; and assessment of the accuracy, completeness, and
-appropriateness of data. This validation must be independent of the model
-development function and must produce a formal report to the board.
+Solvency II Article 124 (*Validation standards*) requires that insurance and
+reinsurance undertakings "have a regular cycle of model validation which
+includes monitoring the performance of the internal model, reviewing the ongoing
+appropriateness of its specification, and testing its results against
+experience". Article 124 further requires an effective statistical process for
+validating the model, an analysis of the stability of the internal model
+including sensitivity testing of its results to changes in key underlying
+assumptions, and an assessment of the accuracy, completeness and appropriateness
+of the data used. **Article 124 sets no interval: it says "a regular cycle", not
+"annual".** An annual cadence is therefore a policy-set choice with no provision
+behind it, and must be stated as the undertaking's own policy rather than as a
+Solvency II requirement. Article 124 likewise does not prescribe that validation
+be independent of the model development function or that it produce a formal
+report to the board; independence and board reporting are governance
+expectations sourced elsewhere — Article 120 (*Use test*) makes the
+administrative, management or supervisory body "responsible for ensuring the
+ongoing appropriateness of the design and operations of the internal model" —
+and are treated here as such, not as Article 124 duties.
 
 The ASDLC output quality rate SLO and the ongoing monitoring process are the
 engineering controls for the Solvency II ongoing monitoring obligation, but they
-are not sufficient on their own. The Solvency II annual validation requires:
+are not sufficient on their own. A validation cycle satisfying Article 124 —
+run at a policy-set annual cadence, an interval Article 124 does not itself
+prescribe — requires:
 
-- Backtesting against realised outcomes over the validation period — not
-  sampling against acceptance criteria. The output quality rate SLO measures
-  production quality; backtesting measures whether the model's outputs were
-  correct in hindsight. The stewardship model must include a backtesting process
-  that compares the agent product's outputs against observed outcomes with
+- Testing results against experience — Article 124's own words — over the
+  validation period, not sampling against acceptance criteria. The output
+  quality rate SLO measures production quality; testing against experience
+  measures whether the model's outputs were correct in hindsight. The
+  stewardship model must include a results-against-experience process that
+  compares the agent product's outputs against realised outcomes with
   appropriate lag to allow outcomes to materialise.
-- Independent validation by a function separate from development. The ASDLC's
-  independent validation at Stage 3 is the initial validation; the ongoing
-  annual validation is a separate process governed by the actuarial function.
-  The steward's monitoring data feeds into the annual validation, but the
-  validation itself must be conducted and signed off by qualified actuaries
-  independent of the development team.
-- A formal validation report to the board. The steward's quarterly review
-  produces operational data; the annual validation report is a distinct
-  governance document that synthesises the monitoring data, the backtesting
-  results, and the sensitivity analysis into a board-level report.
+- Independent validation by a function separate from development — a
+  policy-set control, not an Article 124 requirement, since Article 124
+  prescribes no independence. The ASDLC's independent validation at Stage 3 is
+  the initial validation; the ongoing validation cycle is a separate process
+  governed by the actuarial function. The steward's monitoring data feeds into
+  it, but the validation itself must be conducted and signed off by qualified
+  actuaries independent of the development team.
+- A formal validation report to the board — again a policy-set control rather
+  than an Article 124 requirement, though it serves the Article 120 duty of the
+  administrative, management or supervisory body to ensure the ongoing
+  appropriateness of the internal model's design and operations. The steward's
+  quarterly review produces operational data; the validation report is a
+  distinct governance document that synthesises the monitoring data, the
+  results-against-experience testing, and the sensitivity analysis into a
+  board-level report.
 
 ### EIOPA AI Guidelines — Ongoing Performance Monitoring
 
@@ -243,7 +291,7 @@ consistent with the target market's needs.
 
 | Regulation          | Article/Section | Operational Requirement                                                                                         | ASDLC Control                                                                                         | Gap                                                                                                                                                                                                                                                                                   |
 | ------------------- | --------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Solvency II         | Art. 120        | Annual independent model validation; backtesting against outcomes; formal report to board                       | Output quality rate SLO; reasoning trace completeness SLO; stewardship model; quarterly health review | Annual validation requires backtesting against realised outcomes (not sampling against acceptance criteria) and a formal actuarial validation report. The ASDLC monitoring provides data inputs; the actuarial validation function must own the annual validation process and report. |
+| Solvency II         | Art. 124        | "A regular cycle of model validation" — no interval prescribed; monitoring model performance, reviewing the appropriateness of its specification, testing results against experience, stability and sensitivity analysis, and assessment of data accuracy, completeness and appropriateness | Output quality rate SLO; reasoning trace completeness SLO; stewardship model; quarterly health review | Article 124 requires testing results against experience (not sampling against acceptance criteria); the annual cadence, the independence of the validating function, and the formal actuarial validation report are policy-set controls with no Article 124 provision behind them. The ASDLC monitoring provides data inputs; the actuarial validation function must own the validation process and report. |
 | EIOPA AI Guidelines | Section 4       | Ongoing performance monitoring; fairness and conduct outcome assessment; remediation of underperforming systems | Output quality rate SLO; steward's value realisation monitoring                                       | EIOPA monitoring expectations include fairness assessment — monitoring must include a conduct outcome dimension for customer-facing agent products, not only technical accuracy metrics. The SLO calibration must explicitly include fairness metrics.                                |
 | IDD                 | Art. 25(1)      | Regular product monitoring for target market appropriateness; distribution channel review                       | Steward's value realisation monitoring extended to IDD product monitoring; quarterly health review    | IDD product monitoring must produce documentation that demonstrates regular review and appropriate response to concerning trends. The steward's monitoring process must produce records that are accessible to the distribution governance function and to supervisory authorities.   |
 | DORA                | Arts. 9–11      | ICT risk management; incident management; business continuity                                                   | Patch management SLOs; incident classification; DR testing                                            | DORA applies to insurance undertakings. The DORA operational requirements are the same as described in the financial services domain file.                                                                                                                                            |
