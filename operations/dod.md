@@ -2,7 +2,7 @@
 
 _What "operationally ready" means for a system in production._
 
-See the [Manifesto](../../manifesto.md) for the engineering Definition of Done. See
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the engineering Definition of Done. See
 [Operations Governance](governance.md) for the operational runtime
 layer. See [Maintenance Governance](../maintenance-governance.md) for long-term
 stewardship.
@@ -12,19 +12,21 @@ stewardship.
 ## What is the Operational Definition of Done?
 
 The operational DoD is the set of conditions that must be true for a system to
-be considered operationally ready. It governs the system, not a change. A system
-that passes the engineering DoD for every individual change — the manifesto's
-Definition of Done applied at the loop level — may still fail the operational
-DoD if runbooks are never updated, stewards are not reassigned when personnel
-change, or security scans lapse between releases. The operational DoD is the
-persistent governance state of the system in production. It is not a one-time
-gate applied at the first deployment and then forgotten. It is a condition that
-must be maintained throughout the system's operational lifetime. A steward who
-leaves without a qualified replacement puts the system into operational DoD
-failure even if no code changed. A security scan that was clean at deployment
-but has not run in 60 days may no longer reflect the system's actual security
-posture. The operational DoD names the conditions that must be true at any point
-in the system's lifetime for it to be considered in good governance standing.
+be considered operationally ready. It governs the system, not a change. A
+system that passes the engineering DoD for every individual change — the
+manifesto's Definition of Done applied at the loop level — may still fail the
+operational DoD if runbooks are never updated, stewards are not reassigned when
+personnel change, or security scans lapse between releases. The operational DoD
+is the persistent governance state of the system in production. It is not a
+one-time gate applied at the first deployment and then forgotten. It is a
+condition that must be maintained throughout the system's operational lifetime.
+A steward who leaves without a qualified replacement puts the system into
+operational DoD failure even if no code changed. A security scan that was clean
+at deployment but has not run in 60 days — an illustrative interval, not a
+threshold set here — may no longer reflect the system's actual security
+posture. The operational DoD names the conditions that must be true at any
+point in the system's lifetime for it to be considered in good governance
+standing.
 
 ---
 
@@ -179,18 +181,17 @@ this condition.
 For systems whose failure would constitute a significant business or compliance
 incident — Tier 3 blast radius as defined by the P12 accountability framework —
 disaster recovery and failover procedures have been tested in a representative
-environment within 30 days of production deployment. The test must confirm that
-failover completes within the defined recovery time objective and that the
-recovered system operates correctly against the evaluation suite in the recovery
-environment. A DR procedure that exists on paper but has not been validated
-against actual recovery mechanics does not satisfy this condition. The 30-day
-window applies to the initial deployment; re-testing is required after any
-significant infrastructure change and on a defined periodic schedule
-(practitioner default: annually, or after any incident that touches the system's
-infrastructure).
+environment within a policy-set 30 days of production deployment. The test must
+confirm that failover completes within the defined recovery time objective and
+that the recovered system operates correctly against the evaluation suite in
+the recovery environment. A DR procedure that exists on paper but has not been
+validated against actual recovery mechanics does not satisfy this condition.
+The 30-day window applies to the initial deployment; re-testing is required
+after any significant infrastructure change and on a defined periodic schedule
+(practitioner default: annually, or after any incident that touches the
+system's infrastructure).
 
-**RTO/RPO targets by blast radius tier.** The following practitioner defaults
-represent calibration starting points, not universal mandates. They must be
+**RTO/RPO targets by blast radius tier.** The following figures are policy-set practitioner defaults — chosen by the authors as calibration starting points rather than derived from measured recovery capability — and they are not universal mandates. They must be
 reviewed against the system's actual business continuity requirements,
 regulatory obligations, and contractual SLAs — the lower of the default or the
 required value governs:
@@ -208,8 +209,7 @@ longer than the target, the target must be revised — with accountable human
 sign-off — or the recovery architecture must be improved. Neither is optional.
 
 **Annual DR drill requirement.** DR procedures must be exercised on a defined
-cadence, not just at initial deployment. For Tier 2 and Tier 3 systems, DR
-drills must be conducted at minimum annually. A DR drill for an agentic system
+cadence, not just at initial deployment. For Tier 2 and Tier 3 systems, DR drills must be conducted at a policy-set minimum of annually. A DR drill for an agentic system
 must test: restoration of the deployed artefact from its stored configuration,
 restoration of agent memory from its retained state, confirmation that
 evaluation suites pass in the restored environment, and the escalation chain's
@@ -228,17 +228,17 @@ RTO/RPO targets, testing frequencies, and documentation requirements than the
 practitioner defaults above:
 
 - Financial services: SR 11-7, DORA, EU AI Act, MiFID II — see
-  [Financial Services Regulatory Alignment](../../domains/financial-services.md)
+  [Financial Services Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/financial-services.md)
 - Medical devices: FDA, IEC 62304, ISO 14971, MDR — see
-  [Medical Devices Regulatory Alignment](../../domains/medical-devices.md)
+  [Medical Devices Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/medical-devices.md)
 - Aviation: DO-178C, ARP4754A, EASA — see
-  [Aviation Regulatory Alignment](../../domains/aviation.md)
+  [Aviation Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/aviation.md)
 - Automotive: ISO 26262, SOTIF, UNECE WP.29 — see
-  [Automotive Regulatory Alignment](../../domains/automotive.md)
+  [Automotive Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/automotive.md)
 - Pharmaceuticals: GxP, 21 CFR Part 11, ICH guidelines — see
-  [Pharma Regulatory Alignment](../../domains/pharma.md)
+  [Pharma Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/pharma.md)
 - Defense and government: CMMC, FISMA, NIST SP 800-53 — see
-  [Defense and Government Regulatory Alignment](../../domains/defense-government.md)
+  [Defense and Government Regulatory Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/defense-government.md)
 
 ---
 
@@ -278,11 +278,11 @@ produces a sequence of well-governed changes. Each change leaves the system in a
 better or equivalent state than it found it.
 
 The operational DoD asks: is the system, as it currently exists in production,
-operationally ready? It is not applied per change. It is the state of the system
-at any moment. A system that has received ten perfectly-governed changes and
-whose steward left six months ago without a qualified replacement is not
-operationally ready. The engineering DoD was satisfied for each change; the
-operational DoD is currently failing.
+operationally ready? It is not applied per change. It is the state of the
+system at any moment. A system that has received ten perfectly-governed changes
+and whose steward left six months ago — an illustration, not a threshold —
+without a qualified replacement is not operationally ready. The engineering DoD
+was satisfied for each change; the operational DoD is currently failing.
 
 This distinction has a practical implication: the operational DoD must be
 checked on a cadence, not just at deployment. A quarterly operational DoD review

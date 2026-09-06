@@ -4,7 +4,7 @@ _Defense and government-specific regulatory requirements for ASDLC Layers 1, 3,
 and 4._
 
 See
-[Defense/Government Manifesto Alignment](../../domains/defense-government.md)
+[Defense/Government Manifesto Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/defense-government.md)
 for manifesto principle mappings (CMMC, FedRAMP, NIST SP 800-53, ITAR/EAR). See
 the [ASDLC Overview](../asdlc.md) for the full lifecycle framework.
 

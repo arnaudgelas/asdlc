@@ -65,7 +65,7 @@ that knowledge. Four categories of push events are mandatory.
 
 **Staleness push.** When any EvidenceArtifact transitions from pass to stale due
 to event-triggered freshness rules, the governed system's steward and the
-relevant gate condition owner are notified within 1 hour. The notification must
+relevant gate condition owner are notified within a policy-set 1 hour. The notification must
 include: which condition transitioned to stale, which artefact is stale, which
 triggering event caused the transition (a deployment change, a model version
 update, a dependency vulnerability, or a freshness window expiry), and the path
@@ -74,7 +74,7 @@ event materially changes the substance of the prior evidence. A staleness
 transition is not an automatic failure; it is a signal that the prior evidence's
 currency is no longer verifiable without human assessment.
 
-**Waiver expiry push.** At 14 days, 7 days, and 24 hours before any waiver
+**Waiver expiry push.** At a policy-set 14 days, 7 days, and 24 hours before any waiver
 expires, the governance graph must push a notification to the waiver grantor and
 the system steward. An expired waiver with no confirmed remediation is a
 governance incident: the condition the waiver covered is now neither pass nor
@@ -86,7 +86,7 @@ consequence if the waiver lapses without resolution.
 **Accountability gap push.** When a HumanOwner node's availability status
 changes to unavailable, or when a HumanOwner's assignment to a governance node
 expires without a named successor, the governance graph must push a notification
-to the governance portfolio owner within 1 hour. An unowned system is an
+to the governance portfolio owner within a policy-set 1 hour. An unowned system is an
 immediate governance concern: the approved_by and owned_by edges that provide
 accountability anchors are pointing to a human who cannot be reached or who no
 longer holds the role. No gate can be passed on a system with an unresolved
@@ -105,7 +105,7 @@ a gate assessment discovers it.
 Each push event is itself an EvidenceArtifact filed to the governance graph with
 a generated_by edge to the governance graph infrastructure agent that produced
 it. Push events that are not acknowledged within defined SLOs escalate to the
-governance portfolio owner. The SLOs are: staleness push, 48 hours; waiver
+governance portfolio owner. The SLOs are policy-set defaults, chosen rather than measured: staleness push, 48 hours; waiver
 expiry push, per the waiver's remaining lifecycle; accountability gap push, 24
 hours; cross-system dependency push, 72 hours. Escalation is automatic and is
 itself a push event filed to the graph.
@@ -751,7 +751,7 @@ projection is computable as soon as the planned change is recorded in the graph,
 which may be days or weeks before the change is executed.
 
 The projection horizon is configurable per system. The minimum projection
-horizon is 7 days for standard systems and 14 days for high-blast-radius
+horizon is a policy-set 7 days for standard systems and 14 days for high-blast-radius
 systems. Systems with longer planned maintenance cycles or regulatory audit
 windows should extend the projection horizon to match their operational cadence.
 
@@ -789,10 +789,12 @@ cannot capture it. The Governance Quality Score does.
 
 The **Governance Quality Score (GQS)** is a computed integer from 0 to 100
 assigned to any GateDecision node at the time of gate closure. It is not a
-subjective rating — it is derived from four components with defined weights,
-each computable from the governance graph's existing data.
+subjective rating — it is derived from four components whose weights
+(40/20/20/20) are policy-set defaults chosen by the authors — they encode a
+judgement about which governance signal matters most, not a fitted or validated
+weighting — each computable from the governance graph's existing data.
 
-**Epistemic composition (40% weight).** The proportion of gate artefacts at the
+**Epistemic composition (40% weight, policy-set).** The proportion of gate artefacts at the
 human-authored or tool-generated epistemic tier versus the
 agent-proposed-with-review or agent-generated tier. The score for this dimension
 ranges from 0 to 40. A gate pass where every condition is supported by
@@ -800,13 +802,14 @@ human-authored or tool-generated evidence with full documentation scores 40. A
 gate pass where every condition is supported by agent-generated evidence with
 nominal human review scores 0. Intermediate compositions are scored
 proportionally: a gate where 60% of artefacts are human-authored or
-tool-generated and 40% are agent-generated scores 24 on this dimension. The
+tool-generated and 40% are agent-generated scores 24 on this dimension, an
+illustrative computation rather than an observed case. The
 epistemic composition component reflects the fundamental principle that the more
 of the evidence chain that involves direct human authorship or deterministic
 tool execution, the more the gate assessment can be relied upon as representing
 actual governance assurance rather than agent-summarised governance assurance.
 
-**Waiver burden (20% weight).** The number of active waivers at gate time,
+**Waiver burden (20% weight, policy-set).** The number of active waivers at gate time,
 weighted by waiver duration and the criticality of the condition each waiver
 covers. The score for this dimension ranges from 0 to 20. Zero active waivers
 scores 20. Each active waiver reduces the score proportionally, with waivers
@@ -816,7 +819,7 @@ than short-duration ones. A gate pass that relies on waivers for critical
 conditions accumulated over multiple prior gates scores near 0 on this
 dimension.
 
-**Independence quality (20% weight).** Whether the independent validator was
+**Independence quality (20% weight, policy-set).** Whether the independent validator was
 organisationally separate from the engineering team responsible for the
 artefacts they validated, and whether the accountable human sign-off was
 provided by a different person from the specification analyst. The score for
@@ -828,7 +831,7 @@ independence arrangements score proportionally. Independence quality reflects
 the principle that governance assurance is weaker when the people who produced
 the evidence are also the people who assessed it.
 
-**Approval signal quality (20% weight).** Derived from the approval time pattern
+**Approval signal quality (20% weight, policy-set).** Derived from the approval time pattern
 — the proportion of review time spent on primary evidence artefacts versus
 agent-generated summaries — and the challenge rate: whether any conditions were
 formally questioned, whether the deciding human requested strengthening of any
@@ -841,16 +844,17 @@ operationalises the principle that a gate sign-off that includes no evidence of
 substantive review provides less governance assurance than one where the
 deciding human demonstrably engaged with the evidence.
 
-The GQS is recorded as an attribute of the GateDecision node at gate closure. It
-is not recalculated retrospectively — it reflects the governance quality of the
-assessment as it was conducted. Two portfolio-level thresholds apply. First, a
-GQS below 40 on any gate pass for a high-blast-radius system triggers a
-mandatory independent review of the gate assessment within 5 business days: a
-gate pass is not sufficient at high blast radius if the quality of the pass is
-below this floor. Second, a GQS trend declining over rolling four-gate windows
-for any system is a governance health signal requiring governance portfolio
-owner review. A system whose gate quality is systematically declining may be
-nominally compliant while its actual governance assurance is eroding.
+The GQS is recorded as an attribute of the GateDecision node at gate closure.
+It is not recalculated retrospectively — it reflects the governance quality of
+the assessment as it was conducted. Two portfolio-level thresholds apply.
+First, a GQS below a policy-set 40 on any gate pass for a high-blast-radius
+system triggers a mandatory independent review of the gate assessment within a
+policy-set 5 business days: a gate pass is not sufficient at high blast radius
+if the quality of the pass is below this floor. Second, a GQS trend declining
+over rolling four-gate windows for any system is a governance health signal
+requiring governance portfolio owner review. A system whose gate quality is
+systematically declining may be nominally compliant while its actual governance
+assurance is eroding.
 
 ---
 

@@ -3,7 +3,7 @@
 _The gate that separates governed demand from engineering execution._
 
 See [Demand & Value](demand/value.md) for how loop-ready specifications are
-produced. See the [Manifesto](../manifesto.md) for what the Agentic Loop
+produced. See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for what the Agentic Loop
 requires of a specification. See [Demand Metrics](demand/metrics.md) for how
 gate health is measured.
 
@@ -35,10 +35,12 @@ who will benefit from the work. It can be examined independently.
 
 **Minimum evidence by risk tier.**
 
-At Tier 1 (low blast radius): at least one primary evidence category present and
-referenced — user research finding, quantitative data point, regulatory
-citation, or documented executive decision. A one-paragraph summary in the
-specification document with a link to the source is sufficient.
+At Tier 1 (low blast radius), and the counts in all three tiers below are
+policy-set defaults chosen by the authors rather than calibrated against
+outcomes: at least one primary evidence category present and referenced — user
+research finding, quantitative data point, regulatory citation, or documented
+executive decision. A one-paragraph summary in the specification document with
+a link to the source is sufficient.
 
 At Tier 2 (medium blast radius): at least two independent categories of
 evidence, with at least one being data-backed or research-backed. The evidence
@@ -51,7 +53,7 @@ research finding and one quantitative data signal. Regulatory or risk assessment
 documentation included where applicable. Business demand sponsor sign-off is on
 record and references the specific evidence.
 
-**Passing case.** The specification includes: "User research (n=18 interviews,
+**Passing case** — every figure in the specimen below is illustrative, invented for the example. The specification includes: "User research (n=18 interviews,
 Q1 2026) established that claims agents spend a mean of 47 minutes per case on
 manual lookups that could be automated; supporting data from the operations
 dashboard confirms 340 cases per week in scope. The compliance team has
@@ -79,10 +81,10 @@ within a defined timeframe, compared to a defined baseline.
 
 **Minimum evidence by risk tier.**
 
-At Tier 1: a single quantifiable success criterion, stated in the specification.
-"Reduces analyst lookup time by at least 15 minutes per case, measured on the
-first 100 cases after deployment" is sufficient. The baseline value must be
-stated.
+At Tier 1: a single quantifiable success criterion, stated in the
+specification. "Reduces analyst lookup time by at least 15 minutes per case,
+measured on the first 100 cases after deployment" is sufficient — the figures
+are illustrative. The baseline value must be stated.
 
 At Tier 2: a success criterion with a defined measurement method, a named owner,
 and a time boundary. The measurement method must exist — it cannot be "we will
@@ -94,7 +96,7 @@ a mechanism for collecting the measurement data that is confirmed to exist
 before loop entry. The business demand sponsor signs off on the success
 criterion and its measurement methodology explicitly.
 
-**Passing case.** "Success criterion: mean time to resolution for claims in
+**Passing case**, illustrative in every figure. "Success criterion: mean time to resolution for claims in
 category B reduces from 47 minutes (Q4 2025 baseline, n=1,847 cases) to 32
 minutes or below, measured over the first 90 days post-deployment. Owner:
 [name]. Measurement source: claims operations dashboard, filter: category B,
@@ -123,21 +125,23 @@ well-understood enough to specify.
 
 At Tier 1: a draft set of acceptance criteria exists in the specification
 document. The criteria may be informal ("when a user submits a lookup, the
-response appears within 2 seconds") but must be specific enough to test. The
-domain expert has reviewed and confirmed them.
+response appears within 2 seconds" — an illustrative figure) but must be
+specific enough to test. The domain expert has reviewed and confirmed them.
 
 At Tier 2: acceptance criteria are written in a format that can be directly
 translated into executable evaluations, with explicit pass/fail conditions.
 Domain expert sign-off is documented.
 
 At Tier 3: acceptance criteria follow the structured format defined in the
-companion requirements engineering framework (`companion-re-framework.md`),
+companion requirements engineering framework
+(`agentic-engineering-manifesto/companion/re-framework.md`),
 covering both behavioural criteria and constraint criteria. They include
 adversarial cases and edge conditions. Domain expert review is recorded with
 specific sign-off on each criterion category.
 
-**Passing case.** "Given a claims agent submits a policy lookup for a category B
-claim, the system returns the relevant policy sections within 2 seconds. Given
+**Passing case**, illustrative. "Given a claims agent submits a policy lookup
+for a category B claim, the system returns the relevant policy sections within
+2 seconds. Given
 the policy database is unavailable, the system returns a clear error message and
 falls back to the manual lookup workflow without data loss."
 
@@ -164,9 +168,7 @@ configuration, and the tool manifest in the provenance record matches the tool
 manifest used during the loop); control state record accuracy (the stated status
 for each control in the control state record matches the underlying artefact — a
 control state record entry that says `pass` for a control whose supporting
-artefact shows a finding is a governance evaluation failure); rollback procedure
-currency (the rollback procedure test timestamp falls within the 48-hour
-freshness window relative to the planned deployment); and SBOM completeness (the
+artefact shows a finding is a governance evaluation failure); rollback procedure currency (the rollback procedure test timestamp falls within the policy-set 48-hour freshness window relative to the planned deployment); and SBOM completeness (the
 SBOM covers the dependency set that will be deployed, not a prior snapshot).
 
 Governance evaluation failures trigger the same remediation sub-cycle as product
@@ -619,9 +621,9 @@ out-of-scope declarations, scope expands during execution.
 
 **Minimum evidence by risk tier.**
 
-At Tier 1: at least two explicit out-of-scope statements. These may be brief:
-"Out of scope: integration with the legacy claims UI (separate initiative); bulk
-export functionality."
+At Tier 1: a policy-set minimum of two explicit out-of-scope statements. These
+may be brief: "Out of scope: integration with the legacy claims UI (separate
+initiative); bulk export functionality."
 
 At Tier 2: a complete out-of-scope section that addresses: functionality
 explicitly not included, user segments not served by this specification, systems
@@ -700,7 +702,7 @@ i.e., what the organisation pays if the loop runs to completion and the output
 fails validation or does not achieve the success criterion. The business demand
 sponsor and finance function (or equivalent) sign off on the assessment.
 
-**Passing case.** "Expected value: reduction of 15 minutes per case across 340
+**Passing case**, illustrative throughout. "Expected value: reduction of 15 minutes per case across 340
 cases per week yields approximately 85 person-hours per week of capacity
 recovered. At fully-loaded cost, that is approximately £X per quarter. Loop cost
 estimate: 8 person-days engineering, £Y inference at the model tier planned, 3
@@ -819,7 +821,7 @@ success criterion, accountability, and loop cost justification). For Tier 3
 specifications, the security and compliance representatives who reviewed the
 constraint inventory should be available for questions on Condition 4.
 
-**Duration.** At Tier 1 in a mature team: 30 minutes. The product owner and
+**Duration**, policy-set throughout — these are the authors' planning figures, not observed session lengths. At Tier 1 in a mature team: 30 minutes. The product owner and
 specification analyst work through the nine conditions against the specification
 document. Most conditions will be satisfied by prior work; the gate confirms it.
 At Tier 2: 60–90 minutes. At Tier 3: a formal session, typically 2–3 hours, with
@@ -836,8 +838,7 @@ refinement — reduces the coordination burden without reducing the rigour.
 **Product Readiness Sub-Gate:** Conditions 1, 2, 3, 5, 7, 8, and 9. Assessed by
 the product owner and specification analyst, with the business demand sponsor
 available for questions. These conditions require product and domain knowledge,
-not technical architecture expertise. At Tier 1 and Tier 2, this sub-gate can be
-run in a 30–60 minute structured session without external participants.
+not technical architecture expertise. At Tier 1 and Tier 2, this sub-gate can be run in a policy-set 30–60 minute structured session without external participants.
 Condition 9 (context thread assembled and reviewed) is typically the last action
 before the sub-gate session — the governance agent assembles the thread from the
 governance graph and the specification analyst confirms it as part of the

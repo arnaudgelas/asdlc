@@ -2,8 +2,8 @@
 
 _The Agentic Software Delivery Lifecycle, Layer 3: Release & Deployment._
 
-See [manifesto.md](../manifesto.md) for the core values and the Agentic Loop.
-See [manifesto-done.md](../manifesto-done.md) for the Definition of Done. See
+See [manifesto.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the core values and the Agentic Loop.
+See [manifesto-done.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-done.md) for the Definition of Done. See
 [deployment-governance.md](deployment-governance.md) for environment management
 and promotion mechanics. See
 [operations/governance.md](operations/governance.md) for what happens after
@@ -14,8 +14,9 @@ production deployment.
 ## What is the Release & Deployment Layer?
 
 Layer 3 begins where the engineering execution loop ends. A loop output that has
-met all seven Definition of Done conditions — Shipped, Observable, Verified,
-Provable, Learned from, Governed, and Economical — is not yet production-ready:
+met all eight Definition of Done conditions — Loop-Complete, Traceable,
+Verified, Provable, Learned from, Governed, Economical, and Within Service
+Envelope — is not yet production-ready:
 it is loop-complete. Those conditions prove that the engineering work was sound.
 They do not prove that deploying it to production now is the right decision, at
 the right time, with the right authorisations, in the right environment state.
@@ -70,10 +71,10 @@ gate. At any point, the gate readiness model computes:
 **Gate readiness report.** The gate readiness report is updated at minimum daily
 during active loop iterations and surfaced to the engineering lead and release
 manager. It is not a dashboard metric — it is an actionable report: "Condition 3
-(independent validation) will be missing at the current pace; the independent
-validation lead time for this system type is typically 5 business days; the
-release gate is scheduled in 7 days." The report gives enough lead time for
-action, not just notification.
+(independent validation) will be missing at the current pace; the independent validation lead time for this system type is typically 5 business days; the release gate is scheduled in 7 days." Both figures in that
+example are illustrative — they show the shape of an actionable report, not
+lead times this document sets. The report gives enough lead time for action,
+not just notification.
 
 **Projected-stale classification.** `projected-stale` is an operational
 GateState value used in predictive gate clearing, distinct from the formal
@@ -83,12 +84,10 @@ before the scheduled gate date given event-triggered staleness rules.
 `projected-stale` is not a formal gate condition state — it is a planning signal
 that should prompt pre-emptive evidence regeneration.
 
-**Predictive blocking threshold.** When the gate readiness score drops below 60%
-with more than 3 business days until the scheduled gate, the engineering lead
+**Predictive blocking threshold, policy-set.** When the gate readiness score drops below 60% with more than 3 business days until the scheduled gate — both figures chosen by the authors rather than fitted to observed gate outcomes — the engineering lead
 and release manager receive an immediate notification (not a scheduled report).
 This threshold is calibrated to provide enough lead time for the most common
-blocking conditions to be resolved. An engineering team that regularly
-encounters predictive blocking notifications in the 1–2 business day window
+blocking conditions to be resolved. An engineering team that regularly encounters predictive blocking notifications in the 1–2 business day window
 before a gate is accepting gate failures as a risk management choice, not
 operating a governed gate process.
 
@@ -97,14 +96,13 @@ predictions over time. A prediction model that consistently underestimates how
 many conditions will be failing at gate time has a false confidence problem — it
 is not detecting leading indicators of gate failure correctly. Prediction
 accuracy is tracked as a governance quality metric for the predictive clearing
-function: if prediction accuracy falls below 70% over a rolling 10-gate window,
-the gate readiness model requires recalibration.
+function: if prediction accuracy falls below a policy-set 70% over a policy-set rolling 10-gate window, the gate readiness model requires recalibration.
 
 ---
 
 ### 1. Evidence Bundle Complete
 
-All seven engineering Definition of Done conditions have been met, and the
+All eight engineering Definition of Done conditions have been met, and the
 artefacts that prove them are present and referenced. The evidence bundle is not
 a document describing what was done. It is a collection of machine-readable
 artefacts: evaluation reports with pass/fail results and metrics, trace IDs
@@ -221,8 +219,8 @@ equivalence for each relocated action class. The required artefacts are:
   relocation decision record.
 
 These five artefacts collectively constitute the relocation evidence schema.
-The canonical schema definition lives in `governance/evidence-bundle-schema.md`
-(planned under A1). A bundle for a system with relocated governance that is
+The canonical schema definition lives in `agentic-engineering-manifesto/governance/evidence-bundle-schema.md`.
+A bundle for a system with relocated governance that is
 missing any of the five artefacts is incomplete and fails Condition 1. The
 relocation evidence is itself subject to staleness triggers — see the Evidence
 Freshness section.
@@ -232,8 +230,7 @@ systems whose actions are informed by claims governed under the Intelligence
 Governance Manifesto (IGM), the evidence bundle must include, for each claim
 the system depends on at deployment time, the claim identifier, its epistemic
 tier, its decay window, its next scheduled revalidation date, and its current
-staleness status. A claim whose decay deadline falls within 30 calendar days
-of the planned deployment time must be marked `projected-stale` in the
+staleness status. A claim whose decay deadline falls within a policy-set 30 calendar days of the planned deployment time must be marked `projected-stale` in the
 evidence bundle. A bundle containing one or more `projected-stale` claims
 does not automatically fail Condition 1 — but it requires explicit steward
 acceptance recorded as part of the gate sign-off, naming each
@@ -241,8 +238,7 @@ acceptance recorded as part of the gate sign-off, naming each
 operational risk of deploying with claims approaching decay. If the actual
 claim state at deployment time differs from the projected state recorded in
 the bundle — for example, a claim projected as fresh has decayed, or a
-contradiction has been raised — the steward must be notified within 4 hours
-of the discrepancy being detected and may trigger a rollback under the
+contradiction has been raised — the steward must be notified within a policy-set 4 hours of the discrepancy being detected and may trigger a rollback under the
 standard rollback procedure. A `projected-stale` classification that is
 neither resolved (by re-verification before deployment) nor explicitly
 accepted (by steward sign-off) is a bundle completeness failure.
@@ -275,7 +271,7 @@ accountable human reviewed. Incident investigation becomes archaeology.
 
 For systems operating at Phase 4 or above, and for all high-stakes regulated
 systems regardless of phase, independent validation (Principle 8 from
-[manifesto-principles.md](../manifesto-principles.md)) is a release gate
+[manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md)) is a release gate
 condition. It is not a post-release review. A team that performs independent
 validation after a production deployment has not done independent validation —
 it has done a post-deployment audit. The distinction matters because independent
@@ -356,8 +352,8 @@ differences, dependency state assumptions, and operator unfamiliarity.
 ### 4. Accountable Human Sign-Off
 
 The named accountable human — the P12 anchor established at the start of the
-loop, as described in [manifesto-principles.md](../manifesto-principles.md) and
-in the conditions for entering Specify in [manifesto.md](../manifesto.md) — has
+loop, as described in [manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) and
+in the conditions for entering Specify in [manifesto.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) — has
 reviewed the evidence bundle and accepted production accountability for the
 outcome. This acceptance is recorded in the release artefact as a dated, named
 sign-off against a specific evidence bundle ID.
@@ -393,7 +389,7 @@ secure code while reporting higher confidence in its security. The release
 gate must close that confidence-versus-evidence gap by requiring evidence —
 not summaries — to be the basis of the sign-off. The release manager is responsible for tracking review-time patterns
 across releases over time — a single fast review is not actionable; a pattern of
-fast reviews on complex bundles is. Reference: adoption-metrics.md documents the
+fast reviews on complex bundles is. Reference: `agentic-engineering-manifesto/adoption/metrics.md` documents the
 rubber-stamping detection methodology using review-time distribution metrics.
 When a rubber-stamping pattern is detected, the correct response is to raise the
 evidence presentation requirements (requiring the accountable human to attest to
@@ -429,13 +425,11 @@ include all three of the following:
 A sign-off that does not include the three structured attestations does
 not satisfy Condition 4 — regardless of the time elapsed in review.
 
-**Sampling plan for high-volume Tier 3 systems.** For Tier 3 systems with
-release volume exceeding 20 deployments per quarter, applying the full
+**Sampling plan for high-volume Tier 3 systems.** For Tier 3 systems with release volume exceeding a policy-set 20 deployments per quarter, applying the full
 substantive-review standard to every release is operationally infeasible
 and itself a rubber-stamping risk: the P12 anchor cannot meaningfully
 attest to spot-checks at that volume. A documented sampling plan is
-required for such systems, with a minimum sampling rate of 20% of
-releases per quarter (rounded up). Sampling must be stratified across
+required for such systems, with a policy-set minimum sampling rate of 20% of releases per quarter (rounded up). Sampling must be stratified across
 release classes — feature releases, security patches, dependency
 updates, and emergency changes are each represented in proportion to
 their occurrence — and the sampled releases are subject to the full
@@ -451,14 +445,12 @@ filed with the system's governance specification.
 escalation under the substantive-review standard, in addition to those
 named above:
 
-- *Sub-30-minute reviews on complex bundles.* A P12 anchor whose median
-  review time per release falls below 30 minutes for releases with
+- *Sub-30-minute reviews on complex bundles.* A P12 anchor whose median review time per release falls below a policy-set 30 minutes for releases with
   bundle size above a defined complexity threshold (computed from
   artefact count and control state record entry count) is producing
   signatures whose substantive content is implausible. The release
   manager escalates to the governance portfolio steward.
-- *Zero-findings histories.* A P12 anchor whose sign-off history across
-  20 or more releases contains no documented findings, no requested
+- *Zero-findings histories.* A P12 anchor whose sign-off history across a policy-set 20 or more releases contains no documented findings, no requested
   remediations, and no escalations is producing reviews that have
   detected nothing — which, against the empirical base rate of release
   defects, is itself a finding. Zero findings ever is not a quality
@@ -475,7 +467,7 @@ What goes wrong if bypassed: production deployments proceed without any named
 human who owns the outcome. Incident response lacks a clear accountability
 anchor. Regulatory enquiries cannot be answered. And the governance pattern that
 prevents rubber-stamping (described in Principle 12 of
-[manifesto-principles.md](../manifesto-principles.md)) degrades into precisely
+[manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md)) degrades into precisely
 the pattern it was designed to prevent.
 
 ### 5. Compliance Documentation Complete
@@ -819,8 +811,7 @@ must be re-performed.
 
 **Gate readiness score as a FinOps signal.** The gate readiness score, tracked
 over time, is a FinOps signal. A release gate where multiple conditions required
-last-minute evidence regeneration — predictive blocking events in the final 48
-hours — represents avoidable inference cost. The governance agent's predictive
+last-minute evidence regeneration — predictive blocking events in the final 48 hours — represents avoidable inference cost. The governance agent's predictive
 clearing function, when it works, reduces the cost of gate passage by
 distributing evidence generation work across the loop rather than concentrating
 it at gate time. The cost difference between predicted gate failure (evidence
@@ -846,7 +837,7 @@ current GateState of each condition records whether they remain satisfied now.
 
 Who approves a release, and at what level of formality, depends on the autonomy
 tier of the agents involved in producing the change. The autonomy tiers from
-Principle 5 of [manifesto-principles.md](../manifesto-principles.md) map
+Principle 5 of [manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) map
 directly to release approval requirements. Merge approval and production release
 approval are not the same thing and must not be treated as the same thing.
 Approving a merge to the main branch approves the code change. It does not
@@ -930,7 +921,7 @@ engineering quality assessment.
 At Phase 3 and below, the organisation's governance infrastructure is not yet
 mature enough to support Tier 2 or Tier 3 agent autonomy on production-impacting
 changes. The autonomy constraints from the phase table in Principle 5 of
-[manifesto-principles.md](../manifesto-principles.md) apply at the release
+[manifesto-principles.md](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto-principles.md) apply at the release
 boundary as well as in the loop.
 
 ---
@@ -958,7 +949,9 @@ artefact. It is not a document produced by a person — it is a
 cryptographically-signed record generated by the build system. Its presence as a
 required release condition incentivises teams to operate their build processes
 in governed, auditable environments rather than in local or ad-hoc
-configurations. Reference: SLSA v1.0 framework.
+configurations. Reference: SLSA v1.2 — https://slsa.dev/spec/ (confirmed
+current at slsa.dev, 05.09.2026; see also devsecops-controls.md's Normative
+References).
 
 ---
 
@@ -1107,8 +1100,7 @@ failure.
 
 **What can be deferred.** Two categories of conditions can be deferred under an
 emergency change: the change management pre-approval process (the change record
-is created post-deployment) and the independent validation step (performed
-within 24 hours of deployment where the system's risk profile requires it).
+is created post-deployment) and the independent validation step (performed within a policy-set 24 hours of deployment where the system's risk profile requires it).
 These deferrals are time-bounded. They are not permanent exemptions. Both must
 be completed within the post-deployment normalisation window.
 
@@ -1124,8 +1116,7 @@ answer is that it cannot until that analysis is complete.
 **What must still be met.** An emergency change does not eliminate the
 requirement for an evidence bundle. The evidence bundle must be produced. Under
 an emergency change procedure, the evidence bundle may be produced in parallel
-with or immediately after the deployment rather than before it — but it must be
-produced and filed within 24 hours. An evidence bundle that is never produced
+with or immediately after the deployment rather than before it — but it must be produced and filed within a policy-set 24 hours. An evidence bundle that is never produced
 converts an emergency change into an ungoverned change, which is a governance
 hole, not a procedure.
 
@@ -1134,7 +1125,7 @@ executes. There is no emergency procedure that permits a deployment without a
 named human accepting production accountability. If no named accountable human
 can be reached, the emergency procedure is not available.
 
-**Post-hoc normalisation.** Within 24 hours of the emergency deployment:
+**Post-hoc normalisation.** Within a policy-set 24 hours of the emergency deployment:
 
 - The full evidence bundle is filed against the emergency change record.
 - The change record is updated with actual deployment time, deployment ID, and
@@ -1176,63 +1167,138 @@ applicable domain file in the `domains/` directory for the full treatment.
 **Financial services.** Two frameworks impose the most direct release governance
 requirements.
 
-DORA Article 14 (Digital Operational Resilience Act) requires that ICT change
-management processes include pre-implementation testing, documented rollback
-procedures, and post-implementation review. For critical or important functions,
-independent testing of changes before production deployment is required. The
-release gate conditions in this document are consistent with DORA Article 14
-requirements and, for systems in scope, the release gate is not optional — it is
-the DORA Article 14 change management process.
+DORA Article 9(4)(e) (Digital Operational Resilience Act) requires documented
+ICT change management policies, procedures and controls ensuring that all
+changes to ICT systems are "recorded, tested, assessed, approved, implemented
+and verified in a controlled manner", which carries pre-implementation testing
+of changes. This document additionally requires a documented rollback
+procedure and post-implementation review — neither of which it sources to
+DORA, because the words `rollback` and `post-implementation` each occur zero
+times in the Regulation; both are ASDLC controls and must not be presented to a
+supervisor as DORA requirements. Independent testing of changes before
+production deployment for critical or important functions is likewise not
+sourced here to any DORA provision and must not be relied on as one; what the
+Regulation states is Article 24(4), that a financial entity shall ensure that
+tests "are undertaken by independent parties, whether internal or external",
+and Article 24(6), that appropriate tests are conducted at least yearly on all
+ICT systems and applications supporting critical or important functions — a
+programme-level, periodic testing duty rather than a per-change release
+condition. The release gate conditions in this document are consistent with
+the Article 9(4)(e) obligation and, for systems in scope, the release gate is
+not optional — it implements DORA's change management process. [citation
+corrected 2026-09-05: this paragraph previously cited "DORA Article 14."
+That citation was withdrawn because Article 14 is *Communication* — crisis
+communication plans (¶1), communication policies for staff and stakeholders
+(¶2), and a named person for the media function (¶3) — and contains no
+change-management provision; paragraph 2 exists but carries no lettered
+sub-paragraphs, so `(a)`, `(b)` and `(c)` do not exist. The obligation
+described above is now correctly cited at DORA Article 9(4)(e), verified
+verbatim against the primary (EUR-Lex, Regulation (EU) 2022/2554): financial
+entities shall "implement documented policies, procedures and controls for
+ICT change management, including changes to software, hardware, firmware
+components, systems or security parameters, that are based on a risk
+assessment approach and are an integral part of the financial entity’s
+overall change management process, in order to ensure that all changes to
+ICT systems are recorded, tested, assessed, approved, implemented and
+verified in a controlled manner". Art. 9(4)(e) does not itself use the word
+"rollback" — the ASDLC's rollback condition is retained as a control
+independent of that specific wording. Corrected further 2026-09-05: the
+sentence above previously asserted a documented rollback procedure,
+post-implementation review and independent testing of changes for critical or
+important functions as Art. 9(4)(e) requirements. Against the hashed primary
+(`inputs/20260905-arnaud/prep/asdlc-standards/sources/dora_fulltext.txt`,
+sha256 `25328c7e…3b4d1e`) the search terms `rollback`, `post-implementation`
+and `independent testing` each occur zero times, with live one-word-swap
+negative controls; and `change management` occurs in the Regulation only in
+Art. 9(4)(e) and its closing subparagraph, so no other provision carries those three specifics.
+None of the three claims was deleted; each is now marked in the sentence that
+carries it. See
+`inputs/20260905-arnaud/prep/asdlc-standards/` for the verification packet.
+See also `domains/financial-services.md` for the same correction.]
 
-SR 11-7 (Federal Reserve Supervisory Guidance on Model Risk Management) governs
-the development and change governance of models used in banking decisions. Model
-changes require documented validation before deployment, with organisationally
-independent validation for material changes to high-risk models. The independent
-validation condition in this document's release gate (Condition 2) is the SR
-11-7 validation requirement at the release boundary. SR 11-7 does not specify a
-particular release process, but it does require that model changes are subject
-to governed development and validation processes — which this release gate
-implements.
+SR 11-7 (Federal Reserve Supervisory Guidance on Model Risk Management) is
+**supervisory guidance, not a rule**, and it is written in "should": in the
+attachment held at
+`inputs/20260905-arnaud/prep/D-20-primary/sources/sr1107a1.txt` (sha256
+`d8ef343917…`) `should` occurs 180 times against a single `must`, and the
+successor guidance on model risk management, SR 26-2 (17 April 2026), states
+that it *"does not set forth enforceable standards or prescriptive
+requirements; accordingly, non-compliance with this guidance will not result in
+supervisory criticism against a banking organization"*, a sentence that carries
+footnote 1: *"See 12 CFR Part 4, Subpart F, Appendix A (OCC); 12 CFR Part 262,
+Appendix A (Board); 12 CFR Part 302, Appendix A (FDIC). However, supervisory
+action may result for any violations of law or unsafe or unsound practices
+stemming from insufficient management of model risk."*
+**The fuller quotation supports the "not a rule" reading and bounds it in the
+same sentence**: non-enforceable is not consequence-free, because supervisory
+action still routes through violations of law and unsafe-or-unsound practices
+rather than through the guidance. What it says of model change is that *"Material changes in model
+structure or technique, and all model redevelopment, should be subject to
+validation activities of appropriate range and rigor before implementation"*,
+and of independence that validation *"should be done by people who are not
+responsible for development or use"*. The independent validation condition in
+this document's release gate (Condition 2) implements that principle at the
+release boundary. **SR 11-7 does not specify a release process at all** — that
+the validation is evidenced *at a release gate*, and that "material change to a
+high-risk model" is the trigger, are **the ASDLC's own construction and are
+unsourced**, not requirements of the guidance.
 
-**Medical devices.** IEC 62304 (Medical Device Software Lifecycle Processes)
-specifies software release requirements that include: configuration management
-records for the released software version, documented test results that
-demonstrate the software meets its requirements, and release authorisation by a
-named responsible individual. The evidence bundle (Condition 1) and the
-accountable human sign-off (Condition 4) are the IEC 62304 configuration
-management and authorisation requirements at the release boundary. For Class C
-software (highest risk), IEC 62304 also requires that the test documentation be
-reviewed by someone independent of the testing team — which maps to the
-independent validation condition (Condition 2).
+**Medical devices.** IEC 62304 (Medical Device Software Lifecycle Processes) is
+a **paid IEC standard that this programme has not purchased and has not read**;
+it is **OPEN under `T6.5`** and **no unofficial copy was fetched, sought or
+considered**. `asdlc.md` states that *"nothing here asserts what they require"*,
+and nothing here does. What follows is **the ASDLC's own construction and is
+unsourced**: at a release boundary in medical-device software the ASDLC expects
+configuration management records for the released software version, documented
+test results demonstrating the software meets its requirements, and release
+authorisation by a named responsible individual — the evidence bundle
+(Condition 1) and the accountable human sign-off (Condition 4). The ASDLC
+further applies independent review of test documentation to its highest risk
+class, mapping to the independent validation condition (Condition 2). **Whether
+IEC 62304 requires any of this, and what its Class C provisions say, has not
+been checked and cannot be while the standard is unread.** Confirm against a
+purchased copy before relying on this mapping.
 
 **Aviation.** DO-178C (Software Considerations in Airborne Systems and Equipment
-Certification) establishes software release requirements that include: software
+Certification) is a **paid RTCA standard that this programme has not purchased
+and has not read**; it is **OPEN under `T6.5`** and **no unofficial copy was
+fetched, sought or considered**. Per `asdlc.md`, *"nothing here asserts what
+they require"*. What follows is **the ASDLC's own construction and is
+unsourced**, using the industry-common airborne-certification vocabulary: at a
+release boundary in certified airborne software the ASDLC expects software
 configuration index documentation, problem reports against the released
 software, system integration testing evidence, and approval by the certification
 authority or delegated representative. The evidence bundle concept in this
-document is structurally consistent with DO-178C's software configuration index,
-but DO-178C's requirements are substantially more detailed and process-specific
-than this document's general framework. For software in DO-178C scope, the
-release governance process described here must be adapted to satisfy DO-178C's
-specific evidence and approval requirements. The agentic execution loop's
-evidence bundle is a necessary but not sufficient starting point.
+document is structurally consistent with what the ASDLC understands a software
+configuration index to be, and the evidence expected of a certified airborne
+programme is substantially more detailed and process-specific than this
+document's general framework. For software in DO-178C scope, the release
+governance process described here must be adapted to whatever that programme's
+own certification basis requires. The agentic execution loop's evidence bundle
+is a necessary but not sufficient starting point. **Whether DO-178C states any
+of this has not been checked and cannot be while the standard is unread.**
+Confirm against a purchased copy before relying on this mapping.
 
-**Pharmaceutical.** GAMP 5 (Good Automated Manufacturing Practice) governs the
-qualification and validation of automated systems in pharmaceutical
-manufacturing. GAMP 5 Installation Qualification (IQ) requirements address the
-release boundary: the installed system must be documented against its
-specification, installation evidence must be collected, and the installation
-must be formally accepted by a qualified individual before the system is used
-for production purposes. The IQ documentation requirements map directly to the
-evidence bundle (Condition 1) and accountable sign-off (Condition 4) conditions.
-GAMP 5 also requires that the Operational Qualification (OQ) — confirming the
-system operates as specified in its installed environment — is complete before
-production use. OQ is part of the release Definition of Done for GAMP
-5-regulated systems: production smoke tests and monitoring configuration
-(conditions 2 and 4 of the release DoD) are OQ evidence components.
+**Pharmaceutical.** GAMP 5 (Good Automated Manufacturing Practice) is a **paid
+ISPE guide that this programme has not purchased and has not read**; it is
+**OPEN under `T6.5`** and **no unofficial copy was fetched, sought or
+considered**. Per `asdlc.md`, *"nothing here asserts what they require"*. What
+follows is **the ASDLC's own construction and is unsourced**, using the
+industry-common qualification vocabulary. At the release boundary the ASDLC
+expects Installation Qualification: the installed system documented against its
+specification, installation evidence collected, and the installation formally
+accepted by a qualified individual before the system is used for production
+purposes — mapping to the evidence bundle (Condition 1) and accountable sign-off
+(Condition 4). It expects Operational Qualification — confirming the system
+operates as specified in its installed environment — to be complete before
+production use, and treats it as part of the release Definition of Done:
+production smoke tests and monitoring configuration (conditions 2 and 4 of the
+release DoD) are its OQ evidence components. **Whether GAMP 5 states any of
+this has not been checked and cannot be while the guide is unread.** Confirm
+against a purchased copy with the organisation's quality team.
 
 For all regulated industries: domain-specific release governance requirements
-may impose additional conditions beyond the five release gate conditions
+may impose additional conditions beyond the eight release gate conditions
 described in this document. The release gate conditions here represent the
 minimum governance floor. Regulated systems require the release gate conditions
 plus the domain-specific requirements. Neither satisfies the other in isolation.

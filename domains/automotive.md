@@ -2,7 +2,7 @@
 
 _Automotive-specific regulatory requirements for ASDLC Layers 1, 3, and 4._
 
-See [Automotive Manifesto Alignment](../../domains/automotive.md) for manifesto
+See [Automotive Manifesto Alignment](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/domains/automotive.md) for manifesto
 principle mappings (ISO 26262, ASPICE, UN Regulation 157). See the
 [ASDLC Overview](../asdlc.md) for the full lifecycle framework.
 

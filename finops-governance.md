@@ -2,7 +2,7 @@
 
 _Financial governance for the complete agentic software delivery lifecycle._
 
-See the [Manifesto](../manifesto.md) for P11 (Economics) — per-loop cost and
+See the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for P11 (Economics) — per-loop cost and
 quality tradeoffs. See [Demand & Value](demand/value.md) for cost-benefit
 requirements at the demand layer. See
 [Operations Governance](operations/governance.md) for production cost
@@ -218,14 +218,14 @@ for the shift toward inference spend will systematically underestimate inference
 costs and overestimate labour costs.
 
 Warning thresholds requiring steward investigation: a production inference cost
-rate growing faster than output volume over any rolling 90-day window is an
-efficiency degradation signal. Inference cost as a percentage of total delivery
-cost exceeding 40% for a Tier 1 system is a governance signal — at that
-proportion, a Tier 1 system is exhibiting an inference cost profile more
-consistent with Tier 2 or Tier 3 complexity, which may indicate that the blast
-radius tier assessment was set too low, that the specification is not adequately
-constraining reasoning depth, or that model tier routing is not operating within
-its intended parameters.
+rate growing faster than output volume over a policy-set rolling 90-day window
+is an efficiency degradation signal. Inference cost as a percentage of total
+delivery cost exceeding a policy-set 40% for a Tier 1 system is a governance
+signal — at that proportion, a Tier 1 system is exhibiting an inference cost
+profile more consistent with Tier 2 or Tier 3 complexity, which may indicate
+that the blast radius tier assessment was set too low, that the specification
+is not adequately constraining reasoning depth, or that model tier routing is
+not operating within its intended parameters.
 
 ---
 
@@ -263,29 +263,29 @@ not a cost anomaly.
 Token budget calibration is iterative. The initial token budget for a
 specification is an estimate based on the assessment inputs above. After the
 first loop iteration using the specification, actual token consumption is
-compared to the budget. Consistent consumption below 50% of the budget indicates
-that the budget was set too generously; an excessively generous budget provides
-no governance constraint and produces misleading cost projections. Consistent
-consumption approaching or exceeding the budget on multiple iterations indicates
-either that the budget was set too low or that the specification requires
-decomposition into smaller loop iterations with individual budgets. The default
-response to budget pressure is specification refinement — decomposing the
-specification or tightening the scope of the loop iteration — not budget
-expansion. Budget expansion without specification review is a governance control
-weakening, not a calibration.
+compared to the budget. Consistent consumption below a policy-set 50% of the
+budget indicates that the budget was set too generously; an excessively
+generous budget provides no governance constraint and produces misleading cost
+projections. Consistent consumption approaching or exceeding the budget on
+multiple iterations indicates either that the budget was set too low or that
+the specification requires decomposition into smaller loop iterations with
+individual budgets. The default response to budget pressure is specification
+refinement — decomposing the specification or tightening the scope of the loop
+iteration — not budget expansion. Budget expansion without specification review
+is a governance control weakening, not a calibration.
 
 Token budget review cadence: token budgets for active specifications are
 reviewed quarterly as part of the demand layer governance cycle. Budgets set
 significantly above actual usage — defined as average actual consumption below
-40% of the budget — for two consecutive quarters should be tightened to a level
-that provides genuine governance constraint while still accommodating observed
-variation. Budgets that are frequently triggering escalation require
-specification analysis within the quarter: is the work genuinely larger than the
-budget permits, or is the agent reasoning beyond the depth the specification
-intended? These are different problems with different responses. The first
-warrants a budget revision following decomposition review. The second warrants a
-specification update to constrain reasoning depth before any budget adjustment
-is considered.
+a policy-set 40% of the budget — for two consecutive quarters should be
+tightened to a level that provides genuine governance constraint while still
+accommodating observed variation. Budgets that are frequently triggering
+escalation require specification analysis within the quarter: is the work
+genuinely larger than the budget permits, or is the agent reasoning beyond the
+depth the specification intended? These are different problems with different
+responses. The first warrants a budget revision following decomposition review.
+The second warrants a specification update to constrain reasoning depth before
+any budget adjustment is considered.
 
 ---
 
@@ -315,14 +315,10 @@ producing a per-iteration cost estimate; and expected production inference cost
 anticipated request volume, producing a monthly production cost estimate. The
 projection is not a guarantee. It is a planning basis that the product owner
 accepts as the cost dimension of the demand item's value proposition. If actual
-costs diverge materially from the projection before the loop completes — defined
-as actual costs exceeding the projection by more than 50% without a
-corresponding expansion of scope — the accountable human must be notified and
+costs diverge materially from the projection before the loop completes — defined as actual costs exceeding the projection by more than a policy-set 50% without a corresponding expansion of scope — the accountable human must be notified and
 the demand layer cost-benefit assessment updated before the loop continues.
 
-**Production cost baseline.** Operational budgets for production inference must
-be set based on observed usage data from the first 30 days of production
-operation, not on pre-deployment estimates. The first 30 days under real
+**Production cost baseline.** Operational budgets for production inference must be set based on observed usage data from the first 30 days of production operation — the 30 days is a policy-set observation period, though the budget it produces is measured — not on pre-deployment estimates. The first 30 days under real
 production input distribution establish the production cost baseline: the
 inference cost rate per unit of production output at the volume and input
 characteristics of actual use. The steward is accountable for establishing this
@@ -332,8 +328,7 @@ before the 30-day baseline period is complete are estimates; they must be
 formally revised once the baseline data is available, with the revised budget
 replacing the estimate in all financial planning documents.
 
-**Cost forecast horizon.** Cost forecasts for active production systems should
-extend three to four quarters ahead, updated quarterly. The forecast draws on
+**Cost forecast horizon.** Cost forecasts for active production systems should extend a policy-set three to four quarters ahead, updated quarterly. The forecast draws on
 four inputs: historical production inference cost rate derived from the baseline
 and subsequent monitoring data; projected production volume growth based on the
 system's growth trajectory and planned capacity; anticipated model routing
@@ -389,8 +384,7 @@ and are updated quarterly. Chargeback or showback to business units is
 operational across the production fleet — business units can inspect the
 inference costs attributable to their systems. The FinOps review in the Govern
 phase of the inner loop includes a comparison of projected versus actual costs
-for the completed loop iteration, with any variance above 25% triggering a
-documented explanation.
+for the completed loop iteration, with any variance above a policy-set 25% triggering a documented explanation.
 
 **Run (Phase 5): Continuous Optimisation.** Cost optimisation patterns (see the
 following section) are evaluated systematically across the portfolio on a
@@ -536,8 +530,7 @@ are within expected ranges — the problem is that the costs are not producing
 corresponding value.
 
 **Idle inference endpoints.** Provisioned inference capacity that has not
-received requests within a defined window should be flagged for review. The
-threshold for this review is 72 consecutive hours of zero production traffic
+received requests within a defined window should be flagged for review. The threshold for this review is a policy-set 72 consecutive hours of zero production traffic
 during a period when production traffic would reasonably be expected, based on
 the system's historical traffic pattern. The steward's response is either to
 decommission the idle endpoint — following the retirement governance procedures
@@ -595,8 +588,7 @@ enforced as a runtime constraint throughout engineering execution. Cost
 optimisation patterns are expressed as specification constraints at design time,
 not applied as operational adjustments after deployment. The Govern phase of the
 inner loop includes a cost review comparing projected versus actual costs for
-the completed iteration, with variances above 25% requiring a documented
-explanation in the evidence bundle.
+the completed iteration, with variances above a policy-set 25% requiring a documented explanation in the evidence bundle.
 
 **Layer 3 (Release).** The evidence bundle includes cost projection versus
 actual for the loop iteration. Release governance confirms that production cost

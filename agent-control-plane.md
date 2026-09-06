@@ -981,8 +981,10 @@ specification and operational context.
 **Review triggers.** A tool authorization record must be reviewed whenever any
 of the following conditions occurs:
 
-- The agent's GASH changes — any update to the model version, system prompt, or
-  tool manifest used by the agent constitutes a GASH change and requires
+- The agent's GASH (Governance Agent State Hash — see
+  [governance/agents.md](governance/agents.md)) changes — any update to the
+  model version, system prompt, or tool manifest used by the agent constitutes
+  a GASH change and requires
   re-evaluation of the authorization record, because a changed agent may
   exercise its authorized tools differently than the agent that was originally
   authorized.
@@ -1015,8 +1017,9 @@ class as authorized, an audit cannot distinguish between a governed contraction
 and an unauthorized invocation that happened to stop.
 
 **Staleness threshold.** An agent operating with a tool authorization record
-that has not been reviewed within twelve months is operating on stale
-authorization. This is a governance staleness event. The steward responsible for
+that has not been reviewed within twelve months — a policy-set staleness
+period, chosen by the authors rather than derived from any measured rate of
+authorization drift — is operating on stale authorization. This is a governance staleness event. The steward responsible for
 the agent must initiate a review and produce an updated ToolAuthorizationRecord
 node — confirming that the current authorization remains appropriate, or
 modifying it as required — within the staleness resolution window defined in the

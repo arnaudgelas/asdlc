@@ -3,7 +3,7 @@
 _How to build Agentic Software Delivery Lifecycle governance, layer by layer._
 
 See [ASDLC Overview](asdlc.md) for the architecture this guide implements. See
-the [Manifesto](../manifesto.md) for the inner-loop engineering principles.
+the [Manifesto](https://github.com/arnaudgelas/agentic-engineering-manifesto/blob/main/manifesto/manifesto.md) for the inner-loop engineering principles.
 
 ---
 
@@ -57,7 +57,7 @@ portfolio, a complete evidence bundle on each loop output, and named human
 accountability at the Govern phase. "Functioning" means the inner loop regularly
 produces loop outputs that pass the engineering Definition of Done — not
 occasionally, not in ideal conditions, but as a routine outcome. A loop that
-produces evidence bundles only when reminded, or passes the DoD on 40% of
+produces evidence bundles only when reminded, or passes the DoD on an illustrative 40% of
 iterations, is not at Phase 3 minimum.
 
 **Why this must come first.** Every outer-layer governance structure receives
@@ -68,8 +68,7 @@ loop does not reliably act on those specifications, demand governance produces
 input that nothing consumes. You cannot govern a loop that does not run. Build
 the loop before governing its context.
 
-**What "done" looks like.** The team can point to a minimum of three completed
-loop iterations in one domain where: all seven engineering DoD conditions were
+**What "done" looks like.** The team can point to a policy-set minimum of three completed loop iterations in one domain where: all eight engineering DoD conditions were
 met, the evidence bundle is present and internally consistent, a named human
 reviewed and accepted the output, and the loop produced no untraced failures.
 Phase 3 delivery pace and quality are stable enough that a product owner can
@@ -144,10 +143,12 @@ because the gate revealed it was not well-enough understood.
 
 **What this means.** Establish the L2→L3 boundary as an enforceable checkpoint.
 A loop-complete output — one that has passed the engineering DoD — does not
-proceed to production deployment without passing all five release gate
-conditions: evidence bundle complete, rollback procedure tested, accountable
-human sign-off, independent validation where required, and compliance
-documentation filed. The release gate is run by the release manager, not the
+proceed to production deployment without passing all eight release gate
+conditions: evidence bundle complete, independent validation passed, rollback
+procedure tested, accountable human sign-off, compliance documentation
+complete, dynamic security testing passed, control state record complete and
+current, and waiver governance satisfied. The release gate is run by the
+release manager, not the
 development team. The release manager is checking the evidence, not repeating
 the engineering work.
 
@@ -164,7 +165,7 @@ gate condition comes now.
 **The rollback procedure requirement deserves attention.** Most teams that add a
 release gate for the first time discover that they have never tested a rollback
 procedure. They may have documented one. They have not tested it. The rollback
-test condition — tested in a representative environment, within 48 hours of the
+test condition — tested in a representative environment, within a policy-set 48 hours of the
 planned production deployment, with time-to-rollback measured — should be
 treated as non-negotiable from the first gate run. The failure mode it prevents
 — the first rollback attempt failing in production during an active incident —
@@ -227,10 +228,11 @@ is within the calculated governance capacity.
 
 **What this means.** Establish the L3→L4 boundary as an enforceable checkpoint.
 Before a deployed system transitions to steady-state operations, it must pass
-all seven operational readiness gate conditions: runbook complete, SLOs defined
+all eight operational readiness gate conditions: runbook complete, SLOs defined
 and monitoring configured, on-call engineer assigned and briefed, system steward
-assigned, security scan clean, license compliance confirmed, and trace retention
-policy set and configured. The gate is assessed by the system steward, not the
+assigned, security scan clean, license compliance confirmed, trace retention
+policy set and configured, and DR/failover tested (for Tier 3 systems). The gate
+is assessed by the system steward, not the
 release manager.
 
 **The runbook is the most labour-intensive condition.** A runbook that satisfies
@@ -256,7 +258,8 @@ title, not an accountability.
 
 **Steward portfolio limits.** A steward accountable for too many systems
 simultaneously cannot maintain the knowledge depth and review cadence that
-meaningful stewardship requires. As a practitioner guideline — calibrate to
+meaningful stewardship requires. As a policy-set practitioner default — chosen
+by the authors, not measured from steward workload data, and to be calibrated to
 local system complexity — no single steward should be accountable for more than
 five Tier 3 systems, ten Tier 2 systems, or twenty Tier 1 systems concurrently.
 A steward approaching these limits without additional support or tooling
@@ -349,8 +352,7 @@ behaviour is not well-understood because the loop's Learn and Observe phases are
 not functioning.
 
 **Fix.** Pause outer-layer governance investment and treat inner-loop
-reliability as the priority. The test is: can the loop produce three consecutive
-evidence-complete loop outputs in one domain without intervention? Until that
+reliability as the priority. The test is: can the loop produce a policy-set three consecutive evidence-complete loop outputs in one domain without intervention? Until that
 test passes, outer-layer governance is generating process overhead for a loop
 that cannot satisfy it. Once the loop is reliable, the outer layers become
 productive immediately because they have complete evidence to work with.
@@ -419,7 +421,7 @@ qualified replacement puts the system into operational DoD failure.
 
 **Fix.** Establish the quarterly operational DoD review and make the steward
 accountable for conducting it. The review is not a detailed technical assessment
-— it is a confirmation that each of the seven operational DoD conditions remains
+— it is a confirmation that each of the eight operational DoD conditions remains
 satisfied, and an identification of any that are failing. For organisations with
 large fleets of production systems, the operational DoD review can be
 tooling-assisted: automated checks for security scan recency, SLO configuration,
@@ -516,7 +518,7 @@ Significant Changes and Normal Changes. The ASDLC adds to ITIL Change
 Management: the requirement for a tested rollback procedure (ITIL requires a
 documented back-out plan; the ASDLC requires a tested one), and the evidence
 bundle structure (ITIL Change Management does not specify the content of change
-evidence; the ASDLC's seven-condition evidence bundle does). Integration point:
+evidence; the ASDLC's eight-condition evidence bundle does). Integration point:
 populate ITIL change records from the ASDLC release gate artefacts — do not
 duplicate documentation.
 
@@ -606,22 +608,37 @@ regulated SDLC frameworks. It is the governance framework that defines where
 agentic execution fits within them. The following integration guidance applies
 to each.
 
-**IEC 62304 (Medical device software).** The agentic loop's Specify→Verify
-phases map to IEC 62304's software development lifecycle (5.1–5.7). The evidence
-bundle is the IEC 62304 software development record. The Specification Readiness
-Gate corresponds to IEC 62304's software requirements activity (5.2): the gate
-ensures that software requirements are documented and consistent with the system
-design inputs before development begins. The release gate's independent
-validation condition is the IEC 62304 software verification and validation
-requirement (5.6, 5.7). For Class C software, independent verification is
-required; the release gate makes this a blocking condition. Integration point:
-the gate decision records and evidence bundles in the ASDLC are the primary IEC
-62304 development records. Do not maintain separate development records —
-reference the ASDLC artefacts from the IEC 62304 record structure.
+**IEC 62304 (Medical device software).** IEC 62304 is a **paid IEC standard
+that this programme has not purchased and has not read**; it is **OPEN under
+`T6.5`**, **no unofficial copy was fetched, sought or considered**, and per
+`asdlc.md` *"nothing here asserts what they require."* The mapping below is
+therefore **the ASDLC's own construction and is unsourced**, including the
+clause numbers, which are reproduced from secondary usage and **have not been
+checked against the standard**. The ASDLC's reading: the agentic loop's
+Specify→Verify phases correspond to the software development lifecycle (5.1–5.7);
+the evidence bundle is the software development record; the Specification
+Readiness Gate corresponds to the software requirements activity (5.2), ensuring
+software requirements are documented and consistent with the system design
+inputs before development begins; and the release gate's independent validation
+condition corresponds to software verification and validation (5.6, 5.7). The
+ASDLC makes independent verification a blocking condition for its highest risk
+class. **Whether IEC 62304 requires independent verification for Class C, and
+whether these clause numbers carry the content stated, has not been checked and
+cannot be while the standard is unread.** Integration point: the gate decision
+records and evidence bundles in the ASDLC are intended as the primary
+development records. Do not maintain separate development records — reference
+the ASDLC artefacts from the IEC 62304 record structure, once that structure has
+been read from a purchased copy.
 
-**GAMP 5 (Pharmaceutical automated systems).** GAMP 5's V-Model maps directly to
-the ASDLC's inner loop and outer layers. User Requirements Specifications
-correspond to demand layer outputs (validated need, success criterion,
+**GAMP 5 (Pharmaceutical automated systems).** GAMP 5 is a **paid ISPE guide
+that this programme has not purchased and has not read**; it is **OPEN under
+`T6.5`**, **no unofficial copy was fetched, sought or considered**, and per
+`asdlc.md` *"nothing here asserts what they require."* The correspondence below
+is **the ASDLC's own construction and is unsourced** — what the ASDLC
+understands the industry-common V-Model vocabulary to mean, not a reading of the
+guide. On that understanding the V-Model maps to the ASDLC's inner loop and
+outer layers: User Requirements Specifications correspond to demand layer
+outputs (validated need, success criterion,
 acceptance criteria). Functional and Design Specifications correspond to Specify
 and Design phases. Factory Acceptance Testing and Site Acceptance Testing
 correspond to the Verify and Validate phases. Installation Qualification is the
@@ -630,35 +647,87 @@ Qualification is the first production operation period (the system operating
 against its SLOs in production). Performance Qualification is the steady-state
 operational phase. Integration point: map GAMP 5 V-Model documents to ASDLC
 artefacts one-to-one. The ASDLC artefact is produced by the loop; the GAMP 5
-document reference is filed against it.
+document reference is filed against it. **Confirm the mapping against a
+purchased copy of the guide with the organisation's quality team before relying
+on it; it has not been checked and cannot be while the guide is unread.**
 
-**DO-178C (Airborne software).** DO-178C's objectives for software development
-and verification map to the inner loop's phases and the release gate. The
-Software Development Plan, Software Verification Plan, and Software
-Configuration Management Plan correspond to the Design and Govern phases of the
-loop. The software verification evidence required by DO-178C objectives
-corresponds to the evidence bundle. The review and audit objectives (DO-178C
-Section 7) correspond to the independent validation condition at the release
-gate. Critical distinction: DO-178C evidence requirements are substantially more
+**DO-178C (Airborne software).** DO-178C is a **paid RTCA standard that this
+programme has not purchased and has not read**; it is **OPEN under `T6.5`**,
+**no unofficial copy was fetched, sought or considered**, and per `asdlc.md`
+*"nothing here asserts what they require."* The correspondence below is
+therefore **the ASDLC's own construction and is unsourced** — what the ASDLC
+understands the industry-common airborne-certification vocabulary to mean, not a
+reading of the standard, and that includes the section numbers, which are
+reproduced from secondary usage and **have not been checked against the
+standard**. On that understanding: the objectives for software development and
+verification map to the inner loop's phases and the release gate; the Software
+Development Plan, Software Verification Plan, and Software Configuration
+Management Plan correspond to the Design and Govern phases of the loop; software
+verification evidence corresponds to the evidence bundle; and the review and
+audit objectives the ASDLC associates with Section 7 correspond to the
+independent validation condition at the release gate. Critical distinction: the
+evidence expected of a certified airborne programme is substantially more
 detailed and prescriptive than the ASDLC's general framework. For software in
-DO-178C scope, the ASDLC provides the governance architecture; the DO-178C
-planning documents specify what the evidence bundle must contain to satisfy each
-objective. These are not interchangeable. DO-178C compliance requires
-DO-178C-specific planning and execution, not just ASDLC gate compliance.
+DO-178C scope, the ASDLC provides the governance architecture; the programme's
+own DO-178C planning documents specify what the evidence bundle must contain to
+satisfy each objective. These are not interchangeable. **Whether DO-178C states
+any of this, and whether these section numbers carry the content stated, has not
+been checked and cannot be while the standard is unread.** Confirm against a
+purchased copy before relying on this mapping. Certification is a matter for the
+certification authority and the programme's DER or ODA unit member, not for
+ASDLC gate compliance.
 
-**SR 11-7 and SS1/23 (Model risk — financial services).** SR 11-7 governs model
-development and validation in US banking; SS1/23 is the UK equivalent. Both
-require: conceptual soundness documentation (the specification and design
-rationale in the evidence bundle), independent validation by a team
-organisationally separate from development (the release gate's independent
-validation condition), ongoing monitoring of model performance (the output
-quality SLO and monitoring conditions in the operational DoD), and model change
-governance (the release approval chain for changes to model-bearing systems).
-The ASDLC's gate conditions are the minimum governance structure that satisfies
-SR 11-7 and SS1/23 requirements at the release boundary. For high-risk models,
-both frameworks require more extensive independent validation than the ASDLC
-minimum — the gate condition is necessary but not sufficient for high-risk model
-compliance. See the financial services domain file in `domains/` for the full
+**SR 11-7 and SS1/23 (Model risk — financial services).** SR 11-7 addresses
+model development and validation in US banking; PRA **SS1/23, *Model risk
+management principles for banks*, May 2023** is the UK counterpart, in effect
+from 17 May 2024.
+**SR 11-7 is supervisory guidance written in "should", not a set of
+requirements** — `should` occurs 180 times against a single `must` in the
+attachment held at
+`inputs/20260905-arnaud/prep/D-20-primary/sources/sr1107a1.txt` (sha256
+`d8ef343917…`), and the successor guidance SR 26-2 (17 April 2026) states that
+it *"does not set forth enforceable standards or prescriptive requirements;
+accordingly, non-compliance with this guidance will not result in supervisory
+criticism against a banking organization"* — quoted to the end of the sentence,
+which carries footnote 1: *"See 12 CFR Part 4, Subpart F, Appendix A (OCC); 12 CFR Part 262,
+Appendix A (Board); 12 CFR Part 302, Appendix A (FDIC). However, supervisory
+action may result for any violations of law or unsafe or unsound practices
+stemming from insufficient management of model risk."*
+**This strengthens the "written in expectations" point and limits it in the
+same breath**: the guidance is not the enforcement hook, but supervisory action
+may still follow through violations of law or unsafe-or-unsound practices, so
+non-enforceable does not mean consequence-free.
+**SS1/23 is in the same register, and this was checked at the primary rather
+than assumed.** It was retrieved free from bankofengland.co.uk on 2026-09-06
+(HTTP 200, first attempt) and is held at
+`inputs/20260905-arnaud/prep/ss123/sources/pra_ss1_23.pdf` (sha256
+`6165a8ba69…`). Over that document `should` occurs **179** times and `must` and
+`shall` occur **zero** times each; it *"sets out the PRA's expectations for
+banks' model risk management"* and is *"structured around five high-level
+principles"* — model identification and risk classification, governance, model
+development/implementation/use, independent model validation, and model risk
+mitigants. **Its scope is narrower than the US guidance's**: by its own § 1.2 it
+applies
+to UK-incorporated banks, building societies and PRA-designated investment firms
+**with internal model approval** for regulatory capital, and *"the expectations
+in this SS do not apply to firms which do not have permission to use internal
+models"*, nor to credit unions, insurers or reinsurers. **Neither instrument
+places a requirement on a firm by force of the document itself; both are written
+in expectations.** SR 11-7 says a validation framework *"should include three core elements:
+• Evaluation of conceptual soundness, including developmental evidence •
+Ongoing monitoring, including process verification and benchmarking • Outcomes
+analysis, including back-testing"*, that validation *"should be done by people
+who are not responsible for development or use"*, and that *"Material changes in
+model structure or technique, and all model redevelopment, should be subject to
+validation activities of appropriate range and rigor before implementation"*.
+The ASDLC maps these to the specification and design rationale in the evidence
+bundle, the release gate's independent validation condition, the output quality
+SLO and monitoring conditions in the operational DoD, and the release approval
+chain for changes to model-bearing systems. **That the gate conditions are a
+sufficient governance structure, and that high-risk models need more than the
+ASDLC minimum, are the ASDLC's own judgements and are unsourced** — the gate
+condition is necessary but not sufficient, and passing it is not a compliance
+determination. See the financial services domain file in `domains/` for the full
 mapping.
 
 ---
@@ -673,7 +742,7 @@ phase.
 | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Phase 1–2 | Informal need validation — confirm that some evidence exists before the loop runs; no formal gate required                                                                                      | Basic release record — what was deployed, when, by whom; no formal gate                                                                                                                      | No formal requirement — runbook optional, steward optional                                                                                                                    |
 | Phase 3   | Specification readiness gate (informal checklist, product owner-led); success criterion required for all loop entries                                                                           | Full release gate: evidence bundle complete, rollback tested, accountable human sign-off; compliance documentation where the change's risk profile requires it                               | Runbook (reduced scope) + on-call assignment + steward assigned + security scan; SLO configuration required if external consumers exist                                       |
-| Phase 4   | Formal demand governance: validated backlog with explicit ownership, documented prioritisation criteria, gate decision records for all Tier 2+ specifications, business demand sponsor sign-off | Release approval chain: tech lead + release manager for Tier 2; plus accountable human written acceptance for Tier 3; compliance officer for regulated systems; all gate conditions enforced | Full operational DoD: all nine conditions required; quarterly DoD review scheduled; maintenance cycle defined                                                                 |
+| Phase 4   | Formal demand governance: validated backlog with explicit ownership, documented prioritisation criteria, gate decision records for all Tier 2+ specifications, business demand sponsor sign-off | Release approval chain: tech lead + release manager for Tier 2; plus accountable human written acceptance for Tier 3; compliance officer for regulated systems; all gate conditions enforced | Full operational DoD: all eight conditions required; quarterly DoD review scheduled; maintenance cycle defined                                                                 |
 | Phase 5   | Full Layer 1: formal demand governance + demand metrics (see `demand/metrics.md`); feedback path from L4 value data actively monitored; capacity model calculated and enforced                  | All release gate conditions enforced without exception; release metrics tracked; emergency change procedure tested                                                                           | Full Layer 4 with maintenance governance: stewardship transfer procedures tested, dependency update cycles scheduled, end-of-life planning current for all production systems |
 
 The phase calibration reflects a genuine dependency: at Phase 1–2, the loop
@@ -684,9 +753,7 @@ layers are not bureaucratic additions — they are the governance infrastructure
 that makes Phase 5 autonomy safe to operate.
 
 **The transition decision.** Moving from Phase 3 to Phase 4 outer-layer
-requirements is not automatic. It is triggered by two signals: inner-loop
-stability (consistent evidence-complete outputs across a minimum of ten loop
-iterations in the domain) and a specific outer-layer failure mode appearing that
+requirements is not automatic. It is triggered by two signals: inner-loop stability (consistent evidence-complete outputs across a policy-set minimum of ten loop iterations in the domain) and a specific outer-layer failure mode appearing that
 the Phase 3 minimum does not prevent. Do not escalate outer-layer governance
 requirements ahead of those signals — it creates overhead without benefit. Do
 not defer escalation after those signals — it creates risk without the
